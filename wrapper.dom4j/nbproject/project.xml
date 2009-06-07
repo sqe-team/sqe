@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.nbheaven.sqe.wrapper.dom4j</code-name-base>
+            <suite-component/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.jaxen</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
+            <test-dependencies>
+                <test-type>
+                    <name>unit</name>
+                    <test-dependency>
+                        <code-name-base>org.netbeans.libs.junit4</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                </test-type>
+            </test-dependencies>
+            <public-packages>
+                <package>org.dom4j</package>
+                <package>org.dom4j.bean</package>
+                <package>org.dom4j.datatype</package>
+                <package>org.dom4j.dom</package>
+                <package>org.dom4j.dtd</package>
+                <package>org.dom4j.io</package>
+                <package>org.dom4j.jaxb</package>
+                <package>org.dom4j.rule</package>
+                <package>org.dom4j.rule.pattern</package>
+                <package>org.dom4j.swing</package>
+                <package>org.dom4j.tree</package>
+                <package>org.dom4j.util</package>
+                <package>org.dom4j.xpath</package>
+                <package>org.dom4j.xpp</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/dom4j.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/dom4j.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxen-dom4j-adapter.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxen-dom4j-adapter.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

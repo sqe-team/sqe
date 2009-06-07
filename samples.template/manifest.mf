@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.nbheaven.sqe.samples.template
+OpenIDE-Module-Layer: org/nbheaven/sqe/samples/template/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/samples/template/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Java-Dependencies: Java > 1.5

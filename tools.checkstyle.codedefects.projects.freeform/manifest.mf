@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform
+OpenIDE-Module-Layer: org/nbheaven/sqe/tools/checkstyle/codedefects/projects/freeform/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/tools/checkstyle/codedefects/projects/freeform/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Java-Dependencies: Java > 1.5

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Quality">
+            <file name="org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.instance"/>
+        </folder>
+    </folder>
+    
+    <folder name="Menu">
+        <folder name="Quality">
+            <file name="org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.instance"/>
+                <attr name="position" intvalue="500"/>
+            </file>
+        </folder>
+    </folder>
+    
+    <!-- SQE Integration -->
+    <folder name="SQE">
+        <folder name="Project-Node">
+            <folder name="Actions">
+                <file name="org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.instance"/>
+                    <attr name="position" intvalue="500"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="ControlCenter">
+            <folder name="Controls">
+                <file name="org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.instance"/>
+                    <attr name="position" intvalue="150"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="Projects">
+            <folder name="Actions">
+                <file name="org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-informations-ui-actions-SQEInformationAction.instance"/>
+                    <attr name="position" intvalue="50"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

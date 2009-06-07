@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Quality">
+            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance">
+                <attr name="position" intvalue="400"/>
+            </file>
+        </folder>
+        <folder name="Window">
+            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-ui-CheckstyleAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.Bundle"/>
+                <attr name="component" methodvalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.CheckstyleTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.Bundle#CTL_CheckstyleAction"/>
+                <attr name="iconBase" stringvalue="org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Editors">
+        <folder name="AnnotationTypes">
+            <file name="checkstyle-annotation.xml" url="annotations/annotation.xml"/>
+        </folder>
+        <folder name="text">
+            <folder name="x-jsp"/>
+            <folder name="x-java">
+                <folder name="Popup">
+                    <!--file name="SeparatorAfterPaste.instance">
+			<attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                        <attr name="position" intvalue="4100"/>
+                    </file>
+                    <file name="generate-fold-popup">
+                        <attr name="position" intvalue="4200"/>
+                    </file-->
+                </folder>
+                <folder name="Toolbars">
+                    <folder name="Default">
+                        <file name="Separator-before-sqe.instance">
+                            <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                            <attr name="position" intvalue="25100"/>
+                        </file>
+                        <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-annotations-CheckstyleAnnotationToggleAction.instance">
+                            <attr name="position" intvalue="25400"/>
+                        </file>
+                    </folder>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="Menu">
+        <folder name="Quality">
+            <folder name="CodeDefects">
+                <file name="RunCheckstyleActio.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
+                    <attr name="position" intvalue="400"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="Window">
+            <folder name="Quality">
+                <file name="CheckstyleAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Window/org-nbheaven-sqe-tools-checkstyle-codedefects-core-ui-CheckstyleAction.instance"/>
+                    <attr name="position" intvalue="400"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="OptionsDialog">
+        <folder name="SQE">
+            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-option-CheckstyleAdvancedOption.instance">
+                <attr name="controller" newvalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.CheckstyleOptionsPanelController"/>
+                <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.Bundle#AdvancedOption_DisplayName_Checkstyle"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
+                <attr name="keywords" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.Bundle#AdvancedOption_Keywords_Checkstyle"/>
+                <attr name="keywordsCategory" stringvalue="SQE/null"/>
+                <attr name="toolTip" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.Bundle#AdvancedOption_Tooltip_Checkstyle"/>
+                <attr name="position" intvalue="400"/>
+            </file>
+        </folder>
+    </folder>
+
+    <!-- SQE Integration -->
+    <folder name="SQE">
+        <folder name="Providers">
+            <folder name="CodeDefects">
+                <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-CheckstyleQualityProvider.instance">
+                    <attr name="position" intvalue="300"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="Projects">
+            <folder name="Actions">
+                <folder name="CodeDefects">
+                    <file name="RunCheckstyleAction.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
+                        <attr name="position" intvalue="400"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="CheckstyleTopComponent.settings" url="ui/CheckstyleTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="output">
+                <file name="CheckstyleTopComponent.wstcref" url="ui/CheckstyleTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+        <folder name="Groups">
+            <folder name="SQEControlCenter">
+                <file name="CheckstyleTopComponent.wstcgrp" url="ui/CheckstyleTopComponentWstcgrp.xml"/>
+            </folder>
+        </folder>
+    </folder>
+
+</filesystem>

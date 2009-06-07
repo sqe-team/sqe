@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Quality">
+            <file name="org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.instance"/>
+            <file name="org-nbheaven-sqe-codedefects-ui-actions-RunAllQualityProvidersAction.instance"/>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Quality">
+            <folder name="CodeDefects">
+                <attr name="position" intvalue="100"/>
+                <file name="org-nbheaven-sqe-codedefects-ui-actions-RunAllQualityProvidersAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-codedefects-ui-actions-RunAllQualityProvidersAction.instance"/>
+                    <attr name="position" intvalue="100"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Toolbars">
+        <folder name="Quality">
+            <file name="org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.instance"/>
+                <attr name="position" intvalue="100"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="SQE">
+        <folder name="ControlCenter">
+            <folder name="Controls">
+                <file name="org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.instance"/>
+                    <attr name="position" intvalue="100"/>
+                </file>
+            </folder>
+            <folder name="Panels">
+                <file name="org-nbheaven-sqe-codedefects-ui-panel-DefectProviderConfigurationPanel.instance">
+                    <attr name="position" intvalue="200"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.nbheaven.sqe.codedefects.ui.panel.Bundle"/>
+                </file>
+            </folder>
+        </folder>
+        <!-- example registration for CodeDefects>
+        <folder name="CodeDefectsProviders">
+            <folder name="">
+                <file name="org-nbheaven-sqe-bridge-pmd-PMDQualityProvider.instance"/>
+            </folder>
+            <folder name="Dependen">
+                <file name="org-nbheaven-sqe-bridge-pmd-PMDQualityProvider.instance"/>
+            </folder>
+        </folder>
+        <end of example registration-->
+        <folder name="OptionPanels">
+            <!-- example registration of OptionPanel for SQE Option Category>
+            <file name="org-nbheaven-sqe-bridge-pmd-option-PMDOptionPanelProvider.instance"/>            
+            <end of example-->
+        </folder>
+        <folder name="Projects">
+            <folder name="Actions">
+                <folder name="CodeDefects">
+                    <attr name="position" intvalue="100"/>
+                    <file name="org-nbheaven-sqe-codedefects-ui-actions-RunAllQualityProvidersAction.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-codedefects-ui-actions-RunAllQualityProvidersAction.instance"/>
+                        <attr name="position" intvalue="100"/>
+                    </file>
+                    <file name="org-nbheaven-sqe-codedefects-ui-actions-separatorAfter.instance">
+                        <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                        <attr name="position" intvalue="150"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="Packages">
+            <folder name="Actions">
+                <!-- put your project context menu actions here!!-->
+                <!-- for structuring use subfolder - one level is supported
+                <folder name="CodeDefects">
+                    <attr name="org-nbheaven-sqe-codedefects-resultui-action-RunSQEAction.shadow/RunFindBugsAction.shadow" boolvalue="true"/>            
+                    <file name="RunFindBugsAction.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-bridge-findbugs-RunFindBugsAction.instance"/>
+                    </file>
+                </folder>
+                -->
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

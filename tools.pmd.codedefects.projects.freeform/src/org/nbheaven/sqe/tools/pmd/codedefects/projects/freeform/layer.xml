@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="Projects">
+        <folder name="org-netbeans-modules-ant-freeform">
+            <folder name="Lookup">
+                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
+                    <attr name="position" intvalue="510"/>
+                </file>
+            </folder>            
+            <folder name="Customizer">
+                <folder name="SQE">
+                    <attr name="position" intvalue="650"/>
+                    <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-customizer-PanelProvider.instance">
+                            <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="org-netbeans-modules-apisupport-project">
+            <folder name="Lookup">
+                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
+                    <attr name="position" intvalue="510"/>
+                </file>
+            </folder>             
+            <folder name="Customizer">
+                <folder name="SQE">
+                    <attr name="position" intvalue="450"/>
+                    <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-customizer-PanelProvider.instance">
+                            <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="org-netbeans-modules-java-j2seproject">
+            <folder name="Lookup">
+                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
+                    <attr name="position" intvalue="510"/>
+                </file>
+            </folder>             
+            <folder name="Customizer">
+                <folder name="SQE">
+                    <attr name="position" intvalue="250"/>
+                    <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-customizer-PanelProvider.instance">
+                            <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="org-netbeans-modules-web-project">
+            <folder name="Lookup">
+                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
+                    <attr name="position" intvalue="510"/>
+                </file>
+            </folder>             
+            <folder name="Customizer">
+                <folder name="SQE">
+                    <attr name="position" intvalue="350"/>
+                    <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-customizer-PanelProvider.instance">
+                            <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+        
+    </folder>
+</filesystem>

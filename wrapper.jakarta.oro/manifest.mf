@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.nbheaven.sqe.wrapper.jakarta.oro
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/jakarta/oro/Bundle.properties
+OpenIDE-Module-Specification-Version: 2.0.8
+OpenIDE-Module-Java-Dependencies: Java > 1.5

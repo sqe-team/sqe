@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    
+    <folder name="Menu">
+        <folder name="Quality">
+            <attr name="position" intvalue="890"/>
+        </folder>
+    </folder>
+    
+    <folder name="OptionsDialog">
+        <file name="org-nbheaven-sqe-core-ui-options-UiOptionsCategory.instance">
+            <attr name="position" intvalue="350"/>
+        </file>
+    </folder>
+    
+    <folder name="Projects">
+        <folder name="Actions">
+            <file name="org-nbheaven-sqe-core-ui-actions-SQEProjectMenuItem.instance">
+                <attr name="position" intvalue="400"/>
+            </file>
+        </folder>
+        <folder name="org-netbeans-modules-ant-freeform">
+            <folder name="Nodes">
+                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
+                    <attr name="position" intvalue="1000"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="org-netbeans-modules-apisupport-project">
+            <folder name="Nodes">
+                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
+                    <attr name="position" intvalue="1000"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="org-netbeans-modules-java-j2seproject">
+            <folder name="Nodes">
+                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
+                    <attr name="position" intvalue="1000"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="org-netbeans-modules-web-project">
+            <folder name="Nodes">
+                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
+                    <attr name="position" intvalue="1000"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="Loaders">
+        <folder name="folder">
+            <folder name="any">
+                <folder name="Actions">
+                    <file name="org-nbheaven-sqe-core-ui-actions-SQEPackageMenuItem.instance">
+                        <attr name="position" intvalue="1050"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+    
+    <folder name="SQE">
+        <folder name="Project-Node">
+            <folder name="Actions">
+            </folder>
+        </folder>
+        <!-- example registration for CodeDefects>
+        <folder name="CodeDefectsProviders">
+            <folder name="">
+                <file name="org-nbheaven-sqe-bridge-pmd-PMDQualityProvider.instance"/>
+            </folder>
+            <folder name="Dependen">
+                <file name="org-nbheaven-sqe-bridge-pmd-PMDQualityProvider.instance"/>
+            </folder>
+        </folder>
+        <end of example registration-->
+        <folder name="OptionPanels">
+            <!-- example registration of OptionPanel for SQE Option Category>
+            <file name="org-nbheaven-sqe-bridge-pmd-option-PMDOptionPanelProvider.instance"/>            
+            <end of example-->
+        </folder>
+        <folder name="Projects">
+            <folder name="Actions">
+                <!-- put your project context menu actions here!!-->
+                <!-- for structuring use subfolder - one level is supported
+                <folder name="CodeDefects">
+                    <attr name="org-nbheaven-sqe-codedefects-resultui-action-RunSQEAction.shadow/RunFindBugsAction.shadow" boolvalue="true"/>            
+                    <file name="RunFindBugsAction.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-bridge-findbugs-RunFindBugsAction.instance"/>
+                    </file>
+                </folder>
+                -->
+            </folder>
+        </folder>
+        <folder name="Packages">
+            <folder name="Actions">
+                <!-- put your project context menu actions here!!-->
+                <!-- for structuring use subfolder - one level is supported
+                <folder name="CodeDefects">
+                    <attr name="org-nbheaven-sqe-codedefects-resultui-action-RunSQEAction.shadow/RunFindBugsAction.shadow" boolvalue="true"/>            
+                    <file name="RunFindBugsAction.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-bridge-findbugs-RunFindBugsAction.instance"/>
+                    </file>
+                </folder>
+                -->
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

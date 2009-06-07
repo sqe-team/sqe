@@ -1,0 +1,11 @@
+# use glob syntax.
+syntax: glob
+
+*.class
+*~
+.*.swp
+
+# switch to regexp syntax.
+syntax: regexp
+^.*/build/.*$
+^.*/nbproject/private/.*$

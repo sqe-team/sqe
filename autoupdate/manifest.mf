@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.nbheaven.sqe.autoupdate
+OpenIDE-Module-Layer: org/nbheaven/sqe/autoupdate/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/autoupdate/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Java-Dependencies: Java > 1.5

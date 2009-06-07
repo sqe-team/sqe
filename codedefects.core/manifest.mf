@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.nbheaven.sqe.codedefects.core
+OpenIDE-Module-Install: org/nbheaven/sqe/codedefects/core/api/install/Installer.class
+OpenIDE-Module-Layer: org/nbheaven/sqe/codedefects/core/api/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/codedefects/core/api/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Java-Dependencies: Java > 1.5
