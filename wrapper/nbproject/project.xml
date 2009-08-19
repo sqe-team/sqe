@@ -21,7 +21,7 @@
     <type>org.netbeans.modules.apisupport.project.suite</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-suite-project/1">
-            <name>wrapper</name>
+            <name>SQE Third-Party Libraries</name>
         </data>
     </configuration>
 </project>
