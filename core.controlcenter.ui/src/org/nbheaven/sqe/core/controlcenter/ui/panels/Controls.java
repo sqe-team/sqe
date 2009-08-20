@@ -27,7 +27,6 @@ import org.nbheaven.sqe.core.ui.components.toolbar.FlatToolBar;
 import org.openide.cookies.InstanceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.util.ContextAwareAction;
@@ -59,11 +58,11 @@ public class Controls extends FlatToolBar {
         Lookup context = SQEManager.getDefault().getLookup();
 
         Collection<Action> actions = new ArrayList<Action>();
-        FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("SQE/ControlCenter/Controls");
+        FileObject fo = FileUtil.getConfigFile("SQE/ControlCenter/Controls");
         for (FileObject actionsFileObject : FileUtil.getOrder(Arrays.asList(fo.getChildren()), true)) {
             try {
                 DataObject dob = DataObject.find(actionsFileObject);
-                InstanceCookie cookie = dob.getCookie(InstanceCookie.class);
+                InstanceCookie cookie = dob.getLookup().lookup(InstanceCookie.class);
                 if (null != cookie) {
                     Action action = (Action) cookie.instanceCreate();
                     if (action instanceof ContextAwareAction) {

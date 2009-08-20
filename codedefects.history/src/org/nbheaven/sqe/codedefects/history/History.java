@@ -42,6 +42,7 @@ import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileAlreadyLockedException;
 import org.openide.util.Exceptions;
+import org.openide.util.NbCollections;
 import org.openide.util.NbPreferences;
 
 /**
@@ -133,7 +134,7 @@ public final class History implements Iterable<History.Entry> {
             try {
                 is = new ByteArrayInputStream(historyData);
                 ObjectInputStream stream = new ObjectInputStream(is);
-                entries.addAll((LinkedList<Entry>) stream.readObject());
+                entries.addAll(NbCollections.checkedListByCopy((LinkedList<?>) stream.readObject(), Entry.class, true));
                 stream.close();
             } catch (ClassNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
@@ -145,7 +146,6 @@ public final class History implements Iterable<History.Entry> {
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
-                return entries;
             }
         }
         return entries;

@@ -26,7 +26,7 @@ import org.openide.filesystems.FileChangeListener;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
-import org.openide.filesystems.Repository;
+import org.openide.filesystems.FileUtil;
 import org.openide.modules.ModuleInstall;
 
 /**
@@ -42,7 +42,7 @@ public class Installer extends ModuleInstall {
     }
 
     public static synchronized void installPluginUpdater() {
-        final FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("FindBugs/Plugins");
+        final FileObject fo = FileUtil.getConfigFile("FindBugs/Plugins");
         if (null != fo) {
             updater = new PluginListChangedListener(fo);
             fo.addFileChangeListener(updater);

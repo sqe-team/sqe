@@ -28,7 +28,6 @@ import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
@@ -52,8 +51,7 @@ public class SQEUtilities {
 
     public static synchronized Collection<QualityProvider> getProviders() {
         if (null == providers) {
-            final FileObject fo = Repository.getDefault().getDefaultFileSystem()
-                                            .findResource("SQE/Providers/CodeDefects");
+            final FileObject fo = FileUtil.getConfigFile("SQE/Providers/CodeDefects");
 
             if (null != fo) {
                 fo.addFileChangeListener(new FileChangeListener() {

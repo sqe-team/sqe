@@ -55,9 +55,8 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
     }
 
     public JComponent createComponent(Category category, Lookup context) {
-        Project p = (Project) context.lookup(Project.class);
-        final FindBugsSettingsProvider fibuSettingsProvider = (FindBugsSettingsProvider) p.getLookup()
-                                                                            .lookup(FindBugsSettingsProvider.class);
+        Project p = context.lookup(Project.class);
+        final FindBugsSettingsProvider fibuSettingsProvider = p.getLookup().lookup(FindBugsSettingsProvider.class);
 
         final UserPreferences findBugsSettings = fibuSettingsProvider.getFindBugsSettings();
         

@@ -43,7 +43,6 @@ import org.netbeans.api.project.ProjectUtils;
 import org.openide.cookies.InstanceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
@@ -88,12 +87,12 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
 
-        FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("SQE/ControlCenter/Panels");
+        FileObject fo = FileUtil.getConfigFile("SQE/ControlCenter/Panels");
         for (FileObject panelObject : FileUtil.getOrder(Arrays.asList(fo.getChildren()), true)) {
             try {
                 DataObject dao = DataObject.find(panelObject);
                 Boolean collapsed = (Boolean) panelObject.getAttribute("collapsed");
-                InstanceCookie cookie = dao.getCookie(InstanceCookie.class);
+                InstanceCookie cookie = dao.getLookup().lookup(InstanceCookie.class);
 
                 if (null != cookie) {
                     JComponent component = (JComponent) cookie.instanceCreate();
