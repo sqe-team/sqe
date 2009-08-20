@@ -17,18 +17,18 @@
  */
 package org.nbheaven.sqe.codedefects.core.api.install;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.modules.ModuleInstall;
 import org.openide.windows.TopComponent;
 
-/**
- * Manages a module's lifecycle. Remember that an installer is optional and
- * often not needed at all.
- */
 public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
         TopComponent.getRegistry().addPropertyChangeListener(OpenTopComponentsListener.INSTANCE);        
+        // Suppress default package warnings for third-party libraries (obsolete as of NB 6.8):
+        Logger.getLogger("org.netbeans.ProxyClassLoader").setLevel(Level.WARNING);
     }
 
     @Override
