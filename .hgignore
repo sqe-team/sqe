@@ -1,5 +1,5 @@
 ~$
 \.orig$
 \.rej$
-/build$
-/nbproject/private$
+(^|/)build$
+(^|/)nbproject/private$
