@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.kit.platform
 OpenIDE-Module-Layer: org/nbheaven/sqe/kit/platform/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/kit/platform/Bundle.properties
