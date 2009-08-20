@@ -17,7 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<project name="org.nbheaven.sqe.kits.platform" default="netbeans" basedir=".">
-    <description>Builds, tests, and runs the project org.nbheaven.sqe.kits.platform.</description>
+<project name="org.nbheaven.sqe.kit.java" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project org.nbheaven.sqe.kit.java.</description>
     <import file="nbproject/build-impl.xml"/>
 </project>

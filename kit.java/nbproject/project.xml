@@ -21,7 +21,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.nbheaven.sqe.kits.java</code-name-base>
+            <code-name-base>org.nbheaven.sqe.kit.java</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -97,7 +97,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.kits.platform</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.kit.platform</code-name-base>
                     <run-dependency>
                         <specification-version>0.9</specification-version>
                     </run-dependency>

@@ -17,7 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<project name="org.nbheaven.sqe.kits.platform-impl" basedir="..">
+<project name="org.nbheaven.sqe.kit.java-impl" basedir="..">
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
             <not>
