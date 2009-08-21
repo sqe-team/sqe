@@ -64,11 +64,6 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
 
         if (null == settingsFile) {
             settingsFile = FINDBUGS_SETTINGS_DEFAULT;
-
-            sqeProperties.setProperty(FINDBUGS_SETTINGS_FILE, settingsFile);
-            sqeProperties.setComment(FINDBUGS_SETTINGS_FILE,
-                    new String[]{"#Path to FindbugsSettingsFile (relative)"}, true);
-            AntUtilities.putSQEProperties(sqeProperties, project);
         }
 
         FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");

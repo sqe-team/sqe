@@ -18,124 +18,61 @@
 package org.nbheaven.sqe.core.ant;
 
 import org.netbeans.api.project.Project;
-
 import org.netbeans.spi.project.support.ant.EditableProperties;
-import org.netbeans.spi.project.support.ant.PropertyUtils;
-
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-
-import org.openide.util.Exceptions;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.openide.filesystems.FileUtil;
 
 /**
- *
  * @author sven
  */
 public class AntUtilities {
+
     private static final String SQE_PROPERTY_FILE = "sqe.properties";
 
-    /** Creates a new instance of AntUtilities */
-    private AntUtilities() {
-    }
+    private AntUtilities() {}
 
-    static File sqeProperties(final Project project) {
-        File file = null;
-        try {
-            FileObject sqePropertyFileObject = project.getProjectDirectory().getFileObject("nbproject/" + SQE_PROPERTY_FILE);
-            if (null == sqePropertyFileObject) {
-                sqePropertyFileObject = project.getProjectDirectory().getFileObject("nbproject").createData(SQE_PROPERTY_FILE);
-            }
-            file  = FileUtil.toFile(sqePropertyFileObject);
-            return file;
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+    // XXX support for automatic projects etc. can come in 6.8 with ProjectUtils.getCacheDirectory
 
-        return file;
-    }
-   
     public static EditableProperties getSQEProperties(final Project project) {
-        File sqeProperties = sqeProperties(project);
         EditableProperties editableProperties = new EditableProperties(true);
-        try {
-            FileInputStream is = new FileInputStream(sqeProperties);
+        FileObject sqePropertyFileObject = project.getProjectDirectory().getFileObject("nbproject/" + SQE_PROPERTY_FILE);
+        if (sqePropertyFileObject != null) {
             try {
-                editableProperties.load(is);
-            } finally {
-                is.close();
+                InputStream is = sqePropertyFileObject.getInputStream();
+                try {
+                    editableProperties.load(is);
+                } finally {
+                    is.close();
+                }
+            } catch (IOException e) {
+                Logger.getLogger(AntUtilities.class.getName()).log(Level.INFO, null, e);
             }
-        } catch (IOException e) {
-            Logger.getLogger(PropertyUtils.class.getName()).log(Level.INFO, null, e);
         }
         return editableProperties;
     }
     
-    
     public static void putSQEProperties(final EditableProperties editableProperties, final Project project) {
-        File sqeProperties = sqeProperties(project);
-
+        FileObject nbproject = project.getProjectDirectory().getFileObject("nbproject");
+        if (nbproject == null) {
+            // XXX warn?
+            return;
+        }
         try {
-            FileOutputStream os = new FileOutputStream(sqeProperties);
-
+            FileObject sqePropertiesFileObject = FileUtil.createData(nbproject, SQE_PROPERTY_FILE);
+            OutputStream os = sqePropertiesFileObject.getOutputStream();
             try {
                 editableProperties.store(os);
             } finally {
                 os.close();
             }
         } catch (IOException e) {
-            Logger.getLogger(PropertyUtils.class.getName()).log(Level.INFO, null, e);
+            Logger.getLogger(AntUtilities.class.getName()).log(Level.INFO, null, e);
         }
     }
 
-    //    public static void putSQEProperties(final Project project, final EditableProperties properties) throws IOException {
-    //        try {
-    //            ProjectManager.mutex().writeAccess(new Mutex.ExceptionAction<Void>() {
-    //                public Void run() throws IOException {
-    //                    FileObject bp = FileUtil.toFileObject(ubp);
-    //                    if (bp == null) {
-    //                        if (!ubp.exists()) {
-    //                            ubp.getParentFile().mkdirs();
-    //                            new FileOutputStream(ubp).close();
-    //                            assert ubp.isFile() : "Did not actually make " + ubp;
-    //                        }
-    //                        bp = FileUtil.toFileObject(ubp);
-    //                        if (bp == null) {
-    //                            // XXX ugly (and will not correctly notify changes) but better than nothing:
-    //                            ErrorManager.getDefault().log(ErrorManager.WARNING, "Warning - cannot properly write to " + ubp + "; might be because your user directory is on a Windows UNC path (issue #46813)? If so, try using mapped drive letters.");
-    //                            OutputStream os = new FileOutputStream(ubp);
-    //                            try {
-    //                                properties.store(os);
-    //                            } finally {
-    //                                os.close();
-    //                            }
-    //                            return null;
-    //                        }
-    //                    }
-    //                    FileLock lock = bp.lock();
-    //                    try {
-    //                        OutputStream os = bp.getOutputStream(lock);
-    //                        try {
-    //                            properties.store(os);
-    //                        } finally {
-    //                            os.close();
-    //                        }
-    //                    } finally {
-    //                        lock.releaseLock();
-    //                    }
-    //                    return null;
-    //                }
-    //            });
-    //        } catch (MutexException e) {
-    //            throw (IOException)e.getException();
-    //        }
-    //    }
 }

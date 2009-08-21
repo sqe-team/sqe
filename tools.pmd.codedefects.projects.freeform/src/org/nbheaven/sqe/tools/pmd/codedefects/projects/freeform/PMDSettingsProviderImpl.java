@@ -52,11 +52,6 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
 
         if (null == settingsFile) {
             settingsFile = PMD_SETTINGS_DEFAULT;
-
-            sqeProperties.setProperty(PMD_SETTINGS_FILE, settingsFile);
-            sqeProperties.setComment(PMD_SETTINGS_FILE,
-                    new String[]{"#Path to PMDSettingsFile (relative)"}, true);
-            AntUtilities.putSQEProperties(sqeProperties, project);
         }
 
         FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");

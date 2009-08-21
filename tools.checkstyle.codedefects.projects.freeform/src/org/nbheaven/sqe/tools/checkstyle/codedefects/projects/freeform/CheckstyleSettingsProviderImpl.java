@@ -72,11 +72,6 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
             if (null == settingsFile) {
                 settingsFile = DEFAULT_CHECKSTYLE_CONFIGURATION_FILE;
-
-                sqeProperties.setProperty(CHECKSTYLE_CONFIGURATION_FILE, settingsFile);
-                sqeProperties.setComment(CHECKSTYLE_CONFIGURATION_FILE,
-                        new String[]{"#Path to Checkstyle Configuration File (relative)"}, true);
-                AntUtilities.putSQEProperties(sqeProperties, project);
             }
 
             FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
@@ -105,11 +100,6 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
             if (null == propertiesFile) {
                 propertiesFile = DEFAULT_CHECKSTYLE_PROPERTIES_FILE;
-
-                sqeProperties.setProperty(CHECKSTYLE_PROPERTIES_FILE, propertiesFile);
-                sqeProperties.setComment(CHECKSTYLE_PROPERTIES_FILE,
-                        new String[]{"#Path to Checkstyle Properties File (relative)"}, true);
-                AntUtilities.putSQEProperties(sqeProperties, project);
             }
             FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
             // if availabe try substitution
