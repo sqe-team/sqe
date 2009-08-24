@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.SourceLineAnnotation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,6 +98,9 @@ public class FindBugsTaskProvider extends PushTaskScanner {
     }
 
     private List<Task> getTasks(Collection<BugInstance> bugs, final FileObject file) {
+        if (file == null) {
+            return Collections.emptyList();
+        }
         List<Task> tasks = new LinkedList<Task>();
         for (final BugInstance bugInstance : bugs) {
             SourceLineAnnotation sourceLineAnnotation = null;
