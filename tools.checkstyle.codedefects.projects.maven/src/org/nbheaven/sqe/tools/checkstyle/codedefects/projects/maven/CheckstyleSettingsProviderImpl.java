@@ -26,6 +26,7 @@ import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSet
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.AbstractCheckstyleSettings;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -80,7 +81,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
         private CheckstyleSettingsImpl(FileObject checkstyleConfigurationFile, Properties properties) {
             this.checkstyleConfigurationFile = 
-                    null == checkstyleConfigurationFile ? DEFAULT_CHECKSTYLE_CONFIGURATION_FILE : checkstyleConfigurationFile ;
+                    null == checkstyleConfigurationFile ? GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile() : checkstyleConfigurationFile ;
             this.properties = null == properties ? System.getProperties() : properties;
             this.url = null;
         }
