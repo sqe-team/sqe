@@ -17,6 +17,7 @@
  */
 package org.nbheaven.sqe.core.ant;
 
+import java.io.File;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.support.ant.PropertyEvaluator;
 import org.netbeans.spi.project.support.ant.PropertyProvider;
@@ -51,6 +52,20 @@ public class AntUtilities {
             }
         }
         return raw; // fallback
+    }
+
+    /**
+     * Resolve a file path in the context of a project.
+     * @param path a possibly relative path
+     * @param project a disk project
+     * @return the corresponding file (which may or may not exist)
+     */
+    public static File resolveFile(String path, Project project) {
+        File d = FileUtil.toFile(project.getProjectDirectory());
+        if (d == null) {
+            throw new IllegalArgumentException("Project " + project + " does not exist on disk");
+        }
+        return PropertyUtils.resolveFile(d, path);
     }
 
 }
