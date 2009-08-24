@@ -18,25 +18,18 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform;
 
 import edu.umd.cs.findbugs.config.UserPreferences;
-
+import java.util.prefs.Preferences;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
 import org.nbheaven.sqe.core.ant.AntUtilities;
-
 import org.netbeans.api.project.Project;
-
-import org.netbeans.spi.project.support.ant.EditableProperties;
-
 import org.openide.util.Exceptions;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
-import org.netbeans.spi.project.support.ant.PropertyEvaluator;
-import org.netbeans.spi.project.support.ant.PropertyProvider;
-import org.netbeans.spi.project.support.ant.PropertyUtils;
+import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -59,20 +52,7 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
     }
 
     private File getFindBugsSettingsFile() {
-        EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-        String settingsFile = sqeProperties.get(FINDBUGS_SETTINGS_FILE);
-
-        if (null == settingsFile) {
-            settingsFile = FINDBUGS_SETTINGS_DEFAULT;
-        }
-
-        FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-        // if availabe try substitution
-        if (null != projectPropertiesFile) {
-            PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(FileUtil.toFile(projectPropertiesFile));
-            PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-            settingsFile = evaluator.evaluate(settingsFile);
-        }
+        String settingsFile = AntUtilities.evaluate(prefs().get(FINDBUGS_SETTINGS_FILE, FINDBUGS_SETTINGS_DEFAULT), project);
 
         File findBugsSettingsFile = getCreateFindBugsSettingsFile(settingsFile);
         if (null == findBugsSettingsFile) {
@@ -135,19 +115,13 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
 
     @Override
     public String getExcludeFilter() {
-        EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-        String excludeFile = sqeProperties.get(FINDBUGS_EXCLUDE_FILTER);
+        String excludeFile = AntUtilities.evaluate(prefs().get(FINDBUGS_EXCLUDE_FILTER, null), project);
 
         // since this is not required just return null
         if (null == excludeFile) {
             return null;
         }
 
-        FileObject projectPropertiesFileObject = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-        File projectPropertiesFile = FileUtil.toFile(projectPropertiesFileObject);
-        PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(projectPropertiesFile);
-        PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-        excludeFile = evaluator.evaluate(excludeFile);
         File findBugsExcludeFilterFile = new File(excludeFile);
         if (!findBugsExcludeFilterFile.isAbsolute()) {
             FileObject findBugsExcludeFilterFileObject = project.getProjectDirectory().getFileObject("nbproject/" + excludeFile);
@@ -158,19 +132,13 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
 
     @Override
     public String getIncludeFilter() {
-        EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-        String includeFile = sqeProperties.get(FINDBUGS_INCLUDE_FILTER);
+        String includeFile = AntUtilities.evaluate(prefs().get(FINDBUGS_INCLUDE_FILTER, null), project);
 
         // since this is not required just return null
         if (null == includeFile) {
             return null;
         }
 
-        FileObject projectPropertiesFileObject = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-        File projectPropertiesFile = FileUtil.toFile(projectPropertiesFileObject);
-        PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(projectPropertiesFile);
-        PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-        includeFile = evaluator.evaluate(includeFile);
         File findBugsIncludeFilterFile = new File(includeFile);
         if (!findBugsIncludeFilterFile.isAbsolute()) {
             FileObject findBugsIncludeFilterFileObject = project.getProjectDirectory().getFileObject("nbproject/" + includeFile);
@@ -178,6 +146,9 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
         }        
         return findBugsIncludeFilterFile.getAbsolutePath();
     }
-    
+
+    private Preferences prefs() {
+        return ProjectUtils.getPreferences(project, FindBugsSettingsProviderImpl.class, true);
+    }
     
 }

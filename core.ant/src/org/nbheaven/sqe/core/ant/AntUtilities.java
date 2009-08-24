@@ -18,13 +18,10 @@
 package org.nbheaven.sqe.core.ant;
 
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.support.ant.EditableProperties;
+import org.netbeans.spi.project.support.ant.PropertyEvaluator;
+import org.netbeans.spi.project.support.ant.PropertyProvider;
+import org.netbeans.spi.project.support.ant.PropertyUtils;
 import org.openide.filesystems.FileObject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -32,47 +29,28 @@ import org.openide.filesystems.FileUtil;
  */
 public class AntUtilities {
 
-    private static final String SQE_PROPERTY_FILE = "sqe.properties";
-
     private AntUtilities() {}
 
-    // XXX support for automatic projects etc. can come in 6.8 with ProjectUtils.getCacheDirectory
-
-    public static EditableProperties getSQEProperties(final Project project) {
-        EditableProperties editableProperties = new EditableProperties(true);
-        FileObject sqePropertyFileObject = project.getProjectDirectory().getFileObject("nbproject/" + SQE_PROPERTY_FILE);
-        if (sqePropertyFileObject != null) {
-            try {
-                InputStream is = sqePropertyFileObject.getInputStream();
-                try {
-                    editableProperties.load(is);
-                } finally {
-                    is.close();
-                }
-            } catch (IOException e) {
-                Logger.getLogger(AntUtilities.class.getName()).log(Level.INFO, null, e);
+    /**
+     * Try to evaluate a string possibly containing Ant properties in the context of a project.
+     * @param raw a string to evaluate (null permitted, may contain properties in the format {@code ${foo}})
+     * @param a project which might have discoverable properties files (or might not)
+     * @return a possibly evaluated string (null only if the input was)
+     */
+    public static String evaluate(String raw, Project project) {
+        if (raw == null) {
+            return null;
+        }
+        FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
+        if (projectPropertiesFile != null) {
+            PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(FileUtil.toFile(projectPropertiesFile));
+            PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
+            String t = evaluator.evaluate(raw);
+            if (t != null) {
+                return t;
             }
         }
-        return editableProperties;
-    }
-    
-    public static void putSQEProperties(final EditableProperties editableProperties, final Project project) {
-        FileObject nbproject = project.getProjectDirectory().getFileObject("nbproject");
-        if (nbproject == null) {
-            // XXX warn?
-            return;
-        }
-        try {
-            FileObject sqePropertiesFileObject = FileUtil.createData(nbproject, SQE_PROPERTY_FILE);
-            OutputStream os = sqePropertiesFileObject.getOutputStream();
-            try {
-                editableProperties.store(os);
-            } finally {
-                os.close();
-            }
-        } catch (IOException e) {
-            Logger.getLogger(AntUtilities.class.getName()).log(Level.INFO, null, e);
-        }
+        return raw; // fallback
     }
 
 }

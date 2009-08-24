@@ -19,14 +19,12 @@ package org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.prefs.Preferences;
+import org.nbheaven.sqe.core.ant.AntUtilities;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
-import org.nbheaven.sqe.core.ant.AntUtilities;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.support.ant.EditableProperties;
-import org.netbeans.spi.project.support.ant.PropertyEvaluator;
-import org.netbeans.spi.project.support.ant.PropertyProvider;
-import org.netbeans.spi.project.support.ant.PropertyUtils;
+import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -47,20 +45,7 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
     }
 
     private File getPMDSettingsFile() {
-        EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-        String settingsFile = sqeProperties.get(PMD_SETTINGS_FILE);
-
-        if (null == settingsFile) {
-            settingsFile = PMD_SETTINGS_DEFAULT;
-        }
-
-        FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-        // if availabe try substitution
-        if (null != projectPropertiesFile) {
-            PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(FileUtil.toFile(projectPropertiesFile));
-            PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-            settingsFile = evaluator.evaluate(settingsFile);
-        }
+        String settingsFile = AntUtilities.evaluate(prefs().get(PMD_SETTINGS_FILE, PMD_SETTINGS_DEFAULT), project);
 
         File pmdBugsSettingsFile = getCreatePMDBugsSettingsFile(settingsFile);
         if (null == pmdBugsSettingsFile) {
@@ -98,6 +83,10 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
     public PMDSettings getPMDSettings() {
         File pmdSettingsFile = getPMDSettingsFile();
         return new PMDSettingsImpl(pmdSettingsFile);
+    }
+
+    private Preferences prefs() {
+        return ProjectUtils.getPreferences(project, PMDSettingsProviderImpl.class, true);
     }
 
 }
