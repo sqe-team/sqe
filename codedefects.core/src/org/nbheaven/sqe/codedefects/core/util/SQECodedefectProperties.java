@@ -20,11 +20,8 @@ package org.nbheaven.sqe.codedefects.core.util;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
-import org.nbheaven.sqe.core.ant.AntUtilities;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.support.ant.EditableProperties;
 import org.openide.util.NbPreferences;
-
 
 /**
  *
