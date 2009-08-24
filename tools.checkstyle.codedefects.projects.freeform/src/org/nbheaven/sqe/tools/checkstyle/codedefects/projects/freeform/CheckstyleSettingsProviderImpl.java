@@ -43,7 +43,6 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
     private static final String CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.configuration.file";
     private static final String CHECKSTYLE_PROPERTIES_FILE = "checkstyle.configuration.properties";
-    private static final String CHECKSTYLE_CUSTOM_PROPERTIES_FILE = "checkstyle.properties";
 
     private static final String DEFAULT_CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.xml";
     private static final String DEFAULT_CHECKSTYLE_PROPERTIES_FILE = "checkstyle.properties";
