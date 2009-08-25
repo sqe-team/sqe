@@ -91,6 +91,7 @@ public final class PMDSettingsImpl implements PMDSettings {
     }
 
     private void updateFile() {
+        settingsFile.getParentFile().mkdirs();
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(settingsFile, false));
             for (Map.Entry<String, Boolean> entry : ruleMap.entrySet()) {
