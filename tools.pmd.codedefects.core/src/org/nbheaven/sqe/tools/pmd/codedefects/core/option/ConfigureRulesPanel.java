@@ -113,7 +113,7 @@ public class ConfigureRulesPanel extends javax.swing.JPanel {
             if (enabled) {
                 pmdSettings.activateRule(rule);
             } else {
-                pmdSettings.deavtivateRule(rule);
+                pmdSettings.deactivateRule(rule);
             }
         }
     }

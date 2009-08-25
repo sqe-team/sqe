@@ -173,7 +173,7 @@ public class PMDHint {
                         PMDSettingsProvider settingsProvider = project.getLookup().lookup(PMDSettingsProvider.class);
                         if (null != settingsProvider) {
                             PMDSettings pmdSettings = settingsProvider.getPMDSettings();
-                            pmdSettings.deavtivateRule(ruleViolation.getRule());
+                            pmdSettings.deactivateRule(ruleViolation.getRule());
                         }
 
                         PMDSession qualitySession = project.getLookup().lookup(PMDSession.class);

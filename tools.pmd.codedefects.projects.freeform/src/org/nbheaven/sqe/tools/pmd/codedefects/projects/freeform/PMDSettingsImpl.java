@@ -53,7 +53,7 @@ public final class PMDSettingsImpl implements PMDSettings {
         updateFile();
     }
 
-    public void deavtivateRule(Rule rule) {
+    public void deactivateRule(Rule rule) {
         ruleMap.put(rule.getName(), Boolean.FALSE);
         updateFile();
     }

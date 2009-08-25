@@ -28,7 +28,7 @@ public interface PMDSettings {
 
     void activateRule(Rule rule);
 
-    void deavtivateRule(Rule rule);
+    void deactivateRule(Rule rule);
 
     boolean isRuleActive(Rule rule);
 
