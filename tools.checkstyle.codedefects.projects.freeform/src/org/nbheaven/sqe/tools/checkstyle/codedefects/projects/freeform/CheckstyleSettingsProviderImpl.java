@@ -17,8 +17,6 @@
  */
 package org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.prefs.Preferences;
@@ -26,12 +24,10 @@ import org.nbheaven.sqe.core.ant.AntUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.AbstractCheckstyleSettings;
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -42,8 +38,8 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
     private static final String CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.configuration.file";
     private static final String CHECKSTYLE_PROPERTIES_FILE = "checkstyle.configuration.properties";
 
-    private static final String DEFAULT_CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.xml";
-    private static final String DEFAULT_CHECKSTYLE_PROPERTIES_FILE = "checkstyle.properties";
+    private static final String DEFAULT_CHECKSTYLE_CONFIGURATION_FILE = "nbproject/checkstyle.xml";
+    private static final String DEFAULT_CHECKSTYLE_PROPERTIES_FILE = "nbproject/checkstyle.properties";
 
     final private Project project;
 
@@ -65,13 +61,9 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
         public FileObject getCheckstyleConfigurationFile() {
             String settingsFile = AntUtilities.evaluate(prefs().get(CHECKSTYLE_CONFIGURATION_FILE, DEFAULT_CHECKSTYLE_CONFIGURATION_FILE), project);
-
-            File checkstyleSettingsFile = getCreateCheckstyleConfigurationFile(settingsFile);
-            if (null == checkstyleSettingsFile) {
-                checkstyleSettingsFile = getCreateCheckstyleConfigurationFile(DEFAULT_CHECKSTYLE_CONFIGURATION_FILE);
-            }
-
-            return FileUtil.toFileObject(checkstyleSettingsFile);
+            // XXX this will just return null if not already defined... what will then happen?
+            // use of FileObject in CheckstyleSettings is confusing and inconsistent with e.g. PMDSettings
+            return FileUtil.toFileObject(AntUtilities.resolveFile(settingsFile, project));
         }
 
         public URL getCheckstyleConfigurationURL() {
@@ -80,67 +72,13 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
         public FileObject getPropertiesFile() {
             String propertiesFile = AntUtilities.evaluate(prefs().get(CHECKSTYLE_PROPERTIES_FILE, DEFAULT_CHECKSTYLE_PROPERTIES_FILE), project);
-
-            File checkstylePropertiesFile = getCreateCheckstylePropertiesFile(propertiesFile);
-            if (null == checkstylePropertiesFile) {
-                checkstylePropertiesFile = getCreateCheckstylePropertiesFile(DEFAULT_CHECKSTYLE_PROPERTIES_FILE);
-            }
-
-            return FileUtil.toFileObject(checkstylePropertiesFile);
+            return FileUtil.toFileObject(AntUtilities.resolveFile(propertiesFile, project));
         }
 
         public Properties getProperties() {
             return System.getProperties();
         }
 
-        private File getCreateCheckstyleConfigurationFile(String settingsFile) {
-
-            File checkstyleConfigurationFile = new File(settingsFile);
-            try {
-                if (!checkstyleConfigurationFile.isAbsolute()) {
-                    FileObject settingsFileObject = project.getProjectDirectory().getFileObject("nbproject/" + settingsFile);
-                    if (null == settingsFileObject) {
-                        FileObject targetDir = project.getProjectDirectory().getFileObject("nbproject");
-                        FileObject copy = FileUtil.copyFile(GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile(), targetDir, settingsFile.substring(0, settingsFile.indexOf(".")));
-                        return FileUtil.toFile(copy);
-                    }
-                    return FileUtil.toFile(settingsFileObject);
-                }
-
-                if (checkstyleConfigurationFile.exists()) {
-                    return checkstyleConfigurationFile;
-                } else {
-                    FileObject targetDir = FileUtil.toFileObject(checkstyleConfigurationFile.getParentFile());
-                    String targetFile = checkstyleConfigurationFile.getName();
-                    FileObject copy = FileUtil.copyFile(GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile(), targetDir, targetFile);
-                    return FileUtil.toFile(copy);
-                }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            return checkstyleConfigurationFile;
-        }
-
-        private File getCreateCheckstylePropertiesFile(String settingsFile) {
-
-            File checkstylePropertiesFile = new File(settingsFile);
-            try {
-                if (!checkstylePropertiesFile.isAbsolute()) {
-                    FileObject settingsFileObject = project.getProjectDirectory().getFileObject("nbproject/" + settingsFile);
-                    if (null == settingsFileObject) {
-                        settingsFileObject = project.getProjectDirectory().getFileObject("nbproject").createData(settingsFile);
-                    }
-                    checkstylePropertiesFile = FileUtil.toFile(settingsFileObject);
-                }
-
-                return checkstylePropertiesFile;
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            return checkstylePropertiesFile;
-        }
-
-        
         public void setCheckstyleConfigurationPath(String configFilePath) {
             prefs().put(CHECKSTYLE_CONFIGURATION_FILE, configFilePath);
         }
