@@ -38,6 +38,7 @@
     </folder>
     <folder name="Toolbars">
         <folder name="Quality">
+            <attr name="position" intvalue="569"/>
             <file name="org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-codedefects-ui-actions-QualityProvidersToolbarDropdownAction.instance"/>
                 <attr name="position" intvalue="100"/>

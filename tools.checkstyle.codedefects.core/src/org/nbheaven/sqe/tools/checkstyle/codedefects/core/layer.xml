@@ -126,7 +126,9 @@
         </folder>
         <folder name="Modes">
             <folder name="output">
-                <file name="CheckstyleTopComponent.wstcref" url="ui/CheckstyleTopComponentWstcref.xml"/>
+                <file name="CheckstyleTopComponent.wstcref" url="ui/CheckstyleTopComponentWstcref.xml">
+                    <attr name="position" intvalue="3216"/>
+                </file>
             </folder>
         </folder>
         <folder name="Groups">

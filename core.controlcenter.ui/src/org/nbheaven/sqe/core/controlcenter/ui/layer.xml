@@ -72,7 +72,9 @@
         </folder>
         <folder name="Modes">
             <folder name="explorer">
-                <file name="SQEControlCenterTopComponent.wstcref" url="SQEControlCenterTopComponentWstcref.xml"/>
+                <file name="SQEControlCenterTopComponent.wstcref" url="SQEControlCenterTopComponentWstcref.xml">
+                    <attr name="position" intvalue="711"/>
+                </file>
             </folder>
         </folder>
         <folder name="Groups">

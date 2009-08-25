@@ -126,7 +126,9 @@
         </folder>
         <folder name="Modes">
             <folder name="output">
-                <file name="PMDTopComponent.wstcref" url="ui/PMDTopComponentWstcref.xml"/>
+                <file name="PMDTopComponent.wstcref" url="ui/PMDTopComponentWstcref.xml">
+                    <attr name="position" intvalue="3214"/>
+                </file>
             </folder>
         </folder>
         <folder name="Groups">

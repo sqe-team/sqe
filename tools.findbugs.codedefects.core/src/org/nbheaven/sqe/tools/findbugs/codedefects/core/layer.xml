@@ -126,7 +126,9 @@
         </folder>
         <folder name="Modes">
             <folder name="output">
-                <file name="FindBugsTopComponent.wstcref" url="ui/FindBugsTopComponentWstcref.xml"/>
+                <file name="FindBugsTopComponent.wstcref" url="ui/FindBugsTopComponentWstcref.xml">
+                    <attr name="position" intvalue="3212"/>
+                </file>
             </folder>
         </folder>
         <folder name="Groups">
