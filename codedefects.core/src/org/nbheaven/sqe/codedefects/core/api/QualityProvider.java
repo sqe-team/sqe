@@ -33,9 +33,6 @@ public interface QualityProvider extends Lookup.Provider {
 
     public QualitySession createQualitySession(Project project);
 
-    @Deprecated
-    public String getName();
-
     public String getDisplayName();
 
     public String getId();

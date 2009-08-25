@@ -58,11 +58,6 @@ public abstract class AbstractQualityProvider implements QualityProvider {
         return true;
     }
 
-    @Deprecated
-    public final String getName() {
-        return getDisplayName();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof QualityProvider) {

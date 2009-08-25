@@ -119,27 +119,6 @@ public final class ProjectUtilities {
         return binaries;
     }
 
-    @Deprecated
-    public static boolean isJavaProject(Project project) {
-        if (null == project) {
-            return false;
-        }
-
-        Sources s = project.getLookup().lookup(Sources.class);
-
-        if (null == s) {
-            return false;
-        }
-
-        SourceGroup[] sg = s.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-
-        if (sg.length == 0) {
-            return false;
-        }
-
-        return true;
-    }
-
     public static boolean areSourcePackages(Node[] nodes) {
         boolean enable = false;
         for (Node node : nodes) {
