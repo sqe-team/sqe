@@ -18,6 +18,7 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.tasklist;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,9 @@ public final class PMDTaskProvider extends PushTaskScanner {
     }
 
     private List<Task> getTasks(Collection<IRuleViolation> bugs, FileObject file) {
+        if (file == null) {
+            return Collections.emptyList();
+        }
         List<Task> tasks = new LinkedList<Task>();
         for(IRuleViolation ruleViolation: bugs) {
             tasks.add(Task.create(file, "sqe-tasklist-pmd", ruleViolation.getDescription(), ruleViolation.getBeginLine()));                                
