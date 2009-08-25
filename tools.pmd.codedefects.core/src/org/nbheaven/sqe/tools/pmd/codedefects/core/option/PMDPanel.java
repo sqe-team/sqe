@@ -18,7 +18,7 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.core.option;
 
 import java.awt.BorderLayout;
-import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.GlobalPMDSettings;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
 
 final class PMDPanel extends javax.swing.JPanel {
 
@@ -45,7 +45,7 @@ final class PMDPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     void load() {
-        configureRulesPanel.setSettings(new GlobalPMDSettings());
+        configureRulesPanel.setSettings(PMDSettingsImpl.globalSettings());
     }
 
     void store() {

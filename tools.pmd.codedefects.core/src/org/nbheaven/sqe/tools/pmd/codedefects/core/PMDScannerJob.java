@@ -32,7 +32,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.SourceType;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
-import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.GlobalPMDSettings;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
 import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
@@ -79,7 +79,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
 
         PMDSettingsProvider settingsProvider = getProject().getLookup().lookup(PMDSettingsProvider.class);
         if (null == settingsProvider) {
-            rules = new GlobalPMDSettings().getActiveRules();
+            rules = PMDSettingsImpl.globalSettings().getActiveRules();
         } else {
             rules = settingsProvider.getPMDSettings().getActiveRules();
         }

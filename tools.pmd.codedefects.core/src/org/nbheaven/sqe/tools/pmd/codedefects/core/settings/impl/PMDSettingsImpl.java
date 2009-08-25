@@ -37,17 +37,21 @@ import org.openide.util.Exceptions;
  *
  * @author Sven Reimers
  */
-public final class GlobalPMDSettings implements PMDSettings {
+public final class PMDSettingsImpl implements PMDSettings {
 
     private static String SETTINGS_DIR = System.getProperty("netbeans.user") + File.separatorChar +
             "config" + File.separatorChar + "pmd";
     private static String SETTINGS_FILE = "pmd.settings";
+    public static PMDSettings globalSettings() {
+        return new PMDSettingsImpl(new File(SETTINGS_DIR + File.separatorChar + SETTINGS_FILE));
+    }
+
     private Map<String, Boolean> ruleMap;
+
     File settingsFile;
 
-    public GlobalPMDSettings() {
-
-        settingsFile = new File(SETTINGS_DIR + File.separatorChar + SETTINGS_FILE);
+    public PMDSettingsImpl(File file) {
+        settingsFile = file;
         readFile();
     }
 
@@ -116,4 +120,5 @@ public final class GlobalPMDSettings implements PMDSettings {
             }
         }
     }
+
 }
