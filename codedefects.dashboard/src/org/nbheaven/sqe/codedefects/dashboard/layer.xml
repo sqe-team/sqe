@@ -23,7 +23,7 @@
         <folder name="ControlCenter">
             <folder name="Panels">
                 <file name="org-nbheaven-sqe-codedefects-dashboard-controlcenter-panels-Statistics.instance">
-                    <attr name="position" intvalue="600"/>
+                    <attr name="position" intvalue="500"/>
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.nbheaven.sqe.codedefects.dashboard.controlcenter.panels.Bundle"/>
                 </file>
             </folder>
