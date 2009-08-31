@@ -26,6 +26,7 @@ import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSet
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.AbstractCheckstyleSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -33,6 +34,12 @@ import org.openide.filesystems.FileUtil;
  *
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service=CheckstyleSettingsProvider.class, projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject"
+//    "org-netbeans-modules-web-project"
+})
 public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvider {
 
     private static final String CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.configuration.file";
@@ -43,7 +50,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
     final private Project project;
 
-    CheckstyleSettingsProviderImpl(Project project) {
+    public CheckstyleSettingsProviderImpl(Project project) {
         this.project = project;
     }
 

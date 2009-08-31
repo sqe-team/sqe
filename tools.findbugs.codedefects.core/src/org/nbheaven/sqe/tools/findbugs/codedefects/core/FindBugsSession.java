@@ -24,20 +24,27 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 
 /**
  * 
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service=FindBugsSession.class, projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject",
+    "org-netbeans-modules-web-project",
+    "org-netbeans-modules-maven"
+})
 public class FindBugsSession extends AbstractQualitySession {
 
     private FindBugsResult findBugsResult;
     private AtomicBoolean isRunning;
 
-    /** Creates a new instance of FindBugsSession */
-    public FindBugsSession(FindBugsQualityProvider provider, Project project) {
-        super(provider, project);
+    public FindBugsSession(Project project) {
+        super(FindBugsQualityProvider.getDefault(), project);
         isRunning = new AtomicBoolean(false);
     }
 

@@ -38,34 +38,6 @@
                 <attr name="position" intvalue="400"/>
             </file>
         </folder>
-        <folder name="org-netbeans-modules-ant-freeform">
-            <folder name="Nodes">
-                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
-                    <attr name="position" intvalue="1000"/>
-                </file>
-            </folder>
-        </folder>
-        <folder name="org-netbeans-modules-apisupport-project">
-            <folder name="Nodes">
-                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
-                    <attr name="position" intvalue="1000"/>
-                </file>
-            </folder>
-        </folder>
-        <folder name="org-netbeans-modules-java-j2seproject">
-            <folder name="Nodes">
-                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
-                    <attr name="position" intvalue="1000"/>
-                </file>
-            </folder>
-        </folder>
-        <folder name="org-netbeans-modules-web-project">
-            <folder name="Nodes">
-                <file name="org-nbheaven-sqe-core-ui-nodes-SQENodeFactory.instance">
-                    <attr name="position" intvalue="1000"/>
-                </file>
-            </folder>
-        </folder>
     </folder>
 
     <folder name="Loaders">

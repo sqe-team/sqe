@@ -54,7 +54,7 @@ public class CheckstyleQualityProvider extends AbstractQualityProvider {
     }
 
     public CheckstyleSession createQualitySession(Project project) {
-        return new CheckstyleSession(this, project);
+        return new CheckstyleSession(project);
     }
 
     public String getDisplayName() {

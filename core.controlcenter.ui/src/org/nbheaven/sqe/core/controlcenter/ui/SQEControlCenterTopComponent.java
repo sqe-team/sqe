@@ -64,7 +64,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
 
     private static SQEControlCenterTopComponent instance;
     /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "org/nbheaven/sqe/core/controlcenter/ui/resources/sqe_16.png";
+    private static final String ICON_PATH = "org/nbheaven/sqe/core/controlcenter/ui/resources/sqe_16.png";
     private static final String PREFERRED_ID = "SQEControlCenterTopComponent";
     private static final String TC_GROUP = "SQEControlCenter";
 

@@ -54,7 +54,7 @@ public class PMDQualityProvider extends AbstractQualityProvider {
     }
 
     public PMDSession createQualitySession(Project project) {
-        return new PMDSession(this, project);
+        return new PMDSession(project);
     }
 
     public String getDisplayName() {

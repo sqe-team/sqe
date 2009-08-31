@@ -28,6 +28,7 @@ import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.AbstractCheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -36,6 +37,7 @@ import org.openide.util.Exceptions;
  *
  * @author sven
  */
+@ProjectServiceProvider(service=CheckstyleSettingsProvider.class, projectType="org-netbeans-modules-maven")
 public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvider {
 
     private final Project p;

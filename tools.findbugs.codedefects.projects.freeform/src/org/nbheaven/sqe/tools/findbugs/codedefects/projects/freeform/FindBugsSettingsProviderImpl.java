@@ -29,11 +29,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.ProjectServiceProvider;
 
 /**
  *
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service=FindBugsSettingsProvider.class, projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject",
+    "org-netbeans-modules-web-project"
+})
 public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
 
     private static final String FINDBUGS_SETTINGS_FILE = "findbugs.settings.file";

@@ -25,11 +25,18 @@ import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.ProjectServiceProvider;
 
 /**
  *
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service=PMDSettingsProvider.class, projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject",
+    "org-netbeans-modules-web-project"
+})
 public class PMDSettingsProviderImpl implements PMDSettingsProvider {
 
     private static final String PMD_SETTINGS_FILE = "pmd.settings.file";

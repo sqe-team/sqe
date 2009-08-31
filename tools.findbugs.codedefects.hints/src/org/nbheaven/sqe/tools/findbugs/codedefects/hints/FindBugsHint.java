@@ -77,6 +77,7 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This is heavily inspired by the work done ny Jan Lahoda - Big thank you!
@@ -349,6 +350,7 @@ public class FindBugsHint {
         }
     }
 
+    @ServiceProvider(service=JavaSourceTaskFactory.class)
     public static final class Factory extends EditorAwareJavaSourceTaskFactory {
 
         public Factory() {
