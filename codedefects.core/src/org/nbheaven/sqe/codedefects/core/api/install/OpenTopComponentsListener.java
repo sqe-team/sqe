@@ -52,9 +52,11 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
             newComponents.removeAll(oldComponents);
 
             for (TopComponent tc : newComponents) {
-                DataObject dao = tc.getLookup().lookup(DataObject.class);
+                final DataObject dao = tc.getLookup().lookup(DataObject.class);
 
                 if (null != dao) {
+                    RequestProcessor.getDefault().post(new Runnable() {
+                        public void run() {
                     for (final Project project : OpenProjects.getDefault().getOpenProjects()) {
                         Sources s = project.getLookup().lookup(Sources.class);
 
@@ -76,14 +78,9 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                                                     continue;
                                                 }
                                                 if (SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualitySession.getProvider())) {
-                                                    RequestProcessor.getDefault().post(new Runnable() {
-
-                                                        public void run() {
                                                             sqeAnnotationProcessor.annotateSourceFile(javaSource,
                                                                     project,
                                                                     qualitySession.getResult());
-                                                        }
-                                                    });
                                                 }
                                             }
                                         }
@@ -97,6 +94,8 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                             }
                         }
                     }
+                        }
+                    });
                 }
             }
         }
