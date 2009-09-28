@@ -101,6 +101,9 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
 
     public static void openSourceFile(final BugInstance bugInstance, final SourceLineAnnotation sourceLineAnnotation, final Project project) {
         FileObject fo = findFileObjectForAnnotatedClass(sourceLineAnnotation.getClassName(), project);
+        if (fo == null) {
+            return;
+        }
         try {
             DataObject dao = DataObject.find(fo);
             Line line = getLineForSourceAnnotation(dao, sourceLineAnnotation);
