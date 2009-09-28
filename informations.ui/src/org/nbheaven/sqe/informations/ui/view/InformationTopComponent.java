@@ -79,7 +79,9 @@ public class InformationTopComponent extends TopComponent implements PropertyCha
         label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.add(label, BorderLayout.NORTH);
         SQEInformationProvider provider = project.getLookup().lookup(SQEInformationProvider.class);
-        this.add(provider.getInformationComponent().getComponent(), BorderLayout.CENTER);
+        if (provider != null) { // #167811?
+            this.add(provider.getInformationComponent().getComponent(), BorderLayout.CENTER);
+        }
     }
 
     @Override
