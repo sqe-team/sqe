@@ -47,12 +47,12 @@ public final class TypeUtilities {
      * Convert a TypeMirror to a string form as available in bytecode representation
      * e.g. [Ljava/lang/Integer;
      */
-    public static String convertTypeMirrorToBinayRepresentation(TypeMirror typeMirror) {
+    public static String convertTypeMirrorToBinaryRepresentation(TypeMirror typeMirror) {
         StringBuilder builder = new StringBuilder();
         switch (typeMirror.getKind()) {
             case ARRAY:
                 builder.append("[");
-                return builder.append(convertTypeMirrorToBinayRepresentation(((ArrayType) typeMirror).getComponentType())).toString();
+                return builder.append(convertTypeMirrorToBinaryRepresentation(((ArrayType) typeMirror).getComponentType())).toString();
             case BOOLEAN:
                 builder.append("Z");
                 break;
@@ -81,7 +81,7 @@ public final class TypeUtilities {
                 builder.append("V");
                 break;
             case TYPEVAR:
-                builder.append(convertTypeMirrorToBinayRepresentation(((TypeVariable)typeMirror).getUpperBound()));                
+                builder.append(convertTypeMirrorToBinaryRepresentation(((TypeVariable)typeMirror).getUpperBound()));
                 break;
             case DECLARED:
                 builder.append("L");

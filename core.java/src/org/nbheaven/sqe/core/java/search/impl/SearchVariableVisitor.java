@@ -45,7 +45,7 @@ public class SearchVariableVisitor extends SearchClassVisitor {
         }
         if (variableTree.getName().contentEquals(descriptor.getName())) {            
             Element element = TreePathHandle.create(getCurrentPath(), getInfo()).resolveElement(getInfo());
-            if (TypeUtilities.convertTypeMirrorToBinayRepresentation(element.asType()).equals(descriptor.getSignature())) {
+            if (TypeUtilities.convertTypeMirrorToBinaryRepresentation(element.asType()).equals(descriptor.getSignature())) {
                 return true;
             }        
         }
