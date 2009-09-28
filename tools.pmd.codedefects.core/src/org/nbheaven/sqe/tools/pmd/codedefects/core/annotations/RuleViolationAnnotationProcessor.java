@@ -23,7 +23,6 @@ import net.sourceforge.pmd.IRuleViolation;
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
-import org.nbheaven.sqe.tools.pmd.codedefects.core.annotations.PMDAnnotation;
 
 import org.nbheaven.sqe.core.java.search.SearchUtilities;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
@@ -99,11 +98,10 @@ public final class RuleViolationAnnotationProcessor
                 (("".equals(ruleViolation.getFilename())) ? ruleViolation.getClassName()
                 : ruleViolation.getFilename());
         FileObject fo = findFileObjectForAnnotatedClass(fileName);
-
-        boolean writeAccess = false;
-
-        Line line = getLineForRuleViolation(fo, ruleViolation);
-        openSourceFileAndAnnotate(ruleViolation, line, project);
+        if (fo != null) {
+            Line line = getLineForRuleViolation(fo, ruleViolation);
+            openSourceFileAndAnnotate(ruleViolation, line, project);
+        }
     }
 
     public static FileObject findFileObjectForAnnotatedClass(String className) {
