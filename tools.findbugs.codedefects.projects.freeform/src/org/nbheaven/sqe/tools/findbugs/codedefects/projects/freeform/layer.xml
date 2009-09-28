@@ -23,6 +23,7 @@
         <folder name="org-netbeans-modules-ant-freeform">
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="650"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -33,6 +34,7 @@
         <folder name="org-netbeans-modules-apisupport-project">
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="450"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -43,6 +45,7 @@
         <folder name="org-netbeans-modules-java-j2seproject">
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="250"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -53,6 +56,7 @@
         <folder name="org-netbeans-modules-web-project">
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="350"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
