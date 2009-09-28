@@ -21,9 +21,7 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Quality">
-            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance">
-                <attr name="position" intvalue="200"/>
-            </file>
+            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
         </folder>
         <folder name="Window">
             <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-ui-FindBugsAction.instance">

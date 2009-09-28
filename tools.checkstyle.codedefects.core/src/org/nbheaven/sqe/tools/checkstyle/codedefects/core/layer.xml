@@ -21,9 +21,7 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Quality">
-            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance">
-                <attr name="position" intvalue="400"/>
-            </file>
+            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
         </folder>
         <folder name="Window">
             <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-ui-CheckstyleAction.instance">

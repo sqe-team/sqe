@@ -21,9 +21,7 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Quality">
-            <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-actions-RunPMDAction.instance">
-                <attr name="position" intvalue="300"/>
-            </file>
+            <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-actions-RunPMDAction.instance"/>
         </folder>
         <folder name="Window">
             <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-ui-PMDAction.instance">

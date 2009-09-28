@@ -23,7 +23,6 @@
     <folder name="Actions">
         <folder name="Window">
             <file name="org-nbheaven-sqe-core-controlcenter-ui-SQEControlCenterAction.instance">
-                <attr name="position" intvalue="50"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
                 <attr name="component" methodvalue="org.nbheaven.sqe.core.controlcenter.ui.SQEControlCenterTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.nbheaven.sqe.core.controlcenter.ui.Bundle#CTL_SQEControlCenterAction"/>

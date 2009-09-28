@@ -30,6 +30,9 @@
         <file name="org-nbheaven-sqe-core-ui-options-UiOptionsCategory.instance">
             <attr name="position" intvalue="350"/>
         </file>
+        <folder name="SQE">
+            <attr name="position" intvalue="0"/>
+        </folder>
     </folder>
     
     <folder name="Projects">
