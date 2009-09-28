@@ -25,6 +25,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -32,9 +33,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Rectangle2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -91,11 +94,19 @@ public class JCollapserPanel extends JPanel implements MouseListener, KeyListene
         ImageIcon collapsedIcon = new ImageIcon(JCollapserPanel.class.getResource("/org/nbheaven/sqe/core/ui/components/resources/collapsedSnippet.png")); //NOI18N
         ImageIcon expandedIcon = new ImageIcon(JCollapserPanel.class.getResource("/org/nbheaven/sqe/core/ui/components/resources/expandedSnippet.png")); //NOI18N
 
-        public Dimension getPreferredSize(JComponent c) {
-            FontMetrics fm = c.getGraphics().getFontMetrics(c.getFont());
-
-            return new Dimension(20 /* 20 is hardcoded x-offset for title string in paint(Graphics g, JComponent c)*/
-                                 + fm.getStringBounds(((Title) c).name, c.getGraphics()).getBounds().width, fm.getHeight() + 4);
+        public @Override Dimension getPreferredSize(JComponent c) {
+            try {
+                Graphics graphics = c.getGraphics();
+                Font font = c.getFont();
+                FontMetrics fm = graphics.getFontMetrics(font);
+                Rectangle2D bounds = fm.getStringBounds(((Title) c).name, graphics);
+                Rectangle boundsRect = bounds.getBounds();
+                return new Dimension(20 /* 20 is hardcoded x-offset for title string in paint(Graphics g, JComponent c)*/
+                                     + boundsRect.width, fm.getHeight() + 4);
+            } catch (NullPointerException x) {
+                Logger.getLogger(JCollapserPanel.class.getName()).log(Level.INFO, "#167812", x);
+                return super.getPreferredSize(c);
+            }
         }
 
         public void installUI(JComponent c) {
