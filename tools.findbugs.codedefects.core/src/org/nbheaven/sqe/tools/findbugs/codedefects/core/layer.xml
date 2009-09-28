@@ -90,7 +90,7 @@
                 <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.findbugs.codedefects.core.option.Bundle#AdvancedOption_DisplayName_FindBugs"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
                 <attr name="keywords" bundlevalue="org.nbheaven.sqe.tools.findbugs.codedefects.core.option.Bundle#AdvancedOption_Keywords_FindBugs"/>
-                <attr name="keywordsCategory" stringvalue="SQE/null"/>
+                <attr name="keywordsCategory" stringvalue="SQE"/>
                 <attr name="toolTip" bundlevalue="org.nbheaven.sqe.tools.findbugs.codedefects.core.option.Bundle#AdvancedOption_Tooltip_FindBugs"/>
                 <attr name="position" intvalue="200"/>
             </file>
