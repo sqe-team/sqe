@@ -25,12 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.lang.model.element.Element;
 import org.nbheaven.sqe.core.java.search.impl.JavaElementImpl;
 import org.nbheaven.sqe.core.java.search.impl.SearchClassVisitor;
 import org.nbheaven.sqe.core.java.search.impl.SearchMethodVisitor;
 import org.nbheaven.sqe.core.java.search.impl.SearchVariableVisitor;
+import org.nbheaven.sqe.core.java.utils.JavaSourceProvider;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationController;
 import org.netbeans.api.java.source.CompilationInfo;
@@ -51,60 +53,69 @@ public final class SearchUtilities {
     }
 
     public static JavaElement findClassElement(final ClassElementDescriptor descriptor) {
-        try {
-            JavaSource javaSource = JavaSource.forFileObject(descriptor.getSourceProvider().getFileObject());
-            ClassSearcher searcher = new ClassSearcher(descriptor);
-            javaSource.runUserActionTask(searcher, false);
-            ElementHandle<?> handle = searcher.getHandle();
-            if (handle != null) {
-                return new JavaElementImpl(descriptor, handle);
+        return new Searcher() {
+            protected TreePathScanner<TreePathHandle, Void> makeVisitor(CompilationController controller) {
+                return new SearchClassVisitor(controller, descriptor);
             }
-        } catch (IOException e) {
-            Logger.getLogger(SearchUtilities.class.getName()).info("Bad search for class element");
-            Exceptions.printStackTrace(e);
-        }
-        return null;
+        }.findElement(descriptor);
     }
 
-    public static JavaElement findMethodElement(MethodElementDescriptor descriptor) {
-        try {
-            JavaSource javaSource = JavaSource.forFileObject(descriptor.getSourceProvider().getFileObject());
-            MethodSearcher searcher = new MethodSearcher(descriptor);
-            javaSource.runUserActionTask(searcher, false);
-            ElementHandle<?> handle = searcher.getHandle();
-            if (handle != null) {
-                return new JavaElementImpl(descriptor, handle);
+    public static JavaElement findMethodElement(final MethodElementDescriptor descriptor) {
+        return new Searcher() {
+            protected TreePathScanner<TreePathHandle, Void> makeVisitor(CompilationController controller) {
+                return new SearchMethodVisitor(controller, descriptor);
             }
-        } catch (IOException e) {
-            Logger.getLogger(SearchUtilities.class.getName()).info("Bad search for class element");
-            Exceptions.printStackTrace(e);
-        }
-        return null;
+        }.findElement(descriptor);
     }
 
-    public static JavaElement findVariableElement(VariableElementDescriptor descriptor) {
-        try {
-            if (null == descriptor) {
-                System.out.println("Baeh");
+    public static JavaElement findVariableElement(final VariableElementDescriptor descriptor) {
+        return new Searcher() {
+            protected TreePathScanner<TreePathHandle, Void> makeVisitor(CompilationController controller) {
+                return new SearchVariableVisitor(controller, descriptor);
             }
-            if (null == descriptor.getSourceProvider()) {
-                System.out.println("Baeh");
+        }.findElement(descriptor);
+    }
+
+    private static abstract class Searcher implements CancellableTask<CompilationController> {
+        private ElementHandle<?> elementHandle;
+        protected abstract TreePathScanner<TreePathHandle,Void> makeVisitor(CompilationController controller);
+        public JavaElement findElement(ElementDescriptor descriptor) {
+            if (descriptor == null) {
+                return null;
             }
-            if (null == descriptor.getSourceProvider().getFileObject()) {
-                System.out.println("Baeh");
+            JavaSourceProvider sourceProvider = descriptor.getSourceProvider();
+            if (sourceProvider == null) {
+                return null;
             }
-            JavaSource javaSource = JavaSource.forFileObject(descriptor.getSourceProvider().getFileObject());
-            VariableSearcher searcher = new VariableSearcher(descriptor);
-            javaSource.runUserActionTask(searcher, false);
-            ElementHandle<?> handle = searcher.getHandle();
-            if (handle != null) {
-                return new JavaElementImpl(descriptor, handle);
+            FileObject fileObject = sourceProvider.getFileObject();
+            if (fileObject == null) {
+                return null;
             }
-        } catch (IOException e) {
-            Logger.getLogger(SearchUtilities.class.getName()).info("Bad search for class element");
-            Exceptions.printStackTrace(e);
+            try {
+                JavaSource javaSource = JavaSource.forFileObject(fileObject);
+                if (javaSource == null) {
+                    return null;
+                }
+                javaSource.runUserActionTask(this, false);
+                if (elementHandle != null) {
+                    return new JavaElementImpl(descriptor, elementHandle);
+                }
+            } catch (IOException e) {
+                Logger.getLogger(SearchUtilities.class.getName()).log(Level.INFO, "Bad search for class element", e);
+            }
+            return null;
         }
-        return null;
+        public final void run(CompilationController controller) throws Exception {
+            controller.toPhase(Phase.ELEMENTS_RESOLVED);
+            TreePathHandle handle = makeVisitor(controller).scan(controller.getCompilationUnit(), null);
+            if (handle != null) {
+                Element element = handle.resolveElement(controller);
+                if (element != null) {
+                    elementHandle = ElementHandle.create(element);
+                }
+            }
+        }
+        public final void cancel() {}
     }
 
     public static Collection<String> getFQNClassNames(final FileObject fo) {
@@ -149,12 +160,10 @@ public final class SearchUtilities {
 
     private static class ClassVisitor extends TreePathScanner<Void, NameDesc> {
 
-        private CompilationInfo info;
         private String packageName;
         private Collection<String> classNames;
 
         public ClassVisitor(CompilationInfo info) {
-            this.info = info;
             ExpressionTree packageNameTree = info.getCompilationUnit().getPackageName();
             if (null != packageNameTree) {
                 this.packageName = packageNameTree.toString();
@@ -187,82 +196,4 @@ public final class SearchUtilities {
         }
     }
 
-    private static class ClassSearcher implements CancellableTask<CompilationController> {
-
-        private final ClassElementDescriptor descriptor;
-        private ElementHandle<?> elementHandle;
-
-        ClassSearcher(final ClassElementDescriptor descriptor) {
-            this.descriptor = descriptor;
-        }
-
-        public void cancel() {
-        }
-
-        public void run(CompilationController controller) throws Exception {
-            controller.toPhase(Phase.ELEMENTS_RESOLVED);
-            SearchClassVisitor visitor = new SearchClassVisitor(controller, descriptor);
-            TreePathHandle handle = visitor.scan(controller.getCompilationUnit(), null);
-            if (null != handle) {
-                elementHandle = ElementHandle.create(handle.resolveElement(controller));
-            }
-        }
-
-        public ElementHandle<?> getHandle() {
-            return elementHandle;
-        }
-    }
-
-    private static class MethodSearcher implements CancellableTask<CompilationController> {
-
-        private final MethodElementDescriptor descriptor;
-        private ElementHandle<?> elementHandle;
-
-        MethodSearcher(final MethodElementDescriptor descriptor) {
-            this.descriptor = descriptor;
-        }
-
-        public void cancel() {
-        }
-
-        public void run(CompilationController controller) throws Exception {
-            controller.toPhase(Phase.ELEMENTS_RESOLVED);
-            SearchMethodVisitor visitor = new SearchMethodVisitor(controller, descriptor);
-            TreePathHandle handle = visitor.scan(controller.getCompilationUnit(), null);
-            if (null != handle) {
-                elementHandle = ElementHandle.create(handle.resolveElement(controller));
-            }
-        }
-
-        public ElementHandle<?> getHandle() {
-            return elementHandle;
-        }
-    }
-
-    private static class VariableSearcher implements CancellableTask<CompilationController> {
-
-        private final VariableElementDescriptor descriptor;
-        private ElementHandle<?> elementHandle;
-
-        VariableSearcher(final VariableElementDescriptor descriptor) {
-            this.descriptor = descriptor;
-        }
-
-        public void cancel() {
-        }
-
-        public void run(CompilationController controller) throws Exception {
-            controller.toPhase(Phase.ELEMENTS_RESOLVED);
-            SearchVariableVisitor visitor = new SearchVariableVisitor(controller, descriptor);
-            TreePathHandle handle = visitor.scan(controller.getCompilationUnit(), null);
-            if (null != handle) {
-                Element el = handle.resolveElement(controller);
-                elementHandle = ElementHandle.create(el);
-            }
-        }
-
-        public ElementHandle<?> getHandle() {
-            return elementHandle;
-        }
-    }
 }
