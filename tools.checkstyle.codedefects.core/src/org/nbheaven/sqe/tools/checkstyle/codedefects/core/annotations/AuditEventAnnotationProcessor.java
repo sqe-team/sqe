@@ -96,9 +96,12 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
             }
         }
 
-        FileObject fo = findDataObjectForAnnotatedClass(fullFileName);
-        assert fo != null : "Could not find FileObject for " + auditEvent.getFileName() + " and " + fullFileName;
-        return fo;
+        if (fullFileName.indexOf('$') != -1) {
+            fullFileName = fullFileName.substring(0, fullFileName.indexOf('$'));
+        }
+
+        // com/ndsatcom/Schnulli.java
+        return GlobalPathRegistry.getDefault().findResource(fullFileName);
     }
 
     public static void openSourceFile(AuditEvent auditEvent, Project project) {
@@ -108,19 +111,6 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
             Line line = getLineForRuleViolation(fo, auditEvent);
             openSourceFileAndAnnotate(auditEvent, line, project);
         }
-    }
-
-    private static FileObject findDataObjectForAnnotatedClass(String className) {
-        String javaFileName = className;
-
-        if (-1 != javaFileName.indexOf('$')) {
-            javaFileName = javaFileName.substring(0, javaFileName.indexOf('$'));
-        }
-
-        // com/ndsatcom/Schnulli.java
-        FileObject fo = GlobalPathRegistry.getDefault().findResource(javaFileName);
-//        assert fo != null : "Could not find FileObject for " + className + " and " + javaFileName;
-        return fo;
     }
 
     public void annotateSourceFile(JavaSource javaSource,

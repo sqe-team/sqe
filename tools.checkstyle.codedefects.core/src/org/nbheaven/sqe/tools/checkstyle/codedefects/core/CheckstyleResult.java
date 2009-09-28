@@ -124,13 +124,16 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             instanceByClass = new TreeMap<Object, Collection<AuditEvent>>();
             for (AuditEvent auditEvent : auditEvents) {
                 if (auditEvent.getFileName().endsWith(".java")) {
-                    ClassKey key = new ClassKey(AuditEventAnnotationProcessor.getFileObjectForAuditEvent(auditEvent, project));
-                    Collection<AuditEvent> events = instanceByClass.get(key);
-                    if (null == events) {
-                        events = new ArrayList<AuditEvent>();
-                        instanceByClass.put(key, events);
+                    FileObject file = AuditEventAnnotationProcessor.getFileObjectForAuditEvent(auditEvent, project);
+                    if (file != null) {
+                        ClassKey key = new ClassKey(file);
+                        Collection<AuditEvent> events = instanceByClass.get(key);
+                        if (null == events) {
+                            events = new ArrayList<AuditEvent>();
+                            instanceByClass.put(key, events);
+                        }
+                        events.add(auditEvent);
                     }
-                    events.add(auditEvent);
                 }
             }
         }
