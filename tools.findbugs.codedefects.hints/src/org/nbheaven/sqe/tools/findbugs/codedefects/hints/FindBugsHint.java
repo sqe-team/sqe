@@ -245,7 +245,7 @@ public class FindBugsHint {
                             JavaElement findFieldElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findVariableElement(desc);
                             error = ErrorDescriptionFactory.createErrorDescription(
                                     Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, findFieldElement.getLine().getLineNumber() + 1));
+                                    document, findFieldElement != null ? Math.max(1, findFieldElement.getLine().getLineNumber() + 1) : 1);
                         }
                     }
                     if (null == error) {
@@ -255,7 +255,7 @@ public class FindBugsHint {
                             JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findMethodElement(desc);
                             error = ErrorDescriptionFactory.createErrorDescription(
                                     Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, findMethodElement.getLine().getLineNumber() + 1));
+                                    document, findMethodElement != null ? Math.max(1, findMethodElement.getLine().getLineNumber() + 1) : 1);
                         }
 
                     }
@@ -266,7 +266,7 @@ public class FindBugsHint {
                             JavaElement findClassElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findClassElement(desc);
                             error = ErrorDescriptionFactory.createErrorDescription(
                                     Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, findClassElement.getLine().getLineNumber() + 1));
+                                    document, findClassElement != null ? Math.max(1, findClassElement.getLine().getLineNumber() + 1) : 1);
                         }
                     }
                     errorDescriptions.add(error);

@@ -71,6 +71,9 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
     }
 
     private static void annotate(final BugInstance bugInstance, final JavaElement javaElement, Project project) {
+        if (javaElement == null) {
+            return;
+        }
         FindBugsAnnotation annotation = FindBugsAnnotation.createNewInstance(project);
         annotation.setErrorMessage(bugInstance.getMessage());
         Line line = javaElement.getLine();
@@ -119,21 +122,27 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
         if (null != fieldAnnotation) {
             VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
             JavaElement findFieldElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findVariableElement(desc);
-            findFieldElement.open();
+            if (findFieldElement != null) {
+                findFieldElement.open();
+            }
             return;
         }
         MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
         if (null != methodAnnotation) {
             MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
             JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findMethodElement(desc);
-            findMethodElement.open();
+            if (findMethodElement != null) {
+                findMethodElement.open();
+            }
             return;
         }
         ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
         if (null != classAnnotation) {
             ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
             JavaElement findClassElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findClassElement(desc);
-            findClassElement.open();
+            if (findClassElement != null) {
+                findClassElement.open();
+            }
             return;
         }
     }
@@ -141,19 +150,25 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
     public static void openSourceFile(final BugInstance bugInstance, final FieldAnnotation fieldAnnotation, final Project project) {
         VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
         JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findVariableElement(desc);
-        findMethodElement.open();
+        if (findMethodElement != null) {
+            findMethodElement.open();
+        }
     }
 
     public static void openSourceFile(final BugInstance bugInstance, final MethodAnnotation methodAnnotation, final Project project) {
         MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
         JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findMethodElement(desc);
-        findMethodElement.open();
+        if (findMethodElement != null) {
+            findMethodElement.open();
+        }
     }
 
     public static void openSourceFile(final BugInstance bugInstance, final ClassAnnotation classAnnotation, final Project project) {
         ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
         JavaElement findClassElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findClassElement(desc);
-        findClassElement.open();
+        if (findClassElement != null) {
+            findClassElement.open();
+        }
     }
 
     public static FileObject findFileObjectForAnnotatedClass(final String className, final Project project) {

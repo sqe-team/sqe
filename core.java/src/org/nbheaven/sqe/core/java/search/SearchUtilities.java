@@ -55,7 +55,10 @@ public final class SearchUtilities {
             JavaSource javaSource = JavaSource.forFileObject(descriptor.getSourceProvider().getFileObject());
             ClassSearcher searcher = new ClassSearcher(descriptor);
             javaSource.runUserActionTask(searcher, false);
-            return new JavaElementImpl(descriptor, searcher.getHandle());
+            ElementHandle<?> handle = searcher.getHandle();
+            if (handle != null) {
+                return new JavaElementImpl(descriptor, handle);
+            }
         } catch (IOException e) {
             Logger.getLogger(SearchUtilities.class.getName()).info("Bad search for class element");
             Exceptions.printStackTrace(e);
@@ -68,7 +71,10 @@ public final class SearchUtilities {
             JavaSource javaSource = JavaSource.forFileObject(descriptor.getSourceProvider().getFileObject());
             MethodSearcher searcher = new MethodSearcher(descriptor);
             javaSource.runUserActionTask(searcher, false);
-            return new JavaElementImpl(descriptor, searcher.getHandle());
+            ElementHandle<?> handle = searcher.getHandle();
+            if (handle != null) {
+                return new JavaElementImpl(descriptor, handle);
+            }
         } catch (IOException e) {
             Logger.getLogger(SearchUtilities.class.getName()).info("Bad search for class element");
             Exceptions.printStackTrace(e);
@@ -90,7 +96,10 @@ public final class SearchUtilities {
             JavaSource javaSource = JavaSource.forFileObject(descriptor.getSourceProvider().getFileObject());
             VariableSearcher searcher = new VariableSearcher(descriptor);
             javaSource.runUserActionTask(searcher, false);
-            return new JavaElementImpl(descriptor, searcher.getHandle());
+            ElementHandle<?> handle = searcher.getHandle();
+            if (handle != null) {
+                return new JavaElementImpl(descriptor, handle);
+            }
         } catch (IOException e) {
             Logger.getLogger(SearchUtilities.class.getName()).info("Bad search for class element");
             Exceptions.printStackTrace(e);

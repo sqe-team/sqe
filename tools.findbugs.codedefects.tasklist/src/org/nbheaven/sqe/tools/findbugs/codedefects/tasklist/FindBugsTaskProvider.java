@@ -122,21 +122,27 @@ public class FindBugsTaskProvider extends PushTaskScanner {
                         if (null != fieldAnnotation) {
                             VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
                             JavaElement findFieldElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findVariableElement(desc);
-                            findFieldElement.open();
+                            if (findFieldElement != null) {
+                                findFieldElement.open();
+                            }
                             return;
                         }
                         MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
                         if (null != methodAnnotation) {
                             MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
                             JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findMethodElement(desc);
-                            findMethodElement.open();
+                            if (findMethodElement != null) {
+                                findMethodElement.open();
+                            }
                             return;
                         }
                         ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
                         if (null != classAnnotation) {
                             ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
                             JavaElement findClassElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findClassElement(desc);
-                            findClassElement.open();
+                            if (findClassElement != null) {
+                                findClassElement.open();
+                            }
                             return;
                         }
                     }
