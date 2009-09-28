@@ -120,11 +120,11 @@ public final class SearchUtilities {
 
     public static Collection<String> getFQNClassNames(final FileObject fo) {
         if (fo == null || !fo.isValid() || fo.isVirtual()) {
-            throw new IllegalArgumentException();
+            return Collections.<String>emptyList();
         }
         final JavaSource js = JavaSource.forFileObject(fo);
         if (js == null) {
-            throw new IllegalArgumentException();
+            return Collections.<String>emptyList();
         }
         try {
             final Collection<String> result = new ArrayList<String>();
