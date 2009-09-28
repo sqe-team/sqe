@@ -61,8 +61,10 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
             Project project = FileOwnerQuery.getOwner(file);
             if (null != project && null != project.getLookup().lookup(CheckstyleSession.class) && null!=JavaSource.forFileObject(file)) {
                 CheckstyleResult result = getResult(file);
+                if (result == null) {
+                    continue;
+                }
                 Map<Object, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
-                Collection<String> classes = getClasses(file);
                 List<Task> tasks = new LinkedList<Task>();
                 CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(file);
                 Collection<AuditEvent> auditEvents = instanceByClass.get(key);
@@ -74,6 +76,9 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
         for (Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
             if(null != project.getLookup().lookup(CheckstyleSession.class)) {
                 CheckstyleResult result = getResult(project);
+                if (result == null) {
+                    continue;
+                }
                 List<Task> tasks = new LinkedList<Task>();
                 for (Map.Entry<Object, Collection<AuditEvent>> classEntry: result.getInstanceByClass().entrySet()) {
                     CheckstyleResult.ClassKey key = (CheckstyleResult.ClassKey) classEntry.getKey();
@@ -99,6 +104,9 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
     
     private CheckstyleResult getResult(Project project) {
         CheckstyleSession qualitySession = project.getLookup().lookup(CheckstyleSession.class);
+        if (qualitySession == null) {
+            return null;
+        }
         CheckstyleResult result = qualitySession.getResult();
         if (null == result) {
             result = qualitySession.computeResultAndWait();
