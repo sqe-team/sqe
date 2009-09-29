@@ -37,66 +37,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.checkstyle.codedefects.core</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.8</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.8</specification-version>
-                    </run-dependency>
-                </dependency>                
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.checkstyle.codedefects.tasklist</code-name-base>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.depfinder.dependencies.core</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.8</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.findbugs.codedefects.core</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.9.5</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.8</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.findbugs.codedefects.tasklist</code-name-base>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.pmd.codedefects.core</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.8</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform</code-name-base>
-                    <run-dependency>
-                        <specification-version>0.8</specification-version>
-                    </run-dependency>
-                </dependency>                
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.tools.pmd.codedefects.tasklist</code-name-base>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.nbheaven.sqe.kit.platform</code-name-base>
                     <run-dependency>
                         <specification-version>0.9</specification-version>

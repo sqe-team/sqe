@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.nbheaven.sqe.kit.checkstyle
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/kit/checkstyle/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

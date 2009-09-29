@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
+AutoUpdate-Show-In-Client: true
 OpenIDE-Module: org.nbheaven.sqe.tools.depfinder.dependencies.core
 OpenIDE-Module-Layer: org/nbheaven/sqe/tools/depfinder/dependencies/core/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/tools/depfinder/dependencies/core/Bundle.properties
