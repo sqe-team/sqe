@@ -21,7 +21,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/2">
-            <code-name-base>org.apache.commons.collections</code-name-base>
+            <code-name-base>org.nbheaven.sqe.wrapper.commons.collections</code-name-base>
             <suite-component/>
             <module-dependencies/>
             <public-packages>
