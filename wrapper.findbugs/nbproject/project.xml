@@ -181,10 +181,6 @@
                 <runtime-relative-path>ext/jFormatString.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jFormatString.jar</binary-origin>
             </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/plugin/coreplugin.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/plugin/coreplugin.jar</binary-origin>
-            </class-path-extension>
         </data>
     </configuration>
 </project>
