@@ -17,10 +17,13 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
@@ -28,13 +31,16 @@ import org.netbeans.api.project.Sources;
 import org.netbeans.spi.java.classpath.ClassPathProvider;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
  * @author Sven Reimers
  */
 public class FindBugsFileScannerJob extends FindBugsScannerJob {
+
+    private static final Logger LOG = Logger.getLogger(FindBugsFileScannerJob.class.getName());
+
 
     FindBugsSession findBugsSession;
     FileObject[] fileObjects;
@@ -91,12 +97,16 @@ public class FindBugsFileScannerJob extends FindBugsScannerJob {
                             pathName = url.getFile();
 
                             try {
-                                fibuProject.addAuxClasspathEntry(URLDecoder.decode(
-                                        pathName, "UTF-8"));
+                                File checkFile = new File(pathName);
+                                if (checkFile.exists() && (checkFile.isDirectory() || FileUtil.isArchiveFile(url))) {
+                                    fibuProject.addAuxClasspathEntry(URLDecoder.decode(
+                                            pathName, "UTF-8"));
+                                } else {
+                                    LOG.log(Level.INFO, "Bad file on auxillary classpath: " + checkFile);
+                                }
                             } catch (UnsupportedEncodingException uee) {
                                 Throwable t = ErrorManager.getDefault().annotate(uee,
-                                        "Failure decoding AuxClassPath Entry" +
-                                        pathName);
+                                        "Failure decoding AuxClassPath Entry" + pathName);
                                 ErrorManager.getDefault().notify(t);
                             }
                         }

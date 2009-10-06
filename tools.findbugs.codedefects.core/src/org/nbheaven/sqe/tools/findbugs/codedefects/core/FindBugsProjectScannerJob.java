@@ -22,6 +22,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.api.project.Project;
@@ -31,12 +33,15 @@ import org.netbeans.spi.java.classpath.ClassPathProvider;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
  * @author Sven Reimers
  */
 public class FindBugsProjectScannerJob extends FindBugsScannerJob {
+
+    private static final Logger LOG = Logger.getLogger(FindBugsProjectScannerJob.class.getName());
 
     FindBugsSession findBugsSession;
 
@@ -71,8 +76,10 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
                     // ensure this is valid for FindBugs (remove trailing !/
                     String fixedUrl = file.replace("!/", "");
                     File checkFile = new File(URLDecoder.decode(fixedUrl, "UTF-8"));
-                    if (checkFile.exists()) {
+                    if (checkFile.exists() && ( checkFile.isDirectory() ||  FileUtil.isArchiveFile(url)) ) {
                         fibuProject.addFile(URLDecoder.decode(fixedUrl, "UTF-8"));
+                    } else {
+                        LOG.log(Level.INFO,"Bad File detected on classpath: " + checkFile);
                     }
                 }
             } catch (MalformedURLException mue) {
@@ -112,8 +119,13 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
                             pathName = url.getFile();
 
                             try {
-                                fibuProject.addAuxClasspathEntry(URLDecoder.decode(
-                                        pathName, "UTF-8"));
+                                File checkFile = new File(pathName);
+                                if (checkFile.exists() && (checkFile.isDirectory() || FileUtil.isArchiveFile(url))) {
+                                    fibuProject.addAuxClasspathEntry(URLDecoder.decode(
+                                            pathName, "UTF-8"));
+                                    } else {
+                                        LOG.log(Level.INFO,"Bad file on auxillary classpath: " + checkFile);
+                                    }
                             } catch (UnsupportedEncodingException uee) {
                                 Throwable t = ErrorManager.getDefault().annotate(uee,
                                         "Failure decoding AuxClassPath Entry" +
