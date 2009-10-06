@@ -134,9 +134,12 @@
                 <package>edu.umd.cs.findbugs.classfile.engine.asm</package>
                 <package>edu.umd.cs.findbugs.classfile.engine.bcel</package>
                 <package>edu.umd.cs.findbugs.classfile.impl</package>
+                <package>edu.umd.cs.findbugs.cloud</package>
+                <package>edu.umd.cs.findbugs.cloud.db</package>
                 <package>edu.umd.cs.findbugs.config</package>
                 <package>edu.umd.cs.findbugs.detect</package>
                 <package>edu.umd.cs.findbugs.filter</package>
+                <package>edu.umd.cs.findbugs.formatStringChecker</package>
                 <package>edu.umd.cs.findbugs.graph</package>
                 <package>edu.umd.cs.findbugs.gui</package>
                 <package>edu.umd.cs.findbugs.gui2</package>
@@ -154,6 +157,7 @@
                 <package>edu.umd.cs.findbugs.workflow</package>
                 <package>edu.umd.cs.findbugs.xml</package>
                 <package>javax.annotation</package>
+                <package>javax.annotation.concurrent</package>
                 <package>javax.annotation.meta</package>
                 <package>net.jcip.annotations</package>
             </public-packages>
