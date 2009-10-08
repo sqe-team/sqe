@@ -257,7 +257,7 @@ public class FindBugsHint {
                                 File cls = new File(new File(u.toURI()), name);
                                 if (cls.exists()) {
                                     for(FileObject child: FileUtil.toFileObject(cls.getParentFile()).getChildren()) {
-                                        if(!child.isFolder() && child.getName().startsWith(className)) {
+                                        if(!child.isFolder() && child.getName().startsWith(className) && /*SQE-13*/child.hasExt("class")) {
                                             fileObjectCollection.add(child);
                                         }
                                     }
