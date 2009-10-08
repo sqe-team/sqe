@@ -27,9 +27,8 @@ import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.config.UserPreferences;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -106,19 +105,17 @@ public class FindBugsHint {
                 try {
                     String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
                     String name =  base + ".class"; //XXX
-                    int lastSlashIndex = base.lastIndexOf(File.separatorChar);
-                    String className = base.substring(lastSlashIndex > 0 ? lastSlashIndex + 1 : 0);
                     Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
                     for (URL u : bin.getRoots()) {
                         if ("file".equals(u.getProtocol())) {
                             try {
-                                File cls = new File(URLDecoder.decode(u.getPath(), "UTF-8"), name);
+                                File cls = new File(new File(u.toURI()), name);
                                 if (cls.exists()) {
                                     FileChangeListener clsWeakFileChangeListener = FileUtil.weakFileChangeListener(listener, cls);
-                                    FileUtil.toFileObject(cls).addFileChangeListener(clsWeakFileChangeListener);
+                                    FileUtil.addFileChangeListener(clsWeakFileChangeListener, cls);
                                 }
-                            } catch (UnsupportedEncodingException uee) {
-                                Exceptions.printStackTrace(uee);
+                            } catch (URISyntaxException x) {
+                                Exceptions.printStackTrace(x);
                             }
                         }
                     }
@@ -133,15 +130,15 @@ public class FindBugsHint {
         }
 
         public void run(final CompilationInfo compilationInfo) throws Exception {
-            final FileObject fileObject = compilationInfo.getFileObject();
+            final FileObject fo = compilationInfo.getFileObject();
             final Document document = compilationInfo.getDocument();
 
-            if (null == errors && null != fileObject && null != document) {
+            if (null == errors && null != fo && null != document) {
                 HINT_PROCESSOR.post(new Runnable() {
 
                     public void run() {
                         try {
-                            errors = computeErrors(fileObject, document);
+                            errors = computeErrors(fo, document);
                             refresh(false);
                         } catch (Exception ex) {
                             Exceptions.printStackTrace(ex);
@@ -150,8 +147,8 @@ public class FindBugsHint {
                 });
                 errors = Collections.emptyList();
             }
-            if (null != errors && null != fileObject) {
-                HintsController.setErrors(fileObject, Task.class.getName(), errors);
+            if (null != errors && null != fo) {
+                HintsController.setErrors(fo, Task.class.getName(), errors);
             }
         }
 
@@ -293,7 +290,7 @@ public class FindBugsHint {
                     for (URL u : bin.getRoots()) {
                         if ("file".equals(u.getProtocol())) {
                             try {
-                                File cls = new File(URLDecoder.decode(u.getPath(), "UTF-8"), name);
+                                File cls = new File(new File(u.toURI()), name);
                                 if (cls.exists()) {
                                     for(FileObject child: FileUtil.toFileObject(cls.getParentFile()).getChildren()) {
                                         if(!child.isFolder() && child.getName().startsWith(className)) {
@@ -301,8 +298,8 @@ public class FindBugsHint {
                                         }
                                     }
                                 }
-                            } catch (UnsupportedEncodingException uee) {
-                                Exceptions.printStackTrace(uee);
+                            } catch (URISyntaxException x) {
+                                Exceptions.printStackTrace(x);
                             }
                         }
                     }

@@ -21,10 +21,8 @@ import org.nbheaven.sqe.tools.depfinder.dependencies.core.resources.ResourcesCon
 import org.nbheaven.sqe.tools.depfinder.dependencies.core.ui.DependencyViewTopComponent;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
-import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
@@ -68,7 +66,7 @@ class RunDepfinder extends NodeAction {
 
     @Override
     protected boolean enable(Node[] nodes) {
-        if (ProjectUtilities.areSourcePackages(nodes)) {
+        if (ProjectUtilities.areJavaSourcePackages(nodes)) {
             return true;
         }
         if (nodes.length != 1) {
@@ -78,11 +76,7 @@ class RunDepfinder extends NodeAction {
         if (project == null) {
             return false;
         }
-        Sources s = project.getLookup().lookup(Sources.class);
-        if (s == null) {
-            return false;
-        }
-        SourceGroup[] sg = s.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        SourceGroup[] sg = ProjectUtilities.getJavaSourceGroups(project);
         return sg.length > 0;
     }
 

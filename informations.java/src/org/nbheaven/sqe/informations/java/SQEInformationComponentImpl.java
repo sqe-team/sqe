@@ -19,7 +19,6 @@ package org.nbheaven.sqe.informations.java;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.net.URL;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -27,10 +26,10 @@ import javax.swing.JTextPane;
 import org.nbheaven.sqe.core.java.utils.FileObjectUtilities;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.nbheaven.sqe.informations.ui.spi.SQEInformationComponent;
-import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 
 /**
@@ -92,9 +91,10 @@ class SQEInformationComponentImpl implements SQEInformationComponent {
         
         private String getSourceDesc() {
             String source = "<p/><h2>Sources</h2><table><tr><th>Name</th><th>Location</th><th>Count</th></tr>";
-            for(SourceGroup sourceGroup: ProjectUtilities.getSourceGroups(project)) {
+            for(SourceGroup sourceGroup: ProjectUtilities.getJavaSourceGroups(project)) {
                 FileObject fileObject = sourceGroup.getRootFolder();
-                source += "<tr><td>" + sourceGroup.getDisplayName() + "</td><td>" + fileObject.getPath() + 
+                // XXX use XMLUtil.toElementContent
+                source += "<tr><td>" + sourceGroup.getDisplayName() + "</td><td>" + FileUtil.getFileDisplayName(fileObject) +
                         "</td><td>" + FileObjectUtilities.collectAllJavaSourceFiles(fileObject).size() + "</td></tr>";
             }
             source += "</table>";
@@ -103,10 +103,9 @@ class SQEInformationComponentImpl implements SQEInformationComponent {
 
         private String getBinariesDesc() {
             String source = "<p/><h2>Binaries</h2><ul>";
-            for(BinaryForSourceQuery.Result result: ProjectUtilities.getBinaries(project)) {                
-                for (URL url: result.getRoots()) {
-                    source += "<li>" + url.getPath() + "</li>";
-                }
+            for (String root : ProjectUtilities.findBinaryRoots(project)) {
+                // XXX use XMLUtil.toElementContent
+                source += "<li>" + root + "</li>";
             }
             source += "</ul>";
             return source;

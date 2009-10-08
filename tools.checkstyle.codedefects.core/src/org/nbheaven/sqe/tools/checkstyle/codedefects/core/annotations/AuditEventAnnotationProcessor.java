@@ -22,13 +22,13 @@ import java.util.Collection;
 import java.util.Map;
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.ClassKey;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 import org.openide.ErrorManager;
 import org.openide.cookies.LineCookie;
 import org.openide.filesystems.FileObject;
@@ -61,7 +61,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
     public static Line getLineForRuleViolation(FileObject fo, AuditEvent auditEvent) {
         try {
             DataObject dao = DataObject.find(fo);
-            LineCookie cookie = dao.getCookie(LineCookie.class);
+            LineCookie cookie = dao.getLookup().lookup(LineCookie.class);
             Set lineset = cookie.getLineSet();
             int lineNum = auditEvent.getLine();
 
@@ -83,8 +83,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
     public static FileObject getFileObjectForAuditEvent(AuditEvent auditEvent, Project project) {
         String fullFileName = auditEvent.getFileName();
 
-        Sources s = project.getLookup().lookup(Sources.class);
-        SourceGroup[] groups = s.getSourceGroups("java");
+        SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(project);
 
         for (SourceGroup g : groups) {
             FileObject rootOfSourceFolder = g.getRootFolder();

@@ -18,19 +18,14 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
-import org.netbeans.spi.java.classpath.ClassPathProvider;
-import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
@@ -59,83 +54,50 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
     }
 
     protected edu.umd.cs.findbugs.Project createFindBugsProject() {
-        Sources s = getProject().getLookup().lookup(org.netbeans.api.project.Sources.class);
-        ClassPathProvider cpp = getProject().getLookup().lookup(org.netbeans.spi.java.classpath.ClassPathProvider.class);
-
         edu.umd.cs.findbugs.Project fibuProject = new edu.umd.cs.findbugs.Project();
 
-        for (SourceGroup g : s.getSourceGroups("java")) {
-            FileObject fo = g.getRootFolder();
-            try {
-                BinaryForSourceQuery.Result result = BinaryForSourceQuery.findBinaryRoots(fo.getURL());
-                for (URL url : result.getRoots()) {
-                    String file = url.getFile();
-                    if ("jar".equals(url.getProtocol())) {
-                        file = new URL(file).getFile();
-                    }
-                    // ensure this is valid for FindBugs (remove trailing !/
-                    String fixedUrl = file.replace("!/", "");
-                    File checkFile = new File(URLDecoder.decode(fixedUrl, "UTF-8"));
-                    if (checkFile.exists() && ( checkFile.isDirectory() ||  FileUtil.isArchiveFile(url)) ) {
-                        fibuProject.addFile(URLDecoder.decode(fixedUrl, "UTF-8"));
-                    } else {
-                        LOG.log(Level.INFO,"Bad File detected on classpath: " + checkFile);
-                    }
-                }
-            } catch (MalformedURLException mue) {
-                ErrorManager.getDefault().notify(mue);
-            } catch (UnsupportedEncodingException uee) {
-                Throwable t = ErrorManager.getDefault().annotate(uee,
-                        "Failure decoding BinaryRoot" + fo);
-                ErrorManager.getDefault().notify(t);
-            } catch (FileStateInvalidException fsie) {
-                ErrorManager.getDefault().notify(fsie);
-            }
-        }
-
-        SourceGroup[] groups = s.getSourceGroups("java");
-
-        for (SourceGroup g : groups) {
+        for (SourceGroup g : ProjectUtilities.getJavaSourceGroups(getProject())) {
             FileObject fo = g.getRootFolder();
             // add source dir findbugs
-            fibuProject.addSourceDir(fo.getPath());
+            File f = FileUtil.toFile(fo);
+            if (f != null) {
+                fibuProject.addSourceDir(f.getAbsolutePath());
+            }
 
-            ClassPath cp = cpp.findClassPath(fo, ClassPath.COMPILE);
+            try {
+                for (URL url : BinaryForSourceQuery.findBinaryRoots(fo.getURL()).getRoots()) {
+                    File checkFile = FileUtil.archiveOrDirForURL(url);
+                    if (checkFile == null) {
+                        LOG.warning("Skipping inconvertible binary entry " + url);
+                        continue;
+                    }
+                    if (!checkFile.exists()) {
+                        LOG.warning("Skipping nonexistent binary entry " + checkFile);
+                        continue;
+                    }
+                    fibuProject.addFile(checkFile.getAbsolutePath());
+                }
+            } catch (FileStateInvalidException x) {
+                LOG.log(Level.INFO, null, x);
+            }
+
+            ClassPath cp = ClassPath.getClassPath(fo, ClassPath.EXECUTE);
+            // XXX http://www.netbeans.org/nonav/issues/show_bug.cgi?id=174012 means this will not work well for Maven src/main/java
+            // (does not matter if src/test/java is also present since that will anyway include everything)
 
             if (null != cp) {
                 for (ClassPath.Entry entry : cp.entries()) {
-                    try {
-                        URL url = entry.getURL();
-
-                        if (null != entry.getRoot()) {
-                            String pathName = url.getFile();
-
-                            if (url.getProtocol().equals("jar")) {
-                                pathName = pathName.substring(0,
-                                        pathName.length() - 2);
-                                url = new URL(pathName);
-                            }
-
-                            pathName = url.getFile();
-
-                            try {
-                                File checkFile = new File(pathName);
-                                if (checkFile.exists() && (checkFile.isDirectory() || FileUtil.isArchiveFile(url))) {
-                                    fibuProject.addAuxClasspathEntry(URLDecoder.decode(
-                                            pathName, "UTF-8"));
-                                    } else {
-                                        LOG.log(Level.INFO,"Bad file on auxillary classpath: " + checkFile);
-                                    }
-                            } catch (UnsupportedEncodingException uee) {
-                                Throwable t = ErrorManager.getDefault().annotate(uee,
-                                        "Failure decoding AuxClassPath Entry" +
-                                        pathName);
-                                ErrorManager.getDefault().notify(t);
-                            }
-                        }
-                    } catch (MalformedURLException ex) {
-                        ex.printStackTrace();
+                    URL url = entry.getURL();
+                    File checkFile = FileUtil.archiveOrDirForURL(url);
+                    if (checkFile == null) {
+                        LOG.warning("Skipping inconvertible classpath entry " + url);
+                        continue;
                     }
+                    if (!checkFile.exists()) {
+                        LOG.warning("Skipping nonexistent classpath entry " + checkFile);
+                        continue;
+                    }
+                    fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
                 }
             }
         }

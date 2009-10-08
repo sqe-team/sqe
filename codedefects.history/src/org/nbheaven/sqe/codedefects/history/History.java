@@ -41,6 +41,7 @@ import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileAlreadyLockedException;
+import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Exceptions;
 import org.openide.util.NbCollections;
 import org.openide.util.NbPreferences;
@@ -106,24 +107,17 @@ public final class History implements Iterable<History.Entry> {
     }
 
     private void flush() {
-        ByteArrayOutputStream os = null;
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            os = new ByteArrayOutputStream();
             ObjectOutputStream stream = new ObjectOutputStream(os);
             stream.writeObject(entries);
             stream.close();
             Preferences historyPrefs = NbPreferences.forModule(History.class);
-            historyPrefs.putByteArray(project.getProjectDirectory().getPath(), os.toByteArray());
+            historyPrefs.putByteArray(project.getProjectDirectory().getURL().toString(), os.toByteArray());
         } catch (FileAlreadyLockedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
-        } finally {
-            try {
-                os.close();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
         }
     }
 
@@ -162,7 +156,13 @@ public final class History implements Iterable<History.Entry> {
             }
         }
         Preferences historyPrefs = NbPreferences.forModule(History.class);
-        byte[] historyData = historyPrefs.getByteArray(project.getProjectDirectory().getPath(), new byte[] {});
+        byte[] historyData;
+        try {
+            historyData = historyPrefs.getByteArray(project.getProjectDirectory().getURL().toString(), new byte[] {});
+        } catch (FileStateInvalidException ex) {
+            Exceptions.printStackTrace(ex);
+            historyData = null;
+        }
         History history = new History(project, read(historyData));
         historyCache.put(project, new WeakReference<History>(history));
         return history;

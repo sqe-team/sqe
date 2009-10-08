@@ -18,18 +18,12 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
-import org.netbeans.spi.java.classpath.ClassPathProvider;
-import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -52,66 +46,37 @@ public class FindBugsFileScannerJob extends FindBugsScannerJob {
     }
 
     protected edu.umd.cs.findbugs.Project createFindBugsProject() {
-        Sources s = getProject().getLookup().lookup(org.netbeans.api.project.Sources.class);
-        ClassPathProvider cpp = getProject().getLookup().lookup(org.netbeans.spi.java.classpath.ClassPathProvider.class);
-
         edu.umd.cs.findbugs.Project fibuProject = new edu.umd.cs.findbugs.Project();
 
         for (FileObject fo: fileObjects) {
-//            try {
-                if (fo.isValid()) {
-                    fibuProject.addFile(fo.getPath());
+            if (fo.isValid()) {
+                File f = FileUtil.toFile(fo);
+                if (f != null) {
+                    fibuProject.addFile(f.getAbsolutePath());
                 }
-//            } catch (UnsupportedEncodingException uee) {
-//                Throwable t = ErrorManager.getDefault().annotate(uee,
-//                        "Failure decoding BinaryRoot" + fo);
-//                ErrorManager.getDefault().notify(t);
-//            } catch (FileStateInvalidException fsie) {
-//                ErrorManager.getDefault().notify(fsie);
-//            }
+            }
         }
 
-        SourceGroup[] groups = s.getSourceGroups("java");
+        SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(getProject());
 
         for (SourceGroup g : groups) {
             FileObject fo = g.getRootFolder();
             // add source dir findbugs
-            fibuProject.addSourceDir(fo.getPath());
+            File f = FileUtil.toFile(fo);
+            if (f != null) {
+                fibuProject.addSourceDir(f.getAbsolutePath());
+            }
 
-            ClassPath cp = cpp.findClassPath(fo, ClassPath.COMPILE);
+            ClassPath cp = ClassPath.getClassPath(fo, ClassPath.COMPILE);
 
             if (null != cp) {
                 for (ClassPath.Entry entry : cp.entries()) {
-                    try {
-                        URL url = entry.getURL();
-
-                        if (null != entry.getRoot()) {
-                            String pathName = url.getFile();
-
-                            if (url.getProtocol().equals("jar")) {
-                                pathName = pathName.substring(0,
-                                        pathName.length() - 2);
-                                url = new URL(pathName);
-                            }
-
-                            pathName = url.getFile();
-
-                            try {
-                                File checkFile = new File(pathName);
-                                if (checkFile.exists() && (checkFile.isDirectory() || FileUtil.isArchiveFile(url))) {
-                                    fibuProject.addAuxClasspathEntry(URLDecoder.decode(
-                                            pathName, "UTF-8"));
-                                } else {
-                                    LOG.log(Level.INFO, "Bad file on auxillary classpath: " + checkFile);
-                                }
-                            } catch (UnsupportedEncodingException uee) {
-                                Throwable t = ErrorManager.getDefault().annotate(uee,
-                                        "Failure decoding AuxClassPath Entry" + pathName);
-                                ErrorManager.getDefault().notify(t);
-                            }
-                        }
-                    } catch (MalformedURLException ex) {
-                        ex.printStackTrace();
+                    URL url = entry.getURL();
+                    File checkFile = FileUtil.archiveOrDirForURL(url);
+                    if (checkFile != null && checkFile.exists()) {
+                        fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
+                    } else {
+                        LOG.warning("Bad file on auxiliary classpath: " + checkFile);
                     }
                 }
             }

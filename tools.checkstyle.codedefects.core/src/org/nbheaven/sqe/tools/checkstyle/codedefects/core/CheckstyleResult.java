@@ -19,7 +19,6 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.core;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -270,6 +269,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 
         public ClassKey(FileObject fileObject) {
             this.fileObject = fileObject;
+            // XXX this is almost surely wrong but I do not know what the intent was:
             className = fileObject.getPath();
         }
 

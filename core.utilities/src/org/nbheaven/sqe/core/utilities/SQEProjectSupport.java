@@ -17,10 +17,10 @@
  */
 package org.nbheaven.sqe.core.utilities;
 
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
@@ -42,7 +42,7 @@ public class SQEProjectSupport {
         Project project = node.getLookup().lookup(Project.class);
 
         if (null == project) {
-            DataObject dataObject = node.getCookie(DataObject.class);
+            DataObject dataObject = node.getLookup().lookup(DataObject.class);
             project = findProject(dataObject);
         }
         return project;
@@ -71,8 +71,7 @@ public class SQEProjectSupport {
         folderName = folderName.replaceAll("\\.", "/");
 
         // com/ndsatcom/Schnulli.java
-        Sources s = project.getLookup().lookup(Sources.class);
-        SourceGroup[] sgs = s.getSourceGroups("java");
+        SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);
 
         for (SourceGroup sg : sgs) {
             FileObject mayBeFileObject = sg.getRootFolder().getFileObject(folderName);
@@ -96,8 +95,7 @@ public class SQEProjectSupport {
         javaFileName = javaFileName.replaceAll("\\.", "/") + ".java";
 
         // com/ndsatcom/Schnulli.java
-        Sources s = project.getLookup().lookup(Sources.class);
-        SourceGroup[] sgs = s.getSourceGroups("java");
+        SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);
 
         for (SourceGroup sg : sgs) {
             FileObject mayBeFileObject = sg.getRootFolder().getFileObject(javaFileName);

@@ -29,10 +29,8 @@ import org.netbeans.api.java.source.ClassIndex;
 import org.netbeans.api.java.source.ClasspathInfo;
 import org.netbeans.api.java.source.ElementHandle;
 import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
-import org.netbeans.spi.java.classpath.ClassPathProvider;
+import org.openide.filesystems.FileObject;
 
 
 /**
@@ -94,8 +92,6 @@ public final class TypeUtilities {
     }
     
     public static JavaSourceProvider getJavaTypeElement(String findIt, Project project) {
-        ClassPathProvider cpp = project.getLookup().lookup(org.netbeans.spi.java.classpath.ClassPathProvider.class);
-
         String outerClass = findIt;
         // remove InnerclassDeclaration
         if (-1 != outerClass.indexOf('$')) {
@@ -106,14 +102,11 @@ public final class TypeUtilities {
         String javaClassName = outerClass.substring(outerClass.lastIndexOf(".")+1);
         
 
-        Sources s = ProjectUtils.getSources(project);
-
-        SourceGroup[] sourceGroups = s.getSourceGroups("java");
-        // sourcePath
-        for (int i = 0; i < sourceGroups.length; i++) {
-            ClasspathInfo ci = ClasspathInfo.create(cpp.findClassPath(sourceGroups[i].getRootFolder(), ClassPath.BOOT), 
-                    cpp.findClassPath(sourceGroups[i].getRootFolder(), ClassPath.COMPILE), 
-                    cpp.findClassPath(sourceGroups[i].getRootFolder(), ClassPath.SOURCE));
+        for (SourceGroup g : ProjectUtilities.getJavaSourceGroups(project)) {
+            FileObject root = g.getRootFolder();
+            ClasspathInfo ci = ClasspathInfo.create(ClassPath.getClassPath(root, ClassPath.BOOT),
+                    ClassPath.getClassPath(root, ClassPath.COMPILE),
+                    ClassPath.getClassPath(root, ClassPath.SOURCE));
             Set<ElementHandle<TypeElement>> declaredTypes = ci.getClassIndex().getDeclaredTypes(javaClassName,
                     ClassIndex.NameKind.SIMPLE_NAME, EnumSet.of(ClassIndex.SearchScope.SOURCE, ClassIndex.SearchScope.DEPENDENCIES));
             for(ElementHandle<TypeElement> typeElementHandle: declaredTypes) {

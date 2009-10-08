@@ -18,28 +18,24 @@
 package org.nbheaven.sqe.core.java.utils;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.java.queries.BinaryForSourceQuery;
-import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
-import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -50,16 +46,8 @@ public final class ProjectUtilities {
     private ProjectUtilities() {
     }
 
-    public static SourceLevelQuery getSourceLevelQuery(Project project) {
-        SourceLevelQuery sourceLevelQuery = project.getLookup().lookup(SourceLevelQuery.class);
-        if (null == sourceLevelQuery) {
-            sourceLevelQuery = Lookup.getDefault().lookup(SourceLevelQuery.class);
-        }
-        return sourceLevelQuery;
-    }
-
-    public static FileObject[] getSourceRoots(Project project) {
-        SourceGroup[] groups = getSourceGroups(project);
+    public static FileObject[] getJavaSourceRoots(Project project) {
+        SourceGroup[] groups = getJavaSourceGroups(project);
 
         FileObject[] fileObjects = new FileObject[groups.length];
         int i = 0;
@@ -70,59 +58,34 @@ public final class ProjectUtilities {
         return fileObjects;
     }
 
-    public static SourceGroup[] getSourceGroups(Project project) {
-        Sources s = project.getLookup().lookup(Sources.class);
+    public static SourceGroup[] getJavaSourceGroups(Project project) {
+        Sources s = ProjectUtils.getSources(project);
         return s.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-    }
-
-    public static BinaryForSourceQuery.Result[] getBinaries(Project project) {
-        Sources s = project.getLookup().lookup(org.netbeans.api.project.Sources.class);
-        SourceGroup[] sg = getSourceGroups(project);
-
-        BinaryForSourceQuery.Result[] results = new BinaryForSourceQuery.Result[sg.length];
-        int i = 0;
-        for (SourceGroup g : s.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA)) {
-            try {
-                results[i] = BinaryForSourceQuery.findBinaryRoots(g.getRootFolder().getURL());
-            } catch (FileStateInvalidException fsie) {
-                ErrorManager.getDefault().notify(fsie);
-            }
-            i++;
-        }
-        return results;
     }
 
     public static List<String> findBinaryRoots(Project project) {
 
         ArrayList<String> binaries = new ArrayList<String>();
-        try {
-            for (BinaryForSourceQuery.Result result : getBinaries(project)) {
-                for (URL url : result.getRoots()) {
-                    String file = url.getFile();
-                    if ("jar".equals(url.getProtocol())) {
-                        file = new URL(file).getFile();
-                    }
-                    // ensure this is valid for FindBugs (remove trailing !/
-                    String fixedUrl = file.replace("!/", "");
-                    File checkFile = new File(URLDecoder.decode(fixedUrl, "UTF-8"));
-                    if (checkFile.exists()) {
-                        binaries.add(URLDecoder.decode(fixedUrl, "UTF-8"));
+        for (SourceGroup sg : getJavaSourceGroups(project)) {
+            try {
+                for (URL url : BinaryForSourceQuery.findBinaryRoots(sg.getRootFolder().getURL()).getRoots()) {
+                    File checkFile = FileUtil.archiveOrDirForURL(url);
+                    if (checkFile != null && checkFile.exists()) {
+                        binaries.add(checkFile.getAbsolutePath());
                     }
                 }
+            } catch (FileStateInvalidException x) {
+                Logger.getLogger(ProjectUtilities.class.getName()).log(Level.INFO, null, x);
             }
-        } catch (UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (MalformedURLException mue) {
-            ErrorManager.getDefault().notify(mue);
         }
         binaries.trimToSize();
         return binaries;
     }
 
-    public static boolean areSourcePackages(Node[] nodes) {
+    public static boolean areJavaSourcePackages(Node[] nodes) {
         boolean enable = false;
         for (Node node : nodes) {
-            enable = isSourcePackage(node);
+            enable = isJavaSourcePackage(node);
             if (enable) {
                 break;
             }
@@ -130,24 +93,24 @@ public final class ProjectUtilities {
         return enable;
     }
 
-    public static boolean isSourcePackage(Node node) {
+    public static boolean isJavaSourcePackage(Node node) {
 
         DataFolder dataFolder = node.getLookup().lookup(DataFolder.class);
 
         if (null == dataFolder) {
             return false;
         }
-        return isSourcePackage(dataFolder);
+        return isJavaSourcePackage(dataFolder);
     }
 
-    private static boolean isSourcePackage(DataObject dataObject) {
+    private static boolean isJavaSourcePackage(DataObject dataObject) {
         if (null == dataObject || !(dataObject instanceof DataFolder)) {
             return false;
         }
-        return isSourcePackage(dataObject.getPrimaryFile());
+        return isJavaSourcePackage(dataObject.getPrimaryFile());
     }
 
-    private static boolean isSourcePackage(FileObject fileObject) {
+    private static boolean isJavaSourcePackage(FileObject fileObject) {
         if (null == fileObject) {
             return false;
         }
@@ -157,11 +120,7 @@ public final class ProjectUtilities {
             return false;
         }
 
-        Sources sources = project.getLookup().lookup(Sources.class);
-        if (null == sources) {
-            return false;
-        }
-        SourceGroup[] sourceGroups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        SourceGroup[] sourceGroups = getJavaSourceGroups(project);
 
         boolean isPackage = false;
 
