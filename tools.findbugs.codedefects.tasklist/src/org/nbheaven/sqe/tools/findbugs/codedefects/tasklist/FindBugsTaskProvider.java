@@ -68,12 +68,11 @@ public class FindBugsTaskProvider extends PushTaskScanner {
             Project project = FileOwnerQuery.getOwner(file);
             if (null != project && null != project.getLookup().lookup(FindBugsSession.class) && null != JavaSource.forFileObject(file)) {
                 FindBugsResult result = getResult(file);
-                Map<Object, Collection<BugInstance>> instanceByClass = result.getInstanceByClass(true);
+                Map<FindBugsResult.ClassKey, Collection<BugInstance>> instanceByClass = result.getInstanceByClass(true);
                 Collection<String> classes = SearchUtilities.getFQNClassNames(file);
                 List<Task> tasks = new LinkedList<Task>();
                 for (String className : classes) {
-                    for (Object key : instanceByClass.keySet()) {
-                        FindBugsResult.ClassKey classKey = (FindBugsResult.ClassKey) key;
+                    for (FindBugsResult.ClassKey classKey : instanceByClass.keySet()) {
                         if (classKey.getDisplayName().equals(className)) {
                             Collection<BugInstance> bugs = instanceByClass.get(classKey);
                             tasks.addAll(getTasks(bugs, file));
@@ -88,8 +87,8 @@ public class FindBugsTaskProvider extends PushTaskScanner {
             if (null != project.getLookup().lookup(FindBugsSession.class)) {
                 FindBugsResult result = getResult(project);
                 List<Task> tasks = new LinkedList<Task>();
-                for (Map.Entry<Object, Collection<BugInstance>> classEntry : result.getInstanceByClass(true).entrySet()) {
-                    tasks.addAll(getTasks(classEntry.getValue(), ((FindBugsResult.ClassKey)classEntry.getKey()).getFileObject()));
+                for (Map.Entry<FindBugsResult.ClassKey, Collection<BugInstance>> classEntry : result.getInstanceByClass(true).entrySet()) {
+                    tasks.addAll(getTasks(classEntry.getValue(), classEntry.getKey().getFileObject()));
                 }
                 callback.setTasks(project.getProjectDirectory(), tasks);
             }

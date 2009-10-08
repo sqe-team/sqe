@@ -181,11 +181,10 @@ public class FindBugsHint {
                 if (null != session) {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
                         List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
-                        Map<Object, Collection<BugInstance>> instanceByClass = session.computeResultAndWait(getFileObjectsToScan()).getInstanceByClass(true);
+                        Map<FindBugsResult.ClassKey, Collection<BugInstance>> instanceByClass = session.computeResultAndWait(getFileObjectsToScan()).getInstanceByClass(true);
                         Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
                         for (String className : classes) {
-                            for (Object key : instanceByClass.keySet()) {
-                                FindBugsResult.ClassKey classKey = (FindBugsResult.ClassKey) key;
+                            for (FindBugsResult.ClassKey classKey : instanceByClass.keySet()) {
                                 if (classKey.getDisplayName().equals(className)) {
                                     Collection<BugInstance> bugs = instanceByClass.get(classKey);
                                     computedErrors.addAll(getErrors(project, bugs, fileObject, document));

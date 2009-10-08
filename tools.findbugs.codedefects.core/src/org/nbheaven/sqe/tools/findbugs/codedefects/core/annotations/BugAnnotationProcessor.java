@@ -64,7 +64,7 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
     }
 
     private static Line getLineForSourceAnnotation(DataObject dao, SourceLineAnnotation sourceLineAnnotation) {
-        LineCookie cookie = dao.getCookie(LineCookie.class);
+        LineCookie cookie = dao.getLookup().lookup(LineCookie.class);
         Set lineset = cookie.getLineSet();
         int lineNum = sourceLineAnnotation.getStartLine();
         return lineset.getCurrent(lineNum - 1);
@@ -204,9 +204,9 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
     }
 
     private void annotateClass(String className, FileObject fileObject, Project project, FindBugsResult result) {
-        Map<Object, Collection<BugInstance>> instanceMap = result.getInstanceByClass(true);
+        Map<? extends FindBugsResult.DisplayableKey<?>, Collection<BugInstance>> instanceMap = result.getInstanceByClass(true);
         FindBugsResult.StringKey key = new FindBugsResult.StringKey(className);
-        Collection<BugInstance> bugs = instanceMap.get(key);
+        Collection<BugInstance> bugs = instanceMap.get(key); // relies on .equals/.hashCode working across subclasses
 
         if (null != bugs) {
             for (BugInstance bug : bugs) {

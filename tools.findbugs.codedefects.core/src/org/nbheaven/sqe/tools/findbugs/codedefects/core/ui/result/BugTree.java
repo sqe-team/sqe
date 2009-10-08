@@ -136,9 +136,9 @@ class BugTree extends JTree {
         MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount(coreFilterEnabled));
         rootNode.setUserObject(session);
 
-        Map<Object, Collection<BugInstance>> instances = resultMode.getInstanceList(session.getResult(), coreFilterEnabled);
+        Map<?, Collection<BugInstance>> instances = resultMode.getInstanceList(session.getResult(), coreFilterEnabled);
         int typeIndex = 0;
-        for (Map.Entry<Object, Collection<BugInstance>> entry : instances.entrySet()) {
+        for (Map.Entry<?, Collection<BugInstance>> entry : instances.entrySet()) {
             // Do not display nodes with empty children list
             if (entry.getValue().isEmpty()) {
                 continue;
