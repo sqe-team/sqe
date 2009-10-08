@@ -18,11 +18,15 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.tasklist;
 
 import edu.umd.cs.findbugs.BugInstance;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
+import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.core.java.search.SearchUtilities;
@@ -44,8 +48,15 @@ public class FindBugsTaskProvider extends PushTaskScanner {
         super("FindBugs", "FindBugs found Bugs", null);
     }
 
-    public synchronized void setScope(TaskScanningScope taskScanningScope, Callback callback) {
+    private final Map<QualitySession,PropertyChangeListener> listeners = new WeakHashMap<QualitySession,PropertyChangeListener>();
+
+    public synchronized void setScope(TaskScanningScope taskScanningScope, final Callback callback) {
         if (taskScanningScope == null) {
+            synchronized (listeners) {
+                for (Map.Entry<QualitySession,PropertyChangeListener> entry : listeners.entrySet()) {
+                    entry.getKey().removePropertyChangeListener(QualitySession.RESULT, entry.getValue());
+                }
+            }
             return;
         }
 
@@ -76,19 +87,37 @@ public class FindBugsTaskProvider extends PushTaskScanner {
             callback.setTasks(file, tasks);
         }
 
-        for (Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
+        for (final Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
             FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
             if (qualitySession == null) {
                 continue;
             }
             FindBugsResult result = getResult(qualitySession);
-            List<Task> tasks = new LinkedList<Task>();
-            for (Map.Entry<FindBugsResult.ClassKey, Collection<BugInstance>> classEntry : result.getInstanceByClass(true).entrySet()) {
-                tasks.addAll(getTasks(classEntry.getValue(), classEntry.getKey().getFileObject()));
+            pushTasks(result, callback, project);
+            synchronized (listeners) {
+                PropertyChangeListener listener = listeners.get(qualitySession);
+                if (listener != null) {
+                    qualitySession.removePropertyChangeListener(QualitySession.RESULT, listener);
+                }
+                listener = new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        pushTasks((FindBugsResult) evt.getNewValue(), callback, project);
+                    }
+                };
+                listeners.put(qualitySession, listener);
+                qualitySession.addPropertyChangeListener(QualitySession.RESULT, listener);
             }
-            callback.setTasks(project.getProjectDirectory(), tasks);
         }
 
+    }
+
+    private void pushTasks(FindBugsResult result, Callback callback, Project project) {
+        List<Task> tasks = new LinkedList<Task>();
+        for (Map.Entry<FindBugsResult.ClassKey, Collection<BugInstance>> classEntry : result.getInstanceByClass(true).entrySet()) {
+            tasks.addAll(getTasks(classEntry.getValue(), classEntry.getKey().getFileObject()));
+        }
+        // XXX shouldn't this break out tasks by file?
+        callback.setTasks(project.getProjectDirectory(), tasks);
     }
 
     private List<Task> getTasks(Collection<BugInstance> bugs, final FileObject file) {
