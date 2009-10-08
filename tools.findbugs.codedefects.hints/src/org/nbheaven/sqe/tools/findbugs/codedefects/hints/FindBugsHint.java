@@ -382,7 +382,7 @@ public class FindBugsHint {
                         if (sw == null) {
                             DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(
                                     "Could not find a @SuppressWarnings with @Retention(CLASS/RUNTIME) in project classpath. " +
-                                    "Try findbugs:annotations:1.0.0 for Maven, org.netbeans.api.annotations.common for NetBeans modules, etc.",
+                                    "Try findbugs:annotations:* for Maven, Common Annotations API for NetBeans modules, etc.",
                                     NotifyDescriptor.WARNING_MESSAGE));
                             // XXX try to add such a lib if it can be found somewhere
                             return;
