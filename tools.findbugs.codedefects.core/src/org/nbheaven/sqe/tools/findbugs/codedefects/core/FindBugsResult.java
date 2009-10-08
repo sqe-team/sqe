@@ -299,30 +299,27 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         return 0;
     }
 
-    public abstract static class DisplayableKey implements Comparable {
+    public abstract static class DisplayableKey<T extends DisplayableKey> implements Comparable<T> {
 
         public abstract String getDisplayName();
 
-        public final boolean equals(Object object) {
+        public @Override final boolean equals(Object object) {
             if (object instanceof DisplayableKey) {
-                return ((DisplayableKey) object).getDisplayName().equals(this.getDisplayName());
+                return ((DisplayableKey) object).getDisplayName().equals(getDisplayName());
             }
             return false;
         }
 
-        public final int hashCode() {
-            return this.getDisplayName().hashCode();
+        public @Override final int hashCode() {
+            return getDisplayName().hashCode();
         }
 
-        public final int compareTo(Object object) {
-            if (object instanceof DisplayableKey) {
-                return this.getDisplayName().compareTo(((DisplayableKey) object).getDisplayName());
-            }
-            throw new IllegalArgumentException("Can't be compared to " + object.getClass());
+        public final int compareTo(T object) {
+            return getDisplayName().compareTo(object.getDisplayName());
         }
     }
 
-    public static class StringKey extends DisplayableKey {
+    public static class StringKey extends DisplayableKey<StringKey> {
 
         private String displayName;
 
@@ -335,7 +332,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public static class ClassKey extends DisplayableKey {
+    public static class ClassKey extends DisplayableKey<ClassKey> {
 
         private final ClassAnnotation classAnnotation;
         private final FileObject fileObject;
@@ -354,7 +351,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public static class PackageKey extends DisplayableKey {
+    public static class PackageKey extends DisplayableKey<PackageKey> {
 
         private ClassAnnotation classAnnotation;
 
@@ -367,7 +364,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public static class CategoryKey extends DisplayableKey {
+    public static class CategoryKey extends DisplayableKey<CategoryKey> {
 
         private BugPattern bugPattern;
 
