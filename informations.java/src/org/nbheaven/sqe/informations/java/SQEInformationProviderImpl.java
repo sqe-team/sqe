@@ -21,6 +21,7 @@ import java.lang.ref.WeakReference;
 import org.nbheaven.sqe.informations.ui.spi.SQEInformationComponent;
 import org.nbheaven.sqe.informations.ui.spi.SQEInformationProvider;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.LookupProvider.Registration.ProjectType;
 import org.netbeans.spi.project.ProjectServiceProvider;
 
 
@@ -29,12 +30,11 @@ import org.netbeans.spi.project.ProjectServiceProvider;
  * @author Sven Reimers
  */
 @ProjectServiceProvider(service=SQEInformationProvider.class, projectType={
-    "org-netbeans-modules-ant-freeform",
     "org-netbeans-modules-apisupport-project",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project",
     "org-netbeans-modules-maven"
-})
+}, projectTypes=@ProjectType(id="org-netbeans-modules-ant-freeform", position=0))
 public class SQEInformationProviderImpl implements SQEInformationProvider {
     
     private WeakReference<SQEInformationComponent> component = null;
