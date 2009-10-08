@@ -156,6 +156,14 @@ public final class JavaElementImpl implements JavaElement {
         return result;
     }
 
+    public ElementHandle<?> getHandle() {
+        return elementHandle;
+    }
+
+    public @Override String toString() {
+        return elementHandle + " in " + fileObject;
+    }
+
     private static class FindDeclarationVisitor extends TreePathScanner<Void, Void> {
 
         private Element element;

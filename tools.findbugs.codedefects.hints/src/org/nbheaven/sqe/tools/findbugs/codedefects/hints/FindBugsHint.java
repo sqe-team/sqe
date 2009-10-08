@@ -17,6 +17,13 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.hints;
 
+import com.sun.source.tree.AnnotationTree;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.ModifiersTree;
+import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.ClassAnnotation;
@@ -27,14 +34,20 @@ import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.config.UserPreferences;
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.java.search.ClassElementDescriptor;
@@ -62,9 +75,18 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSetting
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.api.java.queries.BinaryForSourceQuery.Result;
+import org.netbeans.api.java.source.ClassIndex.NameKind;
+import org.netbeans.api.java.source.ClassIndex.SearchScope;
+import org.netbeans.api.java.source.ElementHandle;
+import org.netbeans.api.java.source.GeneratorUtilities;
+import org.netbeans.api.java.source.JavaSource;
+import org.netbeans.api.java.source.TreeMaker;
+import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.HintsController;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileAttributeEvent;
 import org.openide.filesystems.FileChangeListener;
 import org.openide.filesystems.FileEvent;
@@ -194,42 +216,28 @@ public class FindBugsHint {
                 try {
                     int line = 0;
                     // Highest priority: return the first top level source line annotation
-                    for (BugAnnotation annotation : NbCollections.iterable(bugInstance.annotationIterator())) {
+                    // XXX why is this not using just one call to getPrimarySourceLineAnnotation? seems to work just as well, and always non-null
+                    for (BugAnnotation annotation : bugInstance.getAnnotations()) {
                         if (annotation instanceof SourceLineAnnotation) {
                             line = Math.max(1, bugInstance.getPrimarySourceLineAnnotation().getStartLine());
                             break;
                         }
                     }
+                    JavaElement findElement = locateElement(bugInstance, project);
                     if (line == 0) {
-                        JavaElement findElement = null;
-                        FieldAnnotation fieldAnnotation = bugInstance.getPrimaryField();
-                        if (null != fieldAnnotation) {
-                            VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
-                            findElement = SearchUtilities.findVariableElement(desc);
-                        }
-                        if (findElement == null) {
-                            MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
-                            if (null != methodAnnotation) {
-                                MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
-                                findElement = SearchUtilities.findMethodElement(desc);
-                            }
-                        }
-                        if (findElement == null) {
-                            ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
-                            if (null != classAnnotation) {
-                                ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
-                                findElement = SearchUtilities.findClassElement(desc);
-                            }
-                        }
                         if (findElement != null) {
                             line = Math.max(1, findElement.getLine().getLineNumber() + 1);
                         }
                     }
                     if (line > 0) {
+                        List<Fix> fixes = new ArrayList<Fix>();
+                        if (findElement != null) {
+                            fixes.add(new SuppressWarningsFix(bugInstance.getType(), findElement.getHandle(), file));
+                        }
+                        fixes.add(new DisableDetectorFix(bugInstance, project));
                         errorDescriptions.add(ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(),
-                                    Arrays.<Fix>asList(new DisableDetectorFix(bugInstance, project)),
-                                    document, line));
+                                    Severity.WARNING, "[FindBugs] " + bugInstance.getAbridgedMessage(),
+                                    fixes, document, line));
                     }
                 } catch (RuntimeException e) {
                     System.err.println("INFO: Can't create ErrorDescription for FindBugs bug instance: " +
@@ -238,6 +246,34 @@ public class FindBugsHint {
                 }
             }
             return errorDescriptions;
+        }
+
+        private JavaElement locateElement(BugInstance bugInstance, Project project) {
+            MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
+            if (methodAnnotation != null) {
+                MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
+                JavaElement e = SearchUtilities.findMethodElement(desc);
+                if (e != null) {
+                    return e;
+                }
+            }
+            FieldAnnotation fieldAnnotation = bugInstance.getPrimaryField();
+            if (fieldAnnotation != null) {
+                VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
+                JavaElement e = SearchUtilities.findVariableElement(desc);
+                if (e != null) {
+                    return e;
+                }
+            }
+            ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
+            if (classAnnotation != null) {
+                ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
+                JavaElement e = SearchUtilities.findClassElement(desc);
+                if (e != null) {
+                    return e;
+                }
+            }
+            return null;
         }
 
         private FileObject[] getFileObjectsToScan() {
@@ -285,7 +321,7 @@ public class FindBugsHint {
             }
 
             public String getText() {
-                return "Disable FindBugs Detector for BugPattern: " + bugInstance.getBugPattern().getShortDescription();
+                return "Disable detector for \"" + bugInstance.getBugPattern().getShortDescription() + "\"";
             }
 
             public ChangeInfo implement() throws Exception {
@@ -306,6 +342,94 @@ public class FindBugsHint {
                 }
                 return null;
             }
+        }
+
+        private static class SuppressWarningsFix implements Fix { // SQE-8
+
+            private final String bugType;
+            private final ElementHandle<?> handle;
+            private final FileObject file;
+
+            SuppressWarningsFix(String bugType, ElementHandle<?> handle, FileObject file) {
+                this.bugType = bugType;
+                this.handle = handle;
+                this.file = file;
+            }
+
+            public String getText() {
+                return "Suppress warning";
+            }
+
+            public ChangeInfo implement() throws Exception {
+                JavaSource.forFileObject(file).runModificationTask(new org.netbeans.api.java.source.Task<WorkingCopy>() {
+                    public void run(WorkingCopy wc) throws Exception {
+                        wc.toPhase(JavaSource.Phase.RESOLVED);
+                        TypeElement sw = null;
+                        for (ElementHandle<TypeElement> swh : wc.getClasspathInfo().getClassIndex().
+                                getDeclaredTypes("SuppressWarnings", NameKind.SIMPLE_NAME, EnumSet.of(SearchScope.DEPENDENCIES, SearchScope.SOURCE))) {
+                            TypeElement _sw = swh.resolve(wc);
+                            if (_sw.getKind() != ElementKind.ANNOTATION_TYPE) {
+                                continue;
+                            }
+                            Retention retention = _sw.getAnnotation(Retention.class);
+                            if (retention != null && retention.value() == RetentionPolicy.SOURCE) {
+                                continue;
+                            }
+                            // XXX look up @Target, make sure unspecified or matches element's kind
+                            // XXX verify that it has a String[] value() attribute
+                            sw = _sw;
+                            break;
+                        }
+                        if (sw == null) {
+                            DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(
+                                    "Could not find a @SuppressWarnings with @Retention(CLASS/RUNTIME) in project classpath. " +
+                                    "Try findbugs:annotations:1.0.0 for Maven, org.netbeans.api.annotations.common for NetBeans modules, etc.",
+                                    NotifyDescriptor.WARNING_MESSAGE));
+                            // XXX try to add such a lib if it can be found somewhere
+                            return;
+                        }
+                        TreeMaker make = wc.getTreeMaker();
+                        Element element = handle.resolve(wc);
+                        if (element == null) {
+                            System.err.println("could not find " + handle);
+                            return;
+                        }
+                        Tree old = wc.getTrees().getTree(element);
+                        Tree nue;
+                        if (old.getKind() == Tree.Kind.CLASS) {
+                            ClassTree _old = (ClassTree) old;
+                            nue = make.Class(addSuppressWarnings(make, sw, _old.getModifiers()),
+                                    _old.getSimpleName(), _old.getTypeParameters(), _old.getExtendsClause(), _old.getImplementsClause(), _old.getMembers());
+                        } else if (old.getKind() == Tree.Kind.METHOD) {
+                            MethodTree _old = (MethodTree) old;
+                            // XXX what about constructors?
+                            nue = make.Method(addSuppressWarnings(make, sw, _old.getModifiers()),
+                                    _old.getName(), _old.getReturnType(), _old.getTypeParameters(), _old.getParameters(), _old.getThrows(), _old.getBody(),
+                                    (ExpressionTree) _old.getDefaultValue()/*XXX, _old.isVarArg()*/);
+                        } else if (old.getKind() == Tree.Kind.VARIABLE) {
+                            VariableTree _old = (VariableTree) old;
+                            nue = make.Variable(addSuppressWarnings(make, sw, _old.getModifiers()),
+                                    _old.getName(), _old.getType(), _old.getInitializer());
+                        } else {
+                            System.err.println("unknown tree kind " + old.getKind());
+                            return;
+                        }
+                        nue = GeneratorUtilities.get(wc).importFQNs(nue);
+                        wc.rewrite(old, nue);
+                    }
+                }).commit();
+                return null; // XXX would be polite to implement
+            }
+
+            private ModifiersTree addSuppressWarnings(TreeMaker make, TypeElement sw, ModifiersTree original) {
+                // XXX check if already exists on old, in which case insert into array
+                ExpressionTree annotationTypeTree = make.QualIdent(sw);
+                List<ExpressionTree> arguments = new ArrayList<ExpressionTree>();
+                arguments.add(/*make.Assignment(make.Identifier("value"), */make.Literal(bugType)/*)*/);
+                AnnotationTree annTree = make.Annotation(annotationTypeTree, arguments);
+                return make.addModifiersAnnotation(original, annTree);
+            }
+
         }
 
     }
