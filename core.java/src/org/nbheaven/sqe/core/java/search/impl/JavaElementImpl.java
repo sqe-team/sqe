@@ -86,8 +86,8 @@ public final class JavaElementImpl implements JavaElement {
     public Line getLine() {
         try {
             DataObject dao = DataObject.find(fileObject);
-            EditorCookie editorCookie = dao.getCookie(EditorCookie.class);
-            LineCookie lineCookie = dao.getCookie(LineCookie.class);
+            EditorCookie editorCookie = dao.getLookup().lookup(EditorCookie.class);
+            LineCookie lineCookie = dao.getLookup().lookup(LineCookie.class);
 
             int[] offset = getOffset();
             int startOffset = offset[0];
