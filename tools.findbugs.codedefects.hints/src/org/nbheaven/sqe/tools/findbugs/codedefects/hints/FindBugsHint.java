@@ -32,7 +32,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +74,7 @@ import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbCollections;
 import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -192,81 +192,45 @@ public class FindBugsHint {
             List<ErrorDescription> errorDescriptions = new LinkedList<ErrorDescription>();
             for (final BugInstance bugInstance : bugs) {
                 try {
-                    ErrorDescription error = null;
+                    int line = 0;
                     // Highest priority: return the first top level source line annotation
-
-                    Fix fix = new Fix() {
-
-                        public String getText() {
-                            return "Disable FindBugs Detector for BugPattern: " + bugInstance.getBugPattern().getShortDescription();
-                        }
-
-                        public ChangeInfo implement() throws Exception {
-                            FindBugsSettingsProvider settingsProvider = project.getLookup().lookup(FindBugsSettingsProvider.class);
-                            if (null != settingsProvider) {
-                                UserPreferences findBugsSettings = settingsProvider.getFindBugsSettings();
-                                for (Iterator<DetectorFactory> factoryIterator = DetectorFactoryCollection.instance().factoryIterator(); factoryIterator.hasNext();) {
-                                    DetectorFactory detectorFactory = factoryIterator.next();
-                                    if (detectorFactory.getReportedBugPatterns().contains(bugInstance.getBugPattern())) {
-                                        findBugsSettings.enableDetector(detectorFactory, false);
-                                    }
-                                }
-                                settingsProvider.setFindBugsSettings(findBugsSettings);
-
-                                FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
-                                FindBugsResult result = qualitySession.getResult();
-                                if (null != result) {
-                                    result.removeAllBugInstancesForBugPattern(bugInstance.getBugPattern());
-                                }
-
-                            }
-                            return new ChangeInfo();
-                        }
-                    };
-
-
-                    for (Iterator<BugAnnotation> annotationIterator = bugInstance.annotationIterator(); annotationIterator.hasNext();) {
-                        BugAnnotation annotation = annotationIterator.next();
+                    for (BugAnnotation annotation : NbCollections.iterable(bugInstance.annotationIterator())) {
                         if (annotation instanceof SourceLineAnnotation) {
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, bugInstance.getPrimarySourceLineAnnotation().getStartLine()));
+                            line = Math.max(1, bugInstance.getPrimarySourceLineAnnotation().getStartLine());
                             break;
                         }
                     }
-
-                    if (null == error) {
+                    if (line == 0) {
+                        JavaElement findElement = null;
                         FieldAnnotation fieldAnnotation = bugInstance.getPrimaryField();
                         if (null != fieldAnnotation) {
                             VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
-                            JavaElement findFieldElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findVariableElement(desc);
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, findFieldElement != null ? Math.max(1, findFieldElement.getLine().getLineNumber() + 1) : 1);
+                            findElement = SearchUtilities.findVariableElement(desc);
+                        }
+                        if (findElement == null) {
+                            MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
+                            if (null != methodAnnotation) {
+                                MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
+                                findElement = SearchUtilities.findMethodElement(desc);
+                            }
+                        }
+                        if (findElement == null) {
+                            ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
+                            if (null != classAnnotation) {
+                                ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
+                                findElement = SearchUtilities.findClassElement(desc);
+                            }
+                        }
+                        if (findElement != null) {
+                            line = Math.max(1, findElement.getLine().getLineNumber() + 1);
                         }
                     }
-                    if (null == error) {
-                        MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
-                        if (null != methodAnnotation) {
-                            MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
-                            JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findMethodElement(desc);
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, findMethodElement != null ? Math.max(1, findMethodElement.getLine().getLineNumber() + 1) : 1);
-                        }
-
+                    if (line > 0) {
+                        errorDescriptions.add(ErrorDescriptionFactory.createErrorDescription(
+                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(),
+                                    Arrays.<Fix>asList(new DisableDetectorFix(bugInstance, project)),
+                                    document, line));
                     }
-                    if (null == error) {
-                        ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
-                        if (null != classAnnotation) {
-                            ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
-                            JavaElement findClassElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findClassElement(desc);
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, findClassElement != null ? Math.max(1, findClassElement.getLine().getLineNumber() + 1) : 1);
-                        }
-                    }
-                    errorDescriptions.add(error);
                 } catch (RuntimeException e) {
                     System.err.println("INFO: Can't create ErrorDescription for FindBugs bug instance: " +
                             bugInstance.getMessage());
@@ -310,9 +274,41 @@ public class FindBugsHint {
             return fileObjectCollection.toArray(new FileObject[fileObjectCollection.size()]);
         }
 
+        private static class DisableDetectorFix implements Fix {
+
+            private final BugInstance bugInstance;
+            private final Project project;
+
+            public DisableDetectorFix(BugInstance bugInstance, Project project) {
+                this.bugInstance = bugInstance;
+                this.project = project;
+            }
+
+            public String getText() {
+                return "Disable FindBugs Detector for BugPattern: " + bugInstance.getBugPattern().getShortDescription();
+            }
+
+            public ChangeInfo implement() throws Exception {
+                FindBugsSettingsProvider settingsProvider = project.getLookup().lookup(FindBugsSettingsProvider.class);
+                if (settingsProvider != null) {
+                    UserPreferences findBugsSettings = settingsProvider.getFindBugsSettings();
+                    for (DetectorFactory detectorFactory : NbCollections.iterable(DetectorFactoryCollection.instance().factoryIterator())) {
+                        if (detectorFactory.getReportedBugPatterns().contains(bugInstance.getBugPattern())) {
+                            findBugsSettings.enableDetector(detectorFactory, false);
+                        }
+                    }
+                    settingsProvider.setFindBugsSettings(findBugsSettings);
+                    FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
+                    FindBugsResult result = qualitySession.getResult();
+                    if (result != null) {
+                        result.removeAllBugInstancesForBugPattern(bugInstance.getBugPattern());
+                    }
+                }
+                return null;
+            }
+        }
+
     }
-
-
 
     private static final class FCL implements FileChangeListener {
 
