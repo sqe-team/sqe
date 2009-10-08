@@ -393,26 +393,20 @@ public class FindBugsHint {
                             System.err.println("could not find " + handle);
                             return;
                         }
-                        Tree old = wc.getTrees().getTree(element);
-                        Tree nue;
-                        if (old.getKind() == Tree.Kind.CLASS) {
-                            ClassTree _old = (ClassTree) old;
-                            nue = make.Class(addSuppressWarnings(make, sw, _old.getModifiers()),
-                                    _old.getSimpleName(), _old.getTypeParameters(), _old.getExtendsClause(), _old.getImplementsClause(), _old.getMembers());
-                        } else if (old.getKind() == Tree.Kind.METHOD) {
-                            MethodTree _old = (MethodTree) old;
+                        Tree elementTree = wc.getTrees().getTree(element);
+                        ModifiersTree old;
+                        if (elementTree.getKind() == Tree.Kind.CLASS) {
+                            old = ((ClassTree) elementTree).getModifiers();
+                        } else if (elementTree.getKind() == Tree.Kind.METHOD) {
                             // XXX what about constructors?
-                            nue = make.Method(addSuppressWarnings(make, sw, _old.getModifiers()),
-                                    _old.getName(), _old.getReturnType(), _old.getTypeParameters(), _old.getParameters(), _old.getThrows(), _old.getBody(),
-                                    (ExpressionTree) _old.getDefaultValue()/*XXX, _old.isVarArg()*/);
-                        } else if (old.getKind() == Tree.Kind.VARIABLE) {
-                            VariableTree _old = (VariableTree) old;
-                            nue = make.Variable(addSuppressWarnings(make, sw, _old.getModifiers()),
-                                    _old.getName(), _old.getType(), _old.getInitializer());
+                            old = ((MethodTree) elementTree).getModifiers();
+                        } else if (elementTree.getKind() == Tree.Kind.VARIABLE) {
+                            old = ((VariableTree) elementTree).getModifiers();
                         } else {
-                            System.err.println("unknown tree kind " + old.getKind());
+                            System.err.println("unknown tree kind " + elementTree.getKind());
                             return;
                         }
+                        ModifiersTree nue = addSuppressWarnings(make, sw, old);
                         nue = GeneratorUtilities.get(wc).importFQNs(nue);
                         wc.rewrite(old, nue);
                     }
