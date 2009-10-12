@@ -38,7 +38,7 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
 
     private static final Logger LOG = Logger.getLogger(FindBugsProjectScannerJob.class.getName());
 
-    FindBugsSession findBugsSession;
+    private final FindBugsSession findBugsSession;
 
     FindBugsProjectScannerJob(Project project) {
         super(project);

@@ -35,14 +35,11 @@ public class FindBugsFileScannerJob extends FindBugsScannerJob {
 
     private static final Logger LOG = Logger.getLogger(FindBugsFileScannerJob.class.getName());
 
-
-    FindBugsSession findBugsSession;
-    FileObject[] fileObjects;
+    private final FileObject[] fileObjects;
 
     FindBugsFileScannerJob(Project project, FileObject... fileObjects) {
         super(project);
         this.fileObjects = fileObjects;
-        findBugsSession = project.getLookup().lookup(FindBugsSession.class);
     }
 
     protected edu.umd.cs.findbugs.Project createFindBugsProject() {
