@@ -5,4 +5,70 @@
 <project name="Software Quality Environment" basedir=".">
     <description>Builds the module suite Software Quality Environment.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <target name="-build-full-sqe-updatecenter" depends="-init">
+
+        <property name="build.updates.dir.sqe" location="build/updates"/>
+        <property name="build.updates.dir.wrapper" location="wrapper/build/updates"/>
+        <property name="build.updates.dir.full" location="build/full-sqe-updatecenter"/>
+
+        <copy todir="${build.updates.dir.full}">
+            <fileset dir="${build.updates.dir.wrapper}">
+                <include name="*.nbm"/>
+            </fileset>
+            <fileset dir="${build.updates.dir.sqe}">
+                <include name="*.nbm"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${build.updates.dir.full}"/>
+
+        <condition property="use.license.url.in.catalog" value="true" else="false">
+            <available resource="org/netbeans/updater/resources/autoupdate-catalog-2_6.dtd">
+                <classpath>
+                    <resources refid="updater.jar"/>
+                </classpath>
+            </available>
+        </condition>
+
+        <makeupdatedesc desc="${build.updates.dir.full}/updates.xml" distbase="." automaticgrouping="true" uselicenseurl="${use.lice
+nse.url.in.catalog}">
+            <fileset dir="${build.updates.dir.full}">
+                <include name="*.nbm"/>
+            </fileset>
+            <updaterjar>
+                <resources refid="updater.jar"/>
+            </updaterjar>
+        </makeupdatedesc>
+
+    </target>
+
+    <target name="-build-full-sqe-dist" depends="-init">
+        <property name="build.cluster.dir.sqe" location="build/cluster"/>
+        <property name="build.cluster.dir.wrapper" location="wrapper/build/cluster"/>
+        <property name="build.cluster.dir.full" location="build/full-sqe-clusterr"/>
+
+        <copy todir="${build.cluster.dir.full}">
+            <fileset dir="${build.cluster.dir.wrapper}">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="${build.cluster.dir.sqe}">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+
+        <zip destfile="build/sqe.zip" compress="true">
+            <fileset dir="${build.cluster.dir.full}" >
+                <include name="**/*"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="create-full-release" depends="-init">
+        <ant antfile="wrapper/build.xml" target="nbms"/>
+        <antcall target="nbms"/>
+        <antcall target="-build-full-sqe-dist"/>
+        <antcall target="-build-full-sqe-updatecenter"/>
+    </target>
+
 </project>
