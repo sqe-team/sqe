@@ -61,6 +61,7 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
             // add source dir findbugs
             File f = FileUtil.toFile(fo);
             if (f != null) {
+                LOG.log(Level.FINE, "addSourceDir: {0}", f);
                 fibuProject.addSourceDir(f.getAbsolutePath());
             }
 
@@ -75,16 +76,14 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
                         LOG.warning("Skipping nonexistent binary entry " + checkFile);
                         continue;
                     }
+                    LOG.log(Level.FINE, "addFile: {0}", checkFile);
                     fibuProject.addFile(checkFile.getAbsolutePath());
                 }
             } catch (FileStateInvalidException x) {
                 LOG.log(Level.INFO, null, x);
             }
 
-            ClassPath cp = ClassPath.getClassPath(fo, ClassPath.EXECUTE);
-            // XXX http://www.netbeans.org/nonav/issues/show_bug.cgi?id=174012 means this will not work well for Maven src/main/java
-            // (does not matter if src/test/java is also present since that will anyway include everything)
-
+            ClassPath cp = ClassPath.getClassPath(fo, ClassPath.COMPILE);
             if (null != cp) {
                 for (ClassPath.Entry entry : cp.entries()) {
                     URL url = entry.getURL();
@@ -97,6 +96,7 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
                         LOG.warning("Skipping nonexistent classpath entry " + checkFile);
                         continue;
                     }
+                    LOG.log(Level.FINE, "addAuxClasspathEntry: {0}", checkFile);
                     fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
                 }
             }
