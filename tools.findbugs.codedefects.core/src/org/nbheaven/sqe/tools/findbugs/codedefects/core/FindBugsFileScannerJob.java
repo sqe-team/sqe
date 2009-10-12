@@ -19,6 +19,7 @@ package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import java.io.File;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -49,6 +50,7 @@ public class FindBugsFileScannerJob extends FindBugsScannerJob {
             if (fo.isValid()) {
                 File f = FileUtil.toFile(fo);
                 if (f != null) {
+                    LOG.log(Level.FINE, "addFile: {0}", f);
                     fibuProject.addFile(f.getAbsolutePath());
                 }
             }
