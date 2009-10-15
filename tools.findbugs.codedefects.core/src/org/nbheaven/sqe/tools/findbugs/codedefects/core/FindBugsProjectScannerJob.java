@@ -96,7 +96,7 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
                         LOG.warning("Skipping nonexistent classpath entry " + checkFile);
                         continue;
                     }
-                    LOG.log(Level.FINE, "addAuxClasspathEntry: {0}", checkFile);
+                    LOG.log(Level.FINER, "addAuxClasspathEntry: {0}", checkFile);
                     fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
                 }
             }
