@@ -18,10 +18,14 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.hints;
 
 import com.sun.source.tree.AnnotationTree;
+import com.sun.source.tree.AssignmentTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.IdentifierTree;
+import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ModifiersTree;
+import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import edu.umd.cs.findbugs.BugAnnotation;
@@ -398,7 +402,6 @@ public class FindBugsHint {
                         if (elementTree.getKind() == Tree.Kind.CLASS) {
                             old = ((ClassTree) elementTree).getModifiers();
                         } else if (elementTree.getKind() == Tree.Kind.METHOD) {
-                            // XXX what about constructors?
                             old = ((MethodTree) elementTree).getModifiers();
                         } else if (elementTree.getKind() == Tree.Kind.VARIABLE) {
                             old = ((VariableTree) elementTree).getModifiers();
@@ -415,10 +418,50 @@ public class FindBugsHint {
             }
 
             private ModifiersTree addSuppressWarnings(TreeMaker make, TypeElement sw, ModifiersTree original) {
-                // XXX check if already exists on old, in which case insert into array
+                LiteralTree toAdd = make.Literal(bugType);
+                // First try to insert into a value list for an existing annotation:
+                List<? extends AnnotationTree> anns = original.getAnnotations();
+                for (int i = 0; i < anns.size(); i++) {
+                    AnnotationTree ann = anns.get(i);
+                    IdentifierTree id = (IdentifierTree) ann.getAnnotationType();
+                    // XXX what if this is the java.lang version? how to distinguish??
+                    if (id.getName().contentEquals("SuppressWarnings")) {
+                        List<? extends ExpressionTree> args = ann.getArguments();
+                        // XXX need to rather skip over non-'value' assignments (e.g. 'justification')
+                        if (args.size() != 1) {
+                            System.err.println("args list for @SW not of size 1: " + args);
+                            return original;
+                        }
+                        AssignmentTree assign = (AssignmentTree) args.get(0);
+                        if (!assign.getVariable().toString().equals("value")) {
+                            System.err.println("weird attribute for @SW: " + assign);
+                            return original;
+                        }
+                        ExpressionTree arg = assign.getExpression();
+                        NewArrayTree arr;
+                        if (arg.getKind() == Tree.Kind.STRING_LITERAL) {
+                            arr = make.NewArray(null, Collections.<ExpressionTree>emptyList(), Collections.singletonList(arg));
+                        } else if (arg.getKind() == Tree.Kind.NEW_ARRAY) {
+                            arr = (NewArrayTree) arg;
+                        } else {
+                            System.err.println("unknown arg kind " + arg.getKind() + ": " + arg);
+                            return original;
+                        }
+                        for (ExpressionTree existing : arr.getInitializers()) {
+                            if (((LiteralTree) existing).getValue().equals(bugType)) {
+                                // Already suppressing this warning - perhaps have just not yet reanalyzed.
+                                return original;
+                            }
+                        }
+                        arr = make.addNewArrayInitializer(arr, toAdd);
+                        ann = make.Annotation(id, Collections.singletonList(arr));
+                        return make.insertModifiersAnnotation(make.removeModifiersAnnotation(original, i), i, ann);
+                    }
+                }
+                // Not found, so create a new annotation:
                 ExpressionTree annotationTypeTree = make.QualIdent(sw);
                 List<ExpressionTree> arguments = new ArrayList<ExpressionTree>();
-                arguments.add(/*make.Assignment(make.Identifier("value"), */make.Literal(bugType)/*)*/);
+                arguments.add(/*make.Assignment(make.Identifier("value"), */toAdd/*)*/);
                 AnnotationTree annTree = make.Annotation(annotationTypeTree, arguments);
                 return make.addModifiersAnnotation(original, annTree);
             }
