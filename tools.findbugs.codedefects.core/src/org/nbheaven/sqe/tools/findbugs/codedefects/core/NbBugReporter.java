@@ -17,13 +17,18 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
+import edu.umd.cs.findbugs.AnalysisError;
 import edu.umd.cs.findbugs.TextUIBugReporter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author sven
  */
 final class NbBugReporter extends TextUIBugReporter {
+
+    private static final Logger LOG = Logger.getLogger(NbBugReporter.class.getName());
 
     private FindBugsResult findbugsResult;
     private NbFindBugsProgress progressCallback;
@@ -76,4 +81,16 @@ final class NbBugReporter extends TextUIBugReporter {
             edu.umd.cs.findbugs.classfile.ClassDescriptor classDescriptor) {
         progressCallback.getProgressHandle().progress("Scanning " + classDescriptor.getClassName());
     }
+
+    public @Override void reportAnalysisError(AnalysisError error) {
+        LOG.log(Level.INFO, error.getMessage(), error.getException());
+    }
+
+    public @Override void reportMissingClass(String message) {
+        /* XXX printed for javax.annotation.NonNull on every run; not obviously helpful:
+        StatusDisplayer.getDefault().setStatusText("Missing class: " + message);
+         */
+        LOG.log(Level.FINE, "Missing class: {0}", message);
+    }
+
 }
