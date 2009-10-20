@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collection;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
@@ -45,8 +44,7 @@ public class DefectProviderConfigurationPanel extends JPanel {
     private void init() {
         this.setBackground(Color.WHITE);
         this.setOpaque(true);
-        Collection<QualityProvider> providers = SQEUtilities.getProviders();
-        for (final QualityProvider provider: providers) {
+        for (final QualityProvider provider : SQEUtilities.getProviders()) {
             CodeDefectProviderSelector checkbox = new CodeDefectProviderSelector(provider);
             checkbox.setProject(null);
             this.add(checkbox);

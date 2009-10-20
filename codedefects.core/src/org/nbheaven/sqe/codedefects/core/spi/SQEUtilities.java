@@ -17,93 +17,19 @@
  */
 package org.nbheaven.sqe.codedefects.core.spi;
 
-import java.util.Arrays;
-import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
-
-import org.openide.cookies.InstanceCookie;
-
-import org.openide.filesystems.FileAttributeEvent;
-import org.openide.filesystems.FileChangeListener;
-import org.openide.filesystems.FileEvent;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileRenameEvent;
-import org.openide.filesystems.FileUtil;
-
-import org.openide.loaders.DataObject;
-import org.openide.loaders.DataObjectNotFoundException;
-
-import java.io.IOException;
-
-import java.util.ArrayList;
 import java.util.Collection;
+import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
-
-/**
- *
- * @author sven
- */
 public class SQEUtilities {
-    private static Collection<QualityProvider> providers;
 
-    /** Creates a new instance of SQEUtilities */
-    private SQEUtilities() {
+    private SQEUtilities() {}
+
+    private static final Lookup.Result<QualityProvider> providers = Lookups.forPath("SQE/Providers/CodeDefects").lookupResult(QualityProvider.class);
+
+    public static Collection<? extends QualityProvider> getProviders() {
+        return providers.allInstances();
     }
 
-    public static synchronized Collection<QualityProvider> getProviders() {
-        if (null == providers) {
-            final FileObject fo = FileUtil.getConfigFile("SQE/Providers/CodeDefects");
-
-            if (null != fo) {
-                fo.addFileChangeListener(new FileChangeListener() {
-                        public void fileAttributeChanged(
-                            FileAttributeEvent fileAttributeEvent) {
-                            providers = createProviderList(fo);
-                        }
-
-                        public void fileChanged(FileEvent fileEvent) {
-                            providers = createProviderList(fo);
-                        }
-
-                        public void fileDataCreated(FileEvent fileEvent) {
-                            providers = createProviderList(fo);
-                        }
-
-                        public void fileDeleted(FileEvent fileEvent) {
-                            providers = createProviderList(fo);
-                        }
-
-                        public void fileFolderCreated(FileEvent fileEvent) {
-                            providers = createProviderList(fo);
-                        }
-
-                        public void fileRenamed(FileRenameEvent fileRenameEvent) {
-                            providers = createProviderList(fo);
-                        }
-                    });
-                providers = createProviderList(fo);
-            }
-        }
-
-        return providers;
-    }
-
-    private static Collection<QualityProvider> createProviderList(FileObject fo) {
-        Collection<QualityProvider> myProviders = new ArrayList<QualityProvider>();
-
-        for (FileObject actionsFileObject : FileUtil.getOrder(Arrays.asList(fo.getChildren()), true)) {
-            try {
-                DataObject dob = DataObject.find(actionsFileObject);
-                InstanceCookie cookie = dob.getCookie(InstanceCookie.class);
-
-                if (null != cookie) {
-                    myProviders.add((QualityProvider) cookie.instanceCreate());
-                }
-            } catch (DataObjectNotFoundException donfe) {
-            } catch (IOException ioex) {
-            } catch (ClassNotFoundException cnfe) {
-            }
-        }
-
-        return myProviders;
-    }
 }
