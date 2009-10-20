@@ -110,6 +110,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public class FindBugsHint {
 
+    private FindBugsHint() {}
+    
     private static RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
 
     private static class Task implements CancellableTask<CompilationInfo> {
