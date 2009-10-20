@@ -7,6 +7,12 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.nbheaven.sqe.kit.java</code-name-base>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.nbheaven.sqe.tools.pmd.codedefects.hints</code-name-base>
                     <run-dependency>
                         <specification-version>1.0</specification-version>
