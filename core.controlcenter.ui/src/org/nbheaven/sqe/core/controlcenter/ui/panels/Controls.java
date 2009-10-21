@@ -57,6 +57,7 @@ public class Controls extends FlatToolBar {
     private Collection<Action> getActions() {
         Lookup context = SQEManager.getDefault().getLookup();
 
+        // XXX could use Utilities.actionsForPath here
         Collection<Action> actions = new ArrayList<Action>();
         FileObject fo = FileUtil.getConfigFile("SQE/ControlCenter/Controls");
         for (FileObject actionsFileObject : FileUtil.getOrder(Arrays.asList(fo.getChildren()), true)) {
