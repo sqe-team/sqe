@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.netbeans.api.project.Project;
@@ -32,7 +33,7 @@ import org.openide.filesystems.FileObject;
  * 
  * @author Sven Reimers
  */
-@ProjectServiceProvider(service=FindBugsSession.class, projectType={
+@ProjectServiceProvider(service={FindBugsSession.class, QualitySession.class}, projectType={
     "org-netbeans-modules-apisupport-project",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project",
