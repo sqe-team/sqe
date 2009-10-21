@@ -20,10 +20,12 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.projects.maven;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
+import org.nbheaven.sqe.core.maven.utils.FileUtilities;
 import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.AbstractCheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
@@ -47,7 +49,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
     }
 
     public CheckstyleSettings getCheckstyleSettings() {
-        MavenPluginConfiguration pluginConfiguration = MavenUtilities.getPluginConfiguration(p, "org.apache.maven.plugins", "maven-checkstyle-plugin");
+        MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-checkstyle-plugin");
         if (null != pluginConfiguration) {
             String configLocation = pluginConfiguration.getValue("configLocation");
             String configProperties = pluginConfiguration.getValue("propertyExpansion");
@@ -56,17 +58,39 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
                 String[] split = configProperties.split("=");
                 properties.put(split[0], split[1]);
             }
+            //check is file is physically present in the project
+            File file = FileUtilities.resolveFilePath(FileUtil.toFile(p.getProjectDirectory()), configLocation);
+            if (file != null && file.exists()) {
+                return new CheckstyleSettingsImpl(FileUtil.toFileObject(file), properties);
+            }
+            //check the default configurations present in the maven-checkstyle-plugin
+            //check is file is present in the project's checkstyle plugin classpath
+            List<File> deps = MavenUtilities.findDependencyArtifacts(p, "org.apache.maven.plugins", "maven-checkstyle-plugin", true);
+            if (deps.size() > 0) {
+                FileObject fo = null;
+                for (File d : deps) {
+                    FileObject fileFO = FileUtil.toFileObject(d);
+                    if (FileUtil.isArchiveFile(fileFO)) {
+                        FileObject root = FileUtil.getArchiveRoot(fileFO);
+                        if (root != null) {
+                            fo = root.getFileObject(configLocation);
+                            if (fo != null) break;
+                        }
+                    }
+                }
+                if (fo != null) {
+                    return new CheckstyleSettingsImpl(fo, properties);
+                }
+            }
+
             try {
                 URL url = new URL(configLocation);
                 return new CheckstyleSettingsImpl(url, properties);
             } catch (MalformedURLException ex) {
                 Exceptions.printStackTrace(ex);
             }
-            File file = new File(configLocation);
-            // if the config location cannot be found just ignore it and use the default
-            // TODO: better error handling here - pass it to session and result somehow for display to user
-            //       something like a problem report for executing the tool
-            return new CheckstyleSettingsImpl(FileUtil.toFileObject(file), properties);
+                // TODO: better error handling here - pass it to session and result somehow for display to user
+                //       something like a problem report for executing the tool
         }
         return new CheckstyleSettingsImpl();
     }

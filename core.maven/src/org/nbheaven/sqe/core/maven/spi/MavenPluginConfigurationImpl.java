@@ -27,6 +27,7 @@ import org.openide.util.Exceptions;
  *
  * @author Sven Reimers
  */
+@Deprecated
 public class MavenPluginConfigurationImpl implements MavenPluginConfiguration {
 
     private final Xpp3Dom mavenConfiguration;
