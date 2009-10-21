@@ -31,8 +31,6 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -46,12 +44,15 @@ import org.netbeans.modules.maven.embedder.MavenSettingsSingleton;
 import org.netbeans.modules.maven.embedder.NBPluginParameterExpressionEvaluator;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.NbCollections;
 
 /**
  *
  * @author sven
  */
 public final class MavenUtilities {
+
+    private MavenUtilities() {}
 
     /** deprecated */
     @Deprecated
@@ -92,8 +93,8 @@ public final class MavenUtilities {
         if (includePluginArtifact) {
             //TODO check also getReportArtifacts()?
             Set<Artifact> arts = new HashSet<Artifact>();
-            arts.addAll(p.getMavenProject().getReportArtifacts());
-            arts.addAll(p.getMavenProject().getPluginArtifacts());
+            arts.addAll(NbCollections.checkedSetByFilter(p.getMavenProject().getReportArtifacts(), Artifact.class, true));
+            arts.addAll(NbCollections.checkedSetByFilter(p.getMavenProject().getPluginArtifacts(), Artifact.class, true));
             for (Artifact a : arts) {
                 if (pluginArtifactId.equals(a.getArtifactId()) &&
                     pluginGroupId.equals(a.getGroupId())) {
@@ -121,12 +122,12 @@ public final class MavenUtilities {
             
         }
         //TODO only build or also getReportPlugins()?
-        List<Plugin> plugins = p.getMavenProject().getBuildPlugins();
+        List<Plugin> plugins = NbCollections.checkedListByCopy(p.getMavenProject().getBuildPlugins(), Plugin.class, true);
         for (Plugin plug : plugins) {
             if (pluginArtifactId.equals(plug.getArtifactId()) &&
                     pluginGroupId.equals(plug.getGroupId())) {
                 try {
-                    List<Dependency> deps = plug.getDependencies();
+                    List<Dependency> deps = NbCollections.checkedListByCopy(plug.getDependencies(), Dependency.class, true);
                     ArtifactFactory artifactFactory = (ArtifactFactory) online.getPlexusContainer().lookup(ArtifactFactory.class);
                     for (Dependency d : deps) {
                         final Artifact projectArtifact = artifactFactory.createArtifactWithClassifier(d.getGroupId(), d.getArtifactId(), d.getVersion(), d.getType(), d.getClassifier());
