@@ -52,6 +52,9 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
         MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-checkstyle-plugin");
         if (null != pluginConfiguration) {
             String configLocation = pluginConfiguration.getValue("configLocation");
+            if (configLocation == null) {
+                return new CheckstyleSettingsImpl();
+            }
             String configProperties = pluginConfiguration.getValue("propertyExpansion");
             Properties properties = new Properties();
             if (null != configProperties && configProperties.length() > 0) {
