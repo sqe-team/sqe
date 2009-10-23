@@ -109,7 +109,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
 
     @Override
     protected void scan() {
-        getProgressHandle().progress("Setting up Checkstyle");
+        getProgressHandle().progress("Setting up PMD");
         init();
         executePMD();
         this.pmdResult = new PMDResult(report);
