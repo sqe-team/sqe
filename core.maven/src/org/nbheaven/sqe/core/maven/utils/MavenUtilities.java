@@ -138,17 +138,13 @@ public final class MavenUtilities {
                             dpbc.setLocalRepository(online.getLocalRepository());
                             MavenProject mp = mpb.buildFromRepository(a, p.getMavenProject().getRemoteArtifactRepositories(), online.getLocalRepository());
                             if (mp != null) {
-                                System.out.println("mp=" + mp.getFile());
-                                System.out.println("art=" + mp.getArtifact());
                                 File pom = new File(f.getParentFile(), f.getName().replace(".jar", ".pom"));
-                                System.out.println("pom=" + pom);
                                 MavenProjectBuildingResult res = mpb.buildProjectWithDependencies(pom, dpbc);
                                 mp = res.getProject();
 
                                 Set<Artifact> depArts = mp.getDependencyArtifacts();
                                 for (Artifact depA : depArts) {
                                     File df = FileUtil.normalizeFile(new File(new File(online.getLocalRepository().getBasedir()), online.getLocalRepository().pathOf(depA)));
-                                    System.out.println("depfile=" + df);
                                     if (df.exists()) {
                                         cpFiles.add(df);
                                     }
