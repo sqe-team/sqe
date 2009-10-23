@@ -53,4 +53,8 @@ public class MavenPluginConfigurationImpl implements MavenPluginConfiguration {
         return source.getValue().trim();
     }
 
+    public String[] getStringListValue(String listParent, String listChild) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }
