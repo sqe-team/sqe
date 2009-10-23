@@ -25,6 +25,14 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.nbheaven.sqe.codedefects.core</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.8.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.nbheaven.sqe.tools.findbugs.codedefects.core</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -33,11 +41,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.codedefects.core</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.wrapper.findbugs</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.8.1</specification-version>
+                        <specification-version>1.3.9</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

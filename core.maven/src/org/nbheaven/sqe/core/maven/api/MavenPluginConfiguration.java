@@ -25,4 +25,6 @@ public interface MavenPluginConfiguration {
 
     public String getValue(String path);
 
+    public String[] getStringListValue(String listParent, String listChild);
+
 }
