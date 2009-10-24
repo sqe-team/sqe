@@ -86,12 +86,38 @@ public final class MavenUtilities {
                 //TODO does it contain report plugin config most probably not?
                 return getReportPluginPropertyList(project, groupId, artifactId, listParent, listChild, null);
             }
+
+            public boolean isDefinedInProject() {
+                return definesReportPlugin(project, groupId, artifactId);
+            }
+
         };
     }
 
-//    public static boolean definesReportPlugin(Project prj, String groupId, String artifactId) {
-//
-//    }
+
+    public static boolean definesReportPlugin(Project prj, String groupId, String artifactId) {
+        assert prj != null;
+        assert groupId != null;
+        assert artifactId != null;
+        final NbMavenProject p = prj.getLookup().lookup(NbMavenProject.class);
+        final MavenProject mp = p.getMavenProject();
+        List<ReportPlugin> rps = mp.getReportPlugins();
+        for (ReportPlugin rp : rps) {
+            if (groupId.equals(rp.getGroupId()) && artifactId.equals(rp.getArtifactId())) {
+                return true;
+            }
+        }
+        if (mp.getPluginManagement() != null) {
+            for (Object obj : mp.getPluginManagement().getPlugins()) {
+                Plugin plug = (Plugin)obj;
+                if (groupId.equals(plug.getGroupId()) &&
+                    artifactId.equals(plug.getArtifactId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 //    private static final RequestProcessor RP = new RequestProcessor("Download plugin classpath", 1);
 
@@ -160,7 +186,6 @@ public final class MavenUtilities {
             }
             
         }
-        //TODO only build or also getReportPlugins()?
         List<Plugin> plugins = NbCollections.checkedListByCopy(p.getMavenProject().getBuildPlugins(), Plugin.class, true);
         for (Plugin plug : plugins) {
             if (pluginArtifactId.equals(plug.getArtifactId()) &&

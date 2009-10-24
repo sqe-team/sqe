@@ -27,6 +27,7 @@ import org.openide.util.Exceptions;
  *
  * @author Sven Reimers
  */
+@Deprecated
 public class MavenPluginConfigurationImpl implements MavenPluginConfiguration {
 
     private final Xpp3Dom mavenConfiguration;
@@ -53,6 +54,10 @@ public class MavenPluginConfigurationImpl implements MavenPluginConfiguration {
     }
 
     public String[] getStringListValue(String listParent, String listChild) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isDefinedInProject() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

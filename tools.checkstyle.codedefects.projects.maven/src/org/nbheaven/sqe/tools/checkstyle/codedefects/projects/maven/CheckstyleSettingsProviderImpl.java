@@ -50,10 +50,10 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
 
     public CheckstyleSettings getCheckstyleSettings() {
         MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-checkstyle-plugin");
-        if (null != pluginConfiguration) {
+        if (pluginConfiguration.isDefinedInProject()) {
             String configLocation = pluginConfiguration.getValue("configLocation");
             if (configLocation == null) {
-                return new CheckstyleSettingsImpl();
+                configLocation = "config/sun_checks.xml"; //defaultvalue
             }
             String configProperties = pluginConfiguration.getValue("propertyExpansion");
             Properties properties = new Properties();
@@ -95,7 +95,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
                 // TODO: better error handling here - pass it to session and result somehow for display to user
                 //       something like a problem report for executing the tool
         }
-        return new CheckstyleSettingsImpl();
+        return null;
     }
 
     private static class CheckstyleSettingsImpl extends AbstractCheckstyleSettings {
