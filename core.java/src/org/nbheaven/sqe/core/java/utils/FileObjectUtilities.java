@@ -34,7 +34,7 @@ final public class FileObjectUtilities {
             return collectAllJavaSourceFiles(rootFolder, new HashSet<FileObject>());
     }
 
-    private static Collection<FileObject> collectAllJavaSourceFiles(FileObject rootFolder,
+    public static Collection<FileObject> collectAllJavaSourceFiles(FileObject rootFolder,
         Collection<FileObject> fileObjects) {
         for (FileObject fo : rootFolder.getChildren()) {
             if (fo.isFolder()) {

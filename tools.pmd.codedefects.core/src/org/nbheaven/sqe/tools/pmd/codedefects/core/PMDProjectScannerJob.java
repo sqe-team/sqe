@@ -18,9 +18,9 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.core;
 
 import java.util.Collection;
-import org.nbheaven.sqe.core.java.utils.FileObjectUtilities;
-import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
-import org.netbeans.api.project.SourceGroup;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDIncludes;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.DefaultPMDIncludes;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -37,12 +37,20 @@ final class PMDProjectScannerJob extends PMDScannerJob {
     }
 
     protected void executePMD() {
-        SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(getProject());
-        for (SourceGroup g : groups) {
-            FileObject rootOfSourceFolder = g.getRootFolder();
-            Collection<FileObject> fullList = FileObjectUtilities.collectAllJavaSourceFiles(rootOfSourceFolder);
-            executePMD(fullList);
+        PMDSettingsProvider prv = getProject().getLookup().lookup(PMDSettingsProvider.class);
+        Collection<FileObject> includes = null;
+        if (prv != null) {
+            PMDIncludes inc = prv.getPMDIncludes();
+            if (inc != null) {
+                includes = inc.getProjectIncludes();
+            }
         }
+        if (includes == null) {
+            //default behaviour..
+            includes = new DefaultPMDIncludes(getProject()).getProjectIncludes();
+        }
+        executePMD(includes);
+
     }
 
     @Override

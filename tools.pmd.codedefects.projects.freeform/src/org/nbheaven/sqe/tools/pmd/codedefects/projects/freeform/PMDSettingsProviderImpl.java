@@ -20,6 +20,7 @@ package org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform;
 import java.io.File;
 import java.util.prefs.Preferences;
 import org.nbheaven.sqe.core.ant.AntUtilities;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDIncludes;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
@@ -60,6 +61,11 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
 
     private Preferences prefs() {
         return ProjectUtils.getPreferences(project, PMDSettingsProviderImpl.class, true);
+    }
+
+    public PMDIncludes getPMDIncludes() {
+        //default behaviour
+        return null;
     }
 
 }

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.nbheaven.sqe.core.maven.utils.FileUtilities;
 import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDIncludes;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
 import org.netbeans.api.project.Project;
@@ -31,9 +32,11 @@ import org.openide.util.Exceptions;
 public class MavenPmdSettingsProvider implements PMDSettingsProvider {
 
     private final Project p;
+    private PMDIncludes includes;
 
     public MavenPmdSettingsProvider(Project project) {
         this.p = project;
+        includes = new MavenPMDIncludes(p);
     }
 
     public PMDSettings getPMDSettings() {
@@ -109,5 +112,9 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
             };
         }
         return null;
+    }
+
+    public PMDIncludes getPMDIncludes() {
+        return includes;
     }
 }
