@@ -40,17 +40,13 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
     }
 
     public PMDSettings getPMDSettings() {
-        MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-pmd-plugin");
+        final MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-pmd-plugin");
         if (pluginConfiguration.isDefinedInProject()) {
             RuleSetFactory rsf = new RuleSetFactory();
             final RuleSet toRet = new RuleSet();
             String[] ruleSets = pluginConfiguration.getStringListValue("rulesets", "ruleset");
             if (ruleSets == null) {
-                ruleSets = new String[] {
-                  "/rulesets/basic.xml",
-                  "/rulesets/imports.xml",
-                  "/rulesets/unusedcode.xml"
-                };
+                ruleSets = MavenDefaults.DEFAULT_RULESETS;
             }
             List<File> deps = MavenUtilities.findDependencyArtifacts(p, "org.apache.maven.plugins", "maven-pmd-plugin", true);
             for (String setString : ruleSets) {
@@ -107,7 +103,26 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
                 }
 
                 public RuleSet getActiveRules() {
-                    return toRet;
+                        RuleSet activeRuleSet = new RuleSet();
+                        //the default as defined in maven pmd plugin
+                        int minimumPriority = MavenDefaults.DEFAULT_RULE_PRIORITY;
+                        String priorityLevelString = pluginConfiguration.getValue("minimumPriority");
+                        if (priorityLevelString != null) {
+                            try {
+                                minimumPriority = Integer.parseInt(priorityLevelString);
+                            } catch (NumberFormatException e) {
+                                //just swallow..
+                            }
+                        }
+
+                        for (Rule rule : toRet.getRules()) {
+                            if (rule.getPriority() <= minimumPriority) {
+                                activeRuleSet.addRule(rule);
+                            }
+                        }
+
+                        return activeRuleSet;
+
                 }
             };
         }
