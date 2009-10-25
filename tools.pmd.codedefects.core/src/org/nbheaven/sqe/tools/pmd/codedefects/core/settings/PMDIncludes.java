@@ -1,4 +1,4 @@
-/* Copyright 2005,2006 Sven Reimers, Florian Vogler
+/* Copyright 2009 Milos Kleint
  *
  * This file is part of the Software Quality Environment Project.
  *
@@ -15,20 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.nbheaven.sqe.tools.pmd.codedefects.core.settings;
+
+import java.util.Collection;
+import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author Sven Reimers
+ * @author mkleint
  */
-public interface PMDSettingsProvider {
+public interface PMDIncludes {
 
-    PMDSettings getPMDSettings();
-
-    /**
-     * Project specific filtering of files to be included in the project scan.
-     * @return null if default behaviour shall be used
-     */
-    PMDIncludes getPMDIncludes();
-
+    Collection<FileObject> getProjectIncludes();
+    
 }

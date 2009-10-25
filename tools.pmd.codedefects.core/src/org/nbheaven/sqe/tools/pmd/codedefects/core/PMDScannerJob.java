@@ -31,6 +31,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.SourceType;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
 import org.netbeans.api.java.queries.SourceLevelQuery;
@@ -53,6 +54,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
     private RuleSet rules;
     private RuleContext ruleContext;
     private Report report;
+    private PMDSettings settings;
 
     PMDScannerJob(Project project) {
         this.project = project;
@@ -70,6 +72,10 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
         return pmdResult;
     }
 
+    protected final PMDSettings getPMDSettings() {
+        return settings;
+    }
+
     private void init() {
         pmd = new PMD();
 
@@ -79,10 +85,11 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
 
         PMDSettingsProvider settingsProvider = getProject().getLookup().lookup(PMDSettingsProvider.class);
         if (null == settingsProvider) {
-            rules = PMDSettingsImpl.globalSettings().getActiveRules();
+            settings = PMDSettingsImpl.globalSettings();
         } else {
-            rules = settingsProvider.getPMDSettings().getActiveRules();
+            settings = settingsProvider.getPMDSettings();
         }
+        rules = settings.getActiveRules();
     }
 
     private SourceType getSourceType(FileObject fo) {
@@ -109,7 +116,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
 
     @Override
     protected void scan() {
-        getProgressHandle().progress("Setting up Checkstyle");
+        getProgressHandle().progress("Setting up PMD");
         init();
         executePMD();
         this.pmdResult = new PMDResult(report);
