@@ -39,15 +39,12 @@ import org.apache.maven.project.MavenProjectBuildingResult;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.netbeans.modules.maven.api.NbMavenProject;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
-import org.nbheaven.sqe.core.maven.spi.MavenPluginConfigurationImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.maven.api.PluginPropertyUtils;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
-import org.netbeans.modules.maven.embedder.MavenSettingsSingleton;
 import org.netbeans.modules.maven.embedder.NBPluginParameterExpressionEvaluator;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -60,21 +57,6 @@ import org.openide.util.NbCollections;
 public final class MavenUtilities {
 
     private MavenUtilities() {}
-
-    /** deprecated */
-    @Deprecated
-    public static MavenPluginConfiguration getPluginConfiguration(Project project, String groupId, String artifactId) {
-        MavenProject mavenProject = project.getLookup().lookup(NbMavenProject.class).getMavenProject();
-        Xpp3Dom reportConfiguration = mavenProject.getReportConfiguration(groupId, artifactId, null);
-        if (null != reportConfiguration) {
-            ExpressionEvaluator eval = new NBPluginParameterExpressionEvaluator(mavenProject,
-                    MavenSettingsSingleton.getInstance().createUserSettingsModel(),
-                    new Properties());
-
-            return new MavenPluginConfigurationImpl(reportConfiguration, eval);
-        }
-        return null;
-    }
 
     public static MavenPluginConfiguration getReportPluginConfiguration(final Project project, final String groupId, final String artifactId) {
         return new MavenPluginConfiguration() {
@@ -101,6 +83,7 @@ public final class MavenUtilities {
         assert artifactId != null;
         final NbMavenProject p = prj.getLookup().lookup(NbMavenProject.class);
         final MavenProject mp = p.getMavenProject();
+        @SuppressWarnings("unchecked")
         List<ReportPlugin> rps = mp.getReportPlugins();
         for (ReportPlugin rp : rps) {
             if (groupId.equals(rp.getGroupId()) && artifactId.equals(rp.getArtifactId())) {
@@ -167,7 +150,7 @@ public final class MavenUtilities {
                                 File pom = new File(f.getParentFile(), f.getName().replace(".jar", ".pom"));
                                 MavenProjectBuildingResult res = mpb.buildProjectWithDependencies(pom, dpbc);
                                 mp = res.getProject();
-
+                                @SuppressWarnings("unchecked")
                                 Set<Artifact> depArts = mp.getDependencyArtifacts();
                                 for (Artifact depA : depArts) {
                                     File df = FileUtil.normalizeFile(new File(new File(online.getLocalRepository().getBasedir()), online.getLocalRepository().pathOf(depA)));
