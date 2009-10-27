@@ -17,12 +17,13 @@
   You should have received a copy of the GNU General Public License
   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
     
     <folder name="Menu">
         <folder name="Quality">
             <attr name="position" intvalue="890"/>
+            <attr name="displayName" bundlevalue="org.nbheaven.sqe.core.ui.Bundle#Quality.menu.label"/>
         </folder>
     </folder>
     

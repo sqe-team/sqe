@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.informations.ui
 OpenIDE-Module-Layer: org/nbheaven/sqe/informations/ui/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/informations/ui/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.1
 OpenIDE-Module-Java-Dependencies: Java > 1.5

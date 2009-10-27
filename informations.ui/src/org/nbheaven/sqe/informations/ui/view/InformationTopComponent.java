@@ -92,7 +92,7 @@ public class InformationTopComponent extends TopComponent implements PropertyCha
 
     @Override
     public String getDisplayName() {
-        return "SQE Information [" + ProjectUtils.getInformation(project).getDisplayName() + "]";
+        return "Quality Information [" + ProjectUtils.getInformation(project).getDisplayName() + "]"; // XXX I18N
     }
 
     @Override

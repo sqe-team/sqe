@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.codedefects.ui
 OpenIDE-Module-Layer: org/nbheaven/sqe/codedefects/ui/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/codedefects/ui/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.1
+OpenIDE-Module-Specification-Version: 1.2
 OpenIDE-Module-Java-Dependencies: Java > 1.5

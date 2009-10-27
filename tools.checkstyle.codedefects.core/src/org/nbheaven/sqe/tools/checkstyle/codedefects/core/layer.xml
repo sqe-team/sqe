@@ -67,7 +67,7 @@
     <folder name="Menu">
         <folder name="Quality">
             <folder name="CodeDefects">
-                <file name="RunCheckstyleActio.shadow">
+                <file name="RunCheckstyleAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
                     <attr name="position" intvalue="400"/>
                 </file>

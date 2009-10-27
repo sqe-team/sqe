@@ -247,12 +247,12 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
         assert SwingUtilities.isEventDispatchThread();
 
         if (null != project) {
-            setDisplayName("SQE [" + ProjectUtils.getInformation(project).getDisplayName() + "]");
+            setDisplayName("Quality [" + ProjectUtils.getInformation(project).getDisplayName() + "]"); // XXX I18N
             Node[] activatedNodes = new Node[]{new AbstractNode(Children.LEAF, Lookups.fixed(project))};
             setActivatedNodes(activatedNodes);
 
         } else {
-            setDisplayName("SQE [No project]");
+            setDisplayName("Quality [no project]"); // XXX I18N
             setActivatedNodes(new Node[]{});
         }
     }

@@ -34,6 +34,7 @@
         <folder name="Window">
             <folder name="Quality">
                 <attr name="position" intvalue="1540"/>
+                <attr name="displayName" bundlevalue="org.nbheaven.sqe.core.controlcenter.ui.Bundle#Quality.menu.label"/>
                 <file name="SQEControlCenterAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Window/org-nbheaven-sqe-core-controlcenter-ui-SQEControlCenterAction.instance"/>
                     <attr name="position" intvalue="50"/>
