@@ -68,6 +68,7 @@ public class QualityProvidersToolbarDropdownAction implements Action, Presenter.
     }
 
     private static List<Action> findProviderActions(Lookup context) {
+        // XXX could probably use Utilities.actionsForPath + Utilities.actionsToPopup
         FileObject actionsFO = FileUtil.getConfigFile("Menu/Quality/CodeDefects");
         ArrayList<Action> actions = new ArrayList<Action>();
         for (FileObject actionsFileObject : FileUtil.getOrder(Arrays.asList(actionsFO.getChildren()), true)) {
