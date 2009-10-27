@@ -28,6 +28,7 @@ import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.openide.util.Mutex;
 import org.openide.util.Utilities;
 import org.openide.util.actions.Presenter;
 import org.openide.util.lookup.Lookups;
@@ -54,31 +55,35 @@ public class ToolBarFromLayer {
         final Lookup.Result<Object> actions = Lookups.forPath(path).lookupResult(Object.class);
         LookupListener listener = new LookupListener() {
             public void resultChanged(LookupEvent ev) {
-                toolBar.removeAll();
-                for (Object item : actions.allInstances()) {
-                    if (context != null && item instanceof ContextAwareAction) {
-                        item = ((ContextAwareAction) item).createContextAwareInstance(context);
-                    }
-                    Component c;
-                    if (item instanceof Presenter.Toolbar) {
-                        c = ((Presenter.Toolbar) item).getToolbarPresenter();
-                    } else if (item instanceof Action) {
-                        JButton button = new JButton();
-                        Actions.connect(button, (Action) item);
-                        if (largeIcons) {
-                            button.putClientProperty("PreferredIconSize", 24); // NOI18N
+                Mutex.EVENT.readAccess(new Runnable() {
+                    public void run() {
+                        toolBar.removeAll();
+                        for (Object item : actions.allInstances()) {
+                            if (context != null && item instanceof ContextAwareAction) {
+                                item = ((ContextAwareAction) item).createContextAwareInstance(context);
+                            }
+                            Component c;
+                            if (item instanceof Presenter.Toolbar) {
+                                c = ((Presenter.Toolbar) item).getToolbarPresenter();
+                            } else if (item instanceof Action) {
+                                JButton button = new JButton();
+                                Actions.connect(button, (Action) item);
+                                if (largeIcons) {
+                                    button.putClientProperty("PreferredIconSize", 24); // NOI18N
+                                }
+                                c = button;
+                            } else if (item instanceof Component) {
+                                c = (Component) item;
+                            } else {
+                                if (item != null) {
+                                    Logger.getLogger(ToolBarFromLayer.class.getName()).warning("Unknown object: " + item);
+                                }
+                                continue;
+                            }
+                            toolBar.add(c);
                         }
-                        c = button;
-                    } else if (item instanceof Component) {
-                        c = (Component) item;
-                    } else {
-                        if (item != null) {
-                            Logger.getLogger(ToolBarFromLayer.class.getName()).warning("Unknown object: " + item);
-                        }
-                        continue;
                     }
-                    toolBar.add(c);
-                }
+                });
             }
         };
         actions.addLookupListener(listener);
