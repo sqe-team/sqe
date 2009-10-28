@@ -31,7 +31,7 @@ import org.openide.filesystems.FileUtil;
  *
  * @author Sven Reimers
  */
-public class FindBugsFileScannerJob extends FindBugsScannerJob {
+class FindBugsFileScannerJob extends FindBugsScannerJob {
 
     private static final Logger LOG = Logger.getLogger(FindBugsFileScannerJob.class.getName());
 
