@@ -133,14 +133,14 @@ public class FindBugsHint {
                 try {
                     String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
                     String name =  base + ".class"; //XXX
+                    // XXX this needs to listen to CompileOnSaveHelper instead
                     Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
                     for (URL u : bin.getRoots()) {
                         if ("file".equals(u.getProtocol())) {
                             try {
                                 File cls = new File(new File(u.toURI()), name);
                                 if (cls.exists()) {
-                                    FileChangeListener clsWeakFileChangeListener = FileUtil.weakFileChangeListener(listener, cls);
-                                    FileUtil.addFileChangeListener(clsWeakFileChangeListener, cls);
+                                    FileUtil.addFileChangeListener(listener, cls);
                                 }
                             } catch (URISyntaxException x) {
                                 Exceptions.printStackTrace(x);
@@ -484,7 +484,7 @@ public class FindBugsHint {
             return new Task(fileObject);
         }
 
-        protected void refreshImpl(FileObject file) {
+        private void refreshImpl(FileObject file) {
             reschedule(file);
         }
     }
