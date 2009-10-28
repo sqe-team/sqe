@@ -187,7 +187,8 @@ public class FindBugsHint {
                 if (null != session) {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
                         List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
-                        Map<FindBugsResult.ClassKey, Collection<BugInstance>> instanceByClass = session.computeResultAndWait(getFileObjectsToScan()).getInstanceByClass(true);
+                        Map<FindBugsResult.ClassKey,Collection<BugInstance>> instanceByClass =
+                                session.computeResultAndWait(fileObject).getInstanceByClass(true);
                         Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
                         for (String className : classes) {
                             for (FindBugsResult.ClassKey classKey : instanceByClass.keySet()) {
@@ -279,40 +280,6 @@ public class FindBugsHint {
                 }
             }
             return null;
-        }
-
-        private FileObject[] getFileObjectsToScan() {
-            Collection<FileObject> fileObjectCollection = new LinkedList<FileObject>();
-            ClassPath sourceCP = ClassPath.getClassPath(fileObject, ClassPath.SOURCE);
-            if (sourceCP != null) {
-                FileObject root = sourceCP.findOwnerRoot(fileObject);
-                try {
-                    String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
-                    String name =  base + ".class"; //XXX
-                    int lastSlashIndex = base.lastIndexOf(File.separatorChar);
-                    String className = base.substring(lastSlashIndex > 0 ? lastSlashIndex + 1 : 0);
-                    Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
-                    for (URL u : bin.getRoots()) {
-                        if ("file".equals(u.getProtocol())) {
-                            try {
-                                File cls = new File(new File(u.toURI()), name);
-                                if (cls.exists()) {
-                                    for(FileObject child: FileUtil.toFileObject(cls.getParentFile()).getChildren()) {
-                                        if(!child.isFolder() && child.getName().startsWith(className) && /*SQE-13*/child.hasExt("class")) {
-                                            fileObjectCollection.add(child);
-                                        }
-                                    }
-                                }
-                            } catch (URISyntaxException x) {
-                                Exceptions.printStackTrace(x);
-                            }
-                        }
-                    }
-                } catch (FileStateInvalidException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-            return fileObjectCollection.toArray(new FileObject[fileObjectCollection.size()]);
         }
 
         private static class DisableDetectorFix implements Fix {

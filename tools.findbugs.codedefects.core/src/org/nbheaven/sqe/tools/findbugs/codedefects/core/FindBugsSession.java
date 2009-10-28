@@ -61,8 +61,8 @@ public class FindBugsSession extends AbstractQualitySession {
     private Lock waitResultLock = new ReentrantLock();
     private Condition waitForResult = waitResultLock.newCondition();
 
-    public FindBugsResult computeResultAndWait(FileObject... fileObjects) {
-        FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), fileObjects);
+    public FindBugsResult computeResultAndWait(FileObject sourceFile) {
+        FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), sourceFile);
         SQECodedefectScanner.postAndWait(job);
         return job.getResult();
     }

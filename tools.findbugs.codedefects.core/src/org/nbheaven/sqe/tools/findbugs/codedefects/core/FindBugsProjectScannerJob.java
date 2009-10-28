@@ -18,16 +18,16 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.nbheaven.sqe.core.java.utils.CompileOnSaveHelper;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -66,7 +66,8 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
             }
 
             try {
-                for (URL url : BinaryForSourceQuery.findBinaryRoots(fo.getURL()).getRoots()) {
+                URL url = CompileOnSaveHelper.forSourceRoot(fo).binaryRoot(false);
+                if (url != null) {
                     File checkFile = FileUtil.archiveOrDirForURL(url);
                     if (checkFile == null) {
                         LOG.warning("Skipping inconvertible binary entry " + url);
@@ -79,7 +80,7 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
                     LOG.log(Level.FINE, "addFile: {0}", checkFile);
                     fibuProject.addFile(checkFile.getAbsolutePath());
                 }
-            } catch (FileStateInvalidException x) {
+            } catch (IOException x) {
                 LOG.log(Level.INFO, null, x);
             }
 
@@ -87,6 +88,11 @@ public class FindBugsProjectScannerJob extends FindBugsScannerJob {
             if (null != cp) {
                 for (ClassPath.Entry entry : cp.entries()) {
                     URL url = entry.getURL();
+                    try {
+                        url = CompileOnSaveHelper.forClassPathEntry(url).binaryRoot(false);
+                    } catch (IOException x) {
+                        LOG.log(Level.INFO, null, x);
+                    }
                     File checkFile = FileUtil.archiveOrDirForURL(url);
                     if (checkFile == null) {
                         LOG.warning("Skipping inconvertible classpath entry " + url);
