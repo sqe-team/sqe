@@ -152,7 +152,7 @@ public final class CompileOnSaveHelper {
         try {
             sigDir = (File) getClassFolder.invoke(null, sourcesURL, true);
         } catch (Exception x) {
-            throw new IOException(x);
+            throw (IOException) new IOException(x.toString()).initCause(x);
         }
         if (sigDir == null) {
             LOG.log(Level.FINE, "no sigdir for {0}", sourcesURL);
@@ -210,7 +210,7 @@ public final class CompileOnSaveHelper {
                             is.close();
                         }
                     } catch (IOException x) {
-                        throw new IOException("could not copy " + child + " to " + copy + ": " + x, x);
+                        throw (IOException) new IOException("could not copy " + child + " to " + copy + ": " + x).initCause(x);
                     }
                 }
             }
