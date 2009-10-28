@@ -61,6 +61,10 @@ public class FindBugsSession extends AbstractQualitySession {
     private Lock waitResultLock = new ReentrantLock();
     private Condition waitForResult = waitResultLock.newCondition();
 
+    /**
+     * Analyze a single file.
+     * Call within a Java source task at {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
+     */
     public FindBugsResult computeResultAndWait(FileObject sourceFile) {
         FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), sourceFile);
         SQECodedefectScanner.postAndWait(job);
