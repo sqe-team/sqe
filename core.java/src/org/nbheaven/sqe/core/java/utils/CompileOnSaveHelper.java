@@ -42,8 +42,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Parameters;
 
 // XXX file API change request in java/source for jlahoda
-// XXX consider race conditions: what if indexer writes a *.sig at the same moment we are copying it?
-//     wait for scanning to finish, or run inside Java action?
 // XXX in NB 6.8 can use FileUtil.addRecursiveListener to listen for changes
 //     would allow FB to be rerun automatically after project changes (not necessarily desirable)
 
@@ -108,12 +106,13 @@ public final class CompileOnSaveHelper {
 
     /**
      * Gets a root of Java bytecode.
-     * If {@link #forSourceRoot} was used, or {@link #forClassPathEntry} was used
+     * <p>If {@link #forSourceRoot} was used, or {@link #forClassPathEntry} was used
      * but the Java indexer is requested to scan a matching source root,
      * then this will be a copy of the current class cache, in an unspecified location.
      * The cache should be up to date in case all modified files have been saved and scanning has completed.
      * Otherwise the original classpath entry will be returned unchanged.
-     * Currently non-Java resources (e.g. {@code *.properties}) are <strong>not copied</strong> to the output.
+     * <p>Currently non-Java resources (e.g. {@code *.properties}) are <strong>not copied</strong> to the output.
+     * <p>Generally this should be called within a Java source task at {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
      * @param tolerateErrors if true, return cache dir even if known to contain errors, else return normal compiled binaries (if any)
      * @return a binary root, or null if {@link #forSourceRoot} was used and there is no known binary root,
      *         or if for some reason there is no class cache for this source root
