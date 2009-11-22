@@ -18,37 +18,51 @@
 
 package org.nbheaven.sqe.tools.findbugs.codedefects.projects.maven;
 
+import edu.umd.cs.findbugs.config.ProjectFilterSettings;
 import edu.umd.cs.findbugs.config.UserPreferences;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
+import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
-import org.openide.util.Exceptions;
+import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.ProjectServiceProvider;
 
 /**
  *
  * @author mkleint
  */
+@ProjectServiceProvider(service = FindBugsSettingsProvider.class, projectType = "org-netbeans-modules-maven")
 public class MavenFindBugsSettingsProvider extends FindBugsSettingsProvider {
+    private final Project p;
+
+    public MavenFindBugsSettingsProvider(Project prj) {
+        this.p = prj;
+    }
 
     @Override
     public UserPreferences getFindBugsSettings() {
-//        File findBugsSettingsFile = getFindBugsSettingsFile();
-//        if (findBugsSettingsFile.isFile()) {
-//            UserPreferences prefs = UserPreferences.createDefaultUserPreferences();
-//            try {
-//                prefs.
-//                prefs.read(new FileInputStream(findBugsSettingsFile));
-//            } catch (IOException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//            return prefs;
-//        } else {
+        final MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.codehaus.mojo", "findbugs-maven-plugin");
+        if (pluginConfiguration.isDefinedInProject()) {
+            UserPreferences prefs = UserPreferences.createDefaultUserPreferences();
+            ProjectFilterSettings pfs = ProjectFilterSettings.createDefault();
+            prefs.setProjectFilterSettings(pfs);
+
+            String threshold = pluginConfiguration.getValue("threshold");
+            if (threshold != null) {
+                //TODO guard valid values
+                pfs.setMinPriority(threshold);
+            }
+            String effort = pluginConfiguration.getValue("effort");
+            if (effort != null) {
+                //TODO guard valid values
+                prefs.setEffort(effort);
+            }
+            return prefs;
+        } else {
             UserPreferences globalDefaultPreferences = FindBugsSettings.getUserPreferences();
             presetPreferences(globalDefaultPreferences);
             return globalDefaultPreferences;
-//        }
+        }
     }
 
     @Override
