@@ -59,6 +59,11 @@ public final class MavenUtilities {
     private MavenUtilities() {}
 
     public static MavenPluginConfiguration getReportPluginConfiguration(final Project project, final String groupId, final String artifactId) {
+        MavenProject prj = project.getLookup().lookup(NbMavenProject.class).getMavenProject();
+        return getReportPluginConfigurationImpl(prj, groupId, artifactId);
+    }
+
+    static MavenPluginConfiguration getReportPluginConfigurationImpl(final MavenProject project, final String groupId, final String artifactId) {
         return new MavenPluginConfiguration() {
             public String getValue(String path) {
                 return PluginPropertyUtils.getReportPluginProperty(project, groupId, artifactId, path, null);
@@ -77,12 +82,7 @@ public final class MavenUtilities {
     }
 
 
-    public static boolean definesReportPlugin(Project prj, String groupId, String artifactId) {
-        assert prj != null;
-        assert groupId != null;
-        assert artifactId != null;
-        final NbMavenProject p = prj.getLookup().lookup(NbMavenProject.class);
-        final MavenProject mp = p.getMavenProject();
+    static boolean definesReportPlugin(MavenProject mp, String groupId, String artifactId) {
         @SuppressWarnings("unchecked")
         List<ReportPlugin> rps = mp.getReportPlugins();
         for (ReportPlugin rp : rps) {
