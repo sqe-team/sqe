@@ -17,16 +17,11 @@
  */
 package org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings;
 
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
-import org.openide.filesystems.FileObject;
-
 /**
  *
  * @author sven
  */
 public interface CheckstyleSettingsProvider {
-
-    public static final FileObject DEFAULT_CHECKSTYLE_CONFIGURATION_FILE = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
 
     CheckstyleSettings getCheckstyleSettings();
 

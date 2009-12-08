@@ -25,4 +25,10 @@ public interface PMDSettingsProvider {
 
     PMDSettings getPMDSettings();
 
+    /**
+     * Project specific filtering of files to be included in the project scan.
+     * @return null if default behaviour shall be used
+     */
+    PMDIncludes getPMDIncludes();
+
 }

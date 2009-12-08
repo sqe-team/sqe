@@ -18,27 +18,30 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.projects.freeform;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.prefs.Preferences;
+import org.nbheaven.sqe.core.ant.AntUtilities;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDIncludes;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
-import org.nbheaven.sqe.core.ant.AntUtilities;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.support.ant.EditableProperties;
-import org.netbeans.spi.project.support.ant.PropertyEvaluator;
-import org.netbeans.spi.project.support.ant.PropertyProvider;
-import org.netbeans.spi.project.support.ant.PropertyUtils;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.ProjectServiceProvider;
 
 /**
  *
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service=PMDSettingsProvider.class, projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject",
+    "org-netbeans-modules-web-project"
+})
 public class PMDSettingsProviderImpl implements PMDSettingsProvider {
 
     private static final String PMD_SETTINGS_FILE = "pmd.settings.file";
-    private static final String PMD_SETTINGS_DEFAULT = "pmd.settings";
+    private static final String PMD_SETTINGS_DEFAULT = "nbproject/pmd.settings";
 
     private Project project;
 
@@ -47,62 +50,22 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
     }
 
     private File getPMDSettingsFile() {
-        EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-        String settingsFile = sqeProperties.get(PMD_SETTINGS_FILE);
-
-        if (null == settingsFile) {
-            settingsFile = PMD_SETTINGS_DEFAULT;
-
-            sqeProperties.setProperty(PMD_SETTINGS_FILE, settingsFile);
-            sqeProperties.setComment(PMD_SETTINGS_FILE,
-                    new String[]{"#Path to PMDSettingsFile (relative)"}, true);
-            AntUtilities.putSQEProperties(sqeProperties, project);
-        }
-
-        FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-        // if availabe try substitution
-        if (null != projectPropertiesFile) {
-            PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(FileUtil.toFile(projectPropertiesFile));
-            PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-            settingsFile = evaluator.evaluate(settingsFile);
-        }
-
-        File pmdBugsSettingsFile = getCreatePMDBugsSettingsFile(settingsFile);
-        if (null == pmdBugsSettingsFile) {
-            pmdBugsSettingsFile = getCreatePMDBugsSettingsFile(PMD_SETTINGS_DEFAULT);
-        }
-
-        return pmdBugsSettingsFile;
+        String settingsFile = AntUtilities.evaluate(prefs().get(PMD_SETTINGS_FILE, PMD_SETTINGS_DEFAULT), project);
+        return AntUtilities.resolveFile(settingsFile, project);
     }
-
-    private File getCreatePMDBugsSettingsFile(String settingsFile) {
-
-        File pmdBugsSettingsFile = new File(settingsFile);
-        try {
-            if (!pmdBugsSettingsFile.isAbsolute()) {
-                FileObject settingsFileObject = project.getProjectDirectory().getFileObject("nbproject/" + settingsFile);
-                if (null == settingsFileObject) {
-                    settingsFileObject = project.getProjectDirectory().getFileObject("nbproject").createData(settingsFile);
-                }
-                pmdBugsSettingsFile = FileUtil.toFile(settingsFileObject);
-            }
-
-            // getGlobalPreferences
-//            UserPreferences globalDefaultPreferences = PMDSettings.getUserPreferences();
-//            presetPreferences(globalDefaultPreferences);
-//            // write globalPresets to project file
-//            globalDefaultPreferences.write(new FileOutputStream(pmdBugsSettingsFile));
-            return pmdBugsSettingsFile;
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return pmdBugsSettingsFile;
-    }
-
 
     public PMDSettings getPMDSettings() {
         File pmdSettingsFile = getPMDSettingsFile();
         return new PMDSettingsImpl(pmdSettingsFile);
+    }
+
+    private Preferences prefs() {
+        return ProjectUtils.getPreferences(project, PMDSettingsProviderImpl.class, true);
+    }
+
+    public PMDIncludes getPMDIncludes() {
+        //default behaviour
+        return null;
     }
 
 }

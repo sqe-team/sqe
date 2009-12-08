@@ -19,9 +19,9 @@ package org.nbheaven.sqe.codedefects.core.spi;
 
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 
 /**
  *
@@ -43,24 +43,13 @@ public abstract class AbstractQualityProvider implements QualityProvider {
             return false;
         }
 
-        Sources sources = project.getLookup().lookup(Sources.class);
-
-        if (null == sources) {
-            return false;
-        }
-
-        SourceGroup[] sourceGroups = sources.getSourceGroups("java");
+        SourceGroup[] sourceGroups = ProjectUtilities.getJavaSourceGroups(project);
 
         if (sourceGroups.length == 0) {
             return false;
         }
 
         return true;
-    }
-
-    @Deprecated
-    public final String getName() {
-        return getDisplayName();
     }
 
     @Override

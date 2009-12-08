@@ -22,10 +22,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
 import javax.swing.AbstractButton;
-import javax.swing.Action;
 import javax.swing.ButtonModel;
-import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -33,8 +30,6 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.plaf.UIResource;
 import javax.swing.plaf.basic.BasicToolBarUI;
-import org.openide.awt.Actions;
-import org.openide.util.actions.Presenter;
 
 /**
  *
@@ -227,7 +222,7 @@ public class FlatToolBar extends JToolBar {
 
     //~ Methods ------------------------------------------------------------------------------------------------------------------
 
-    protected void addImpl(Component comp, Object constraints, int index) {
+    protected @Override void addImpl(Component comp, Object constraints, int index) {
         if (comp instanceof AbstractButton) {
             AbstractButton ab = (AbstractButton) comp;
             ab.setContentAreaFilled(false);
@@ -240,47 +235,6 @@ public class FlatToolBar extends JToolBar {
         }
 
         super.addImpl(comp, constraints, index);
-    }
-
-    private JButton internalActionComponent(Action a) {
-	String text = a!=null? (String)a.getValue(Action.NAME) : null;
-	Icon icon   = a!=null? (Icon)a.getValue(Action.SMALL_ICON) : null;
-        boolean enabled = a!=null? a.isEnabled() : true;
-        String tooltip = a!=null?
-            (String)a.getValue(Action.SHORT_DESCRIPTION) : null;
-        JButton b = new JButton(text, icon);
-	if (icon !=null) {
-	    b.putClientProperty("hideActionText", Boolean.TRUE);
-	}
-	b.setHorizontalTextPosition(JButton.CENTER);
-	b.setVerticalTextPosition(JButton.BOTTOM);
-	b.setEnabled(enabled);
-	b.setToolTipText(tooltip);
-        b.putClientProperty("PreferredIconSize", 24);
-	return b;
-    }
-
-    @Override
-    public JButton add(Action a) {
-        if (a instanceof Presenter.Toolbar) {
-            Component component = ((Presenter.Toolbar)a).getToolbarPresenter();
-            if (component instanceof JButton) {
-                JButton button = (JButton) component;
-                button.putClientProperty("PreferredIconSize", 24);
-            }
-            add(component);
-        } else {
-            JButton b = createActionComponent(a);
-            add(b);
-        }
-        return null;
-    }    
-    
-    @Override
-    protected JButton createActionComponent(Action a) {
-        JButton b = internalActionComponent(a); //super.createActionComponent(a);        
-        Actions.connect(b, a);
-        return b;
     }
 
 }

@@ -28,7 +28,6 @@ import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.java.search.SearchUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.annotations.AuditEventAnnotationProcessor;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.JavaSource.Phase;
@@ -50,6 +49,7 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This is heavily inspired by the work done ny Jan Lahoda - Big thank you!
@@ -97,15 +97,15 @@ public class CheckstyleHint {
         }
 
         public void run(final CompilationInfo compilationInfo) throws Exception {
-            final FileObject fileObject = compilationInfo.getFileObject();
+            final FileObject fo = compilationInfo.getFileObject();
             final Document document = compilationInfo.getDocument();
 
-            if (null == errors && null != fileObject && null != document) {
+            if (null == errors && null != fo && null != document) {
                 HINT_PROCESSOR.post(new Runnable() {
 
                     public void run() {
                         try {
-                            errors = computeErrors(fileObject, document);
+                            errors = computeErrors(fo, document);
                             refresh(false);
                         } catch (Exception ex) {
                             Exceptions.printStackTrace(ex);
@@ -114,8 +114,8 @@ public class CheckstyleHint {
                 });
                 errors = Collections.emptyList();
             }
-            if (null != errors && null != fileObject) {
-                HintsController.setErrors(fileObject, Task.class.getName(), errors);
+            if (null != errors && null != fo) {
+                HintsController.setErrors(fo, Task.class.getName(), errors);
             }
         }
 
@@ -130,6 +130,7 @@ public class CheckstyleHint {
                         Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
                         for (Object key : instanceByClass.keySet()) {
                             CheckstyleResult.ClassKey classKey = (CheckstyleResult.ClassKey) key;
+                            // XXX see comment in ClassKey constructor
                             if (classKey.getDisplayName().equals(fileObject.getPath())) {
                                 Collection<AuditEvent> bugs = instanceByClass.get(classKey);
                                 computedErrors.addAll(getErrors(project, bugs, fileObject, document));
@@ -224,6 +225,7 @@ public class CheckstyleHint {
         }
     }
 
+    @ServiceProvider(service=JavaSourceTaskFactory.class)
     public static final class Factory extends EditorAwareJavaSourceTaskFactory {
 
         public Factory() {

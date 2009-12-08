@@ -17,22 +17,9 @@
  */
 package org.nbheaven.sqe.core.controlcenter.ui.panels;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import javax.swing.Action;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.nbheaven.sqe.core.ui.components.toolbar.FlatToolBar;
-import org.openide.cookies.InstanceCookie;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
-import org.openide.loaders.DataObject;
-import org.openide.loaders.DataObjectNotFoundException;
-import org.openide.util.ContextAwareAction;
-import org.openide.util.Lookup;
-import org.openide.util.actions.Presenter;
+import org.nbheaven.sqe.core.ui.components.toolbar.ToolBarFromLayer;
 
 /**
  *
@@ -41,41 +28,8 @@ import org.openide.util.actions.Presenter;
 public class Controls extends FlatToolBar {
 
     public Controls() {
-        init();
+        setOpaque(false);
+        ToolBarFromLayer.connect(this, "SQE/ControlCenter/Controls", SQEManager.getDefault().getLookup(), true);
     }
 
-    private void init() {
-        for (Action action : getActions()) {
-            if (action instanceof Presenter.Toolbar) {
-                add(((Presenter.Toolbar) action).getToolbarPresenter());
-            } else {
-                add(action);
-            }
-        }
-        this.setOpaque(false);
-    }
-
-    private Collection<Action> getActions() {
-        Lookup context = SQEManager.getDefault().getLookup();
-
-        Collection<Action> actions = new ArrayList<Action>();
-        FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("SQE/ControlCenter/Controls");
-        for (FileObject actionsFileObject : FileUtil.getOrder(Arrays.asList(fo.getChildren()), true)) {
-            try {
-                DataObject dob = DataObject.find(actionsFileObject);
-                InstanceCookie cookie = dob.getCookie(InstanceCookie.class);
-                if (null != cookie) {
-                    Action action = (Action) cookie.instanceCreate();
-                    if (action instanceof ContextAwareAction) {
-                        action = ((ContextAwareAction) action).createContextAwareInstance(context);
-                    }
-                    actions.add(action);
-                }
-            } catch (DataObjectNotFoundException donfe) {
-            } catch (IOException ioex) {
-            } catch (ClassNotFoundException cnfe) {
-            }
-        }
-        return actions;
-    }
 }

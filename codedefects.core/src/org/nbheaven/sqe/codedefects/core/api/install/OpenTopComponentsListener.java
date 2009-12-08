@@ -23,10 +23,10 @@ import java.util.Set;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.loaders.DataObject;
 import org.openide.util.RequestProcessor;
@@ -52,14 +52,13 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
             newComponents.removeAll(oldComponents);
 
             for (TopComponent tc : newComponents) {
-                DataObject dao = tc.getLookup().lookup(DataObject.class);
+                final DataObject dao = tc.getLookup().lookup(DataObject.class);
 
                 if (null != dao) {
+                    RequestProcessor.getDefault().post(new Runnable() {
+                        public void run() {
                     for (final Project project : OpenProjects.getDefault().getOpenProjects()) {
-                        Sources s = project.getLookup().lookup(Sources.class);
-
-                        if (s != null) {
-                            SourceGroup[] sgs = s.getSourceGroups("java");
+                            SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);
 
                             for (SourceGroup sg : sgs) {
                                 try {
@@ -76,14 +75,9 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                                                     continue;
                                                 }
                                                 if (SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualitySession.getProvider())) {
-                                                    RequestProcessor.getDefault().post(new Runnable() {
-
-                                                        public void run() {
                                                             sqeAnnotationProcessor.annotateSourceFile(javaSource,
                                                                     project,
                                                                     qualitySession.getResult());
-                                                        }
-                                                    });
                                                 }
                                             }
                                         }
@@ -95,8 +89,9 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                                     //ErrorManager.getDefault().notify(iaex);
                                     }
                             }
-                        }
                     }
+                        }
+                    });
                 }
             }
         }

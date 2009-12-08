@@ -28,7 +28,7 @@
                    <attr name="diplayNameKey" stringvalue="LBL_pmd_group"/>
                    <attr name="descriptionKey" stringvalue="HINT_pmd_group"/>
                    <attr name="iconKey" stringvalue="ICON_pmd"/>
-                   <attr name="position" intvalue="400"/>
+                   <attr name="position" intvalue="450"/>
             </file>                  
         </folder>        
         <folder name="Scanners">

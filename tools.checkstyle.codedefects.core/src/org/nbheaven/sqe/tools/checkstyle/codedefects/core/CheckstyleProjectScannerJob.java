@@ -19,8 +19,8 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.core;
 
 import java.util.Collection;
 import org.nbheaven.sqe.core.java.utils.FileObjectUtilities;
+import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -37,8 +37,7 @@ final class CheckstyleProjectScannerJob extends CheckstyleScannerJob {
     }
 
     protected void executeCheckstyle() {
-        Sources s = getProject().getLookup().lookup(Sources.class);
-        SourceGroup[] groups = s.getSourceGroups("java");
+        SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(getProject());
         for (SourceGroup g : groups) {
             FileObject rootOfSourceFolder = g.getRootFolder();
             Collection<FileObject> fullList = FileObjectUtilities.collectAllJavaSourceFiles(rootOfSourceFolder);

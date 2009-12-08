@@ -21,9 +21,7 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Quality">
-            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance">
-                <attr name="position" intvalue="200"/>
-            </file>
+            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
         </folder>
         <folder name="Window">
             <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-ui-FindBugsAction.instance">
@@ -92,7 +90,7 @@
                 <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.findbugs.codedefects.core.option.Bundle#AdvancedOption_DisplayName_FindBugs"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
                 <attr name="keywords" bundlevalue="org.nbheaven.sqe.tools.findbugs.codedefects.core.option.Bundle#AdvancedOption_Keywords_FindBugs"/>
-                <attr name="keywordsCategory" stringvalue="SQE/null"/>
+                <attr name="keywordsCategory" stringvalue="SQE"/>
                 <attr name="toolTip" bundlevalue="org.nbheaven.sqe.tools.findbugs.codedefects.core.option.Bundle#AdvancedOption_Tooltip_FindBugs"/>
                 <attr name="position" intvalue="200"/>
             </file>
@@ -126,7 +124,9 @@
         </folder>
         <folder name="Modes">
             <folder name="output">
-                <file name="FindBugsTopComponent.wstcref" url="ui/FindBugsTopComponentWstcref.xml"/>
+                <file name="FindBugsTopComponent.wstcref" url="ui/FindBugsTopComponentWstcref.xml">
+                    <attr name="position" intvalue="3212"/>
+                </file>
             </folder>
         </folder>
         <folder name="Groups">

@@ -23,6 +23,10 @@ package org.nbheaven.sqe.core.maven.api;
  */
 public interface MavenPluginConfiguration {
 
+    public boolean isDefinedInProject();
+
     public String getValue(String path);
+
+    public String[] getStringListValue(String listParent, String listChild);
 
 }

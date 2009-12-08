@@ -21,13 +21,9 @@
 <filesystem>
     <folder name="Projects">
         <folder name="org-netbeans-modules-ant-freeform">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-LookupProviderImpl.instance">
-                    <attr name="position" intvalue="500"/>
-                </file>
-            </folder>
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="650"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -36,13 +32,9 @@
             </folder>
         </folder>
         <folder name="org-netbeans-modules-apisupport-project">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-LookupProviderImpl.instance">
-                    <attr name="position" intvalue="200"/>
-                </file>
-            </folder>
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="450"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -51,11 +43,9 @@
             </folder>
         </folder>
         <folder name="org-netbeans-modules-java-j2seproject">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-LookupProviderImpl.instance"/>
-            </folder>
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="250"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -64,11 +54,9 @@
             </folder>
         </folder>
         <folder name="org-netbeans-modules-web-project">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-LookupProviderImpl.instance"/>
-            </folder>
             <folder name="Customizer">
                 <folder name="SQE">
+                    <attr name="displayName" stringvalue="Quality"/> <!-- XXX I18N -->
                     <attr name="position" intvalue="350"/>
                     <file name="org-nbheaven-sqe-tools-findbugs-codedefects-projects-freeform-customizer-PanelProvider.instance">
                             <attr name="instanceCreate" methodvalue="org.nbheaven.sqe.tools.findbugs.codedefects.projects.freeform.customizer.PanelProvider.createExample"/>
@@ -76,6 +64,5 @@
                 </folder>
             </folder>
         </folder>
-        
     </folder>
 </filesystem>

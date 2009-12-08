@@ -21,11 +21,6 @@
 <filesystem>
     <folder name="Projects">
         <folder name="org-netbeans-modules-ant-freeform">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
-                    <attr name="position" intvalue="510"/>
-                </file>
-            </folder>            
             <folder name="Customizer">
                 <folder name="SQE">
                     <attr name="position" intvalue="650"/>
@@ -36,11 +31,6 @@
             </folder>
         </folder>
         <folder name="org-netbeans-modules-apisupport-project">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
-                    <attr name="position" intvalue="510"/>
-                </file>
-            </folder>             
             <folder name="Customizer">
                 <folder name="SQE">
                     <attr name="position" intvalue="450"/>
@@ -51,11 +41,6 @@
             </folder>
         </folder>
         <folder name="org-netbeans-modules-java-j2seproject">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
-                    <attr name="position" intvalue="510"/>
-                </file>
-            </folder>             
             <folder name="Customizer">
                 <folder name="SQE">
                     <attr name="position" intvalue="250"/>
@@ -66,11 +51,6 @@
             </folder>
         </folder>
         <folder name="org-netbeans-modules-web-project">
-            <folder name="Lookup">
-                <file name="org-nbheaven-sqe-tools-pmd-codedefects-projects-freeform-LookupProviderImpl.instance">
-                    <attr name="position" intvalue="510"/>
-                </file>
-            </folder>             
             <folder name="Customizer">
                 <folder name="SQE">
                     <attr name="position" intvalue="350"/>
@@ -80,6 +60,5 @@
                 </folder>
             </folder>
         </folder>
-        
     </folder>
 </filesystem>

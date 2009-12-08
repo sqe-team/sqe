@@ -21,9 +21,7 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Quality">
-            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance">
-                <attr name="position" intvalue="400"/>
-            </file>
+            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
         </folder>
         <folder name="Window">
             <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-ui-CheckstyleAction.instance">
@@ -69,7 +67,7 @@
     <folder name="Menu">
         <folder name="Quality">
             <folder name="CodeDefects">
-                <file name="RunCheckstyleActio.shadow">
+                <file name="RunCheckstyleAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
                     <attr name="position" intvalue="400"/>
                 </file>
@@ -92,7 +90,7 @@
                 <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.Bundle#AdvancedOption_DisplayName_Checkstyle"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
                 <attr name="keywords" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.Bundle#AdvancedOption_Keywords_Checkstyle"/>
-                <attr name="keywordsCategory" stringvalue="SQE/null"/>
+                <attr name="keywordsCategory" stringvalue="SQE"/>
                 <attr name="toolTip" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.Bundle#AdvancedOption_Tooltip_Checkstyle"/>
                 <attr name="position" intvalue="400"/>
             </file>
@@ -126,7 +124,9 @@
         </folder>
         <folder name="Modes">
             <folder name="output">
-                <file name="CheckstyleTopComponent.wstcref" url="ui/CheckstyleTopComponentWstcref.xml"/>
+                <file name="CheckstyleTopComponent.wstcref" url="ui/CheckstyleTopComponentWstcref.xml">
+                    <attr name="position" intvalue="3216"/>
+                </file>
             </folder>
         </folder>
         <folder name="Groups">

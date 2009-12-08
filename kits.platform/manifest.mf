@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.nbheaven.sqe.kits.platform
-OpenIDE-Module-Layer: org/nbheaven/sqe/kit/platform/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/kit/platform/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-OpenIDE-Module-Java-Dependencies: Java > 1.5

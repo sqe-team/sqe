@@ -17,40 +17,40 @@
  */
 package org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 import org.nbheaven.sqe.core.ant.AntUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.AbstractCheckstyleSettings;
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.support.ant.EditableProperties;
-import org.netbeans.spi.project.support.ant.PropertyEvaluator;
-import org.netbeans.spi.project.support.ant.PropertyProvider;
-import org.netbeans.spi.project.support.ant.PropertyUtils;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 
 /**
  *
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service=CheckstyleSettingsProvider.class, projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject"
+//    "org-netbeans-modules-web-project"
+})
 public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvider {
 
     private static final String CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.configuration.file";
     private static final String CHECKSTYLE_PROPERTIES_FILE = "checkstyle.configuration.properties";
-    private static final String CHECKSTYLE_CUSTOM_PROPERTIES_FILE = "checkstyle.properties";
 
-    private static final String DEFAULT_CHECKSTYLE_CONFIGURATION_FILE = "checkstyle.xml";
-    private static final String DEFAULT_CHECKSTYLE_PROPERTIES_FILE = "checkstyle.properties";
+    private static final String DEFAULT_CHECKSTYLE_CONFIGURATION_FILE = "nbproject/checkstyle.xml";
+    private static final String DEFAULT_CHECKSTYLE_PROPERTIES_FILE = "nbproject/checkstyle.properties";
 
     final private Project project;
 
-    CheckstyleSettingsProviderImpl(Project project) {
+    public CheckstyleSettingsProviderImpl(Project project) {
         this.project = project;
     }
 
@@ -67,32 +67,10 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
         }
 
         public FileObject getCheckstyleConfigurationFile() {
-            EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-            String settingsFile = sqeProperties.get(CHECKSTYLE_CONFIGURATION_FILE);
-
-            if (null == settingsFile) {
-                settingsFile = DEFAULT_CHECKSTYLE_CONFIGURATION_FILE;
-
-                sqeProperties.setProperty(CHECKSTYLE_CONFIGURATION_FILE, settingsFile);
-                sqeProperties.setComment(CHECKSTYLE_CONFIGURATION_FILE,
-                        new String[]{"#Path to Checkstyle Configuration File (relative)"}, true);
-                AntUtilities.putSQEProperties(sqeProperties, project);
-            }
-
-            FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-            // if availabe try substitution
-            if (null != projectPropertiesFile) {
-                PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(FileUtil.toFile(projectPropertiesFile));
-                PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-                settingsFile = evaluator.evaluate(settingsFile);
-            }
-
-            File checkstyleSettingsFile = getCreateCheckstyleConfigurationFile(settingsFile);
-            if (null == checkstyleSettingsFile) {
-                checkstyleSettingsFile = getCreateCheckstyleConfigurationFile(DEFAULT_CHECKSTYLE_CONFIGURATION_FILE);
-            }
-
-            return FileUtil.toFileObject(checkstyleSettingsFile);
+            String settingsFile = AntUtilities.evaluate(prefs().get(CHECKSTYLE_CONFIGURATION_FILE, DEFAULT_CHECKSTYLE_CONFIGURATION_FILE), project);
+            // XXX this will just return null if not already defined... what will then happen?
+            // use of FileObject in CheckstyleSettings is confusing and inconsistent with e.g. PMDSettings
+            return FileUtil.toFileObject(AntUtilities.resolveFile(settingsFile, project));
         }
 
         public URL getCheckstyleConfigurationURL() {
@@ -100,100 +78,30 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
         }
 
         public FileObject getPropertiesFile() {
-            EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-            String propertiesFile = sqeProperties.get(CHECKSTYLE_PROPERTIES_FILE);
-
-            if (null == propertiesFile) {
-                propertiesFile = DEFAULT_CHECKSTYLE_PROPERTIES_FILE;
-
-                sqeProperties.setProperty(CHECKSTYLE_PROPERTIES_FILE, propertiesFile);
-                sqeProperties.setComment(CHECKSTYLE_PROPERTIES_FILE,
-                        new String[]{"#Path to Checkstyle Properties File (relative)"}, true);
-                AntUtilities.putSQEProperties(sqeProperties, project);
-            }
-            FileObject projectPropertiesFile = project.getProjectDirectory().getFileObject("nbproject/project.properties");
-            // if availabe try substitution
-            if (null != projectPropertiesFile) {
-                PropertyProvider provider = PropertyUtils.propertiesFilePropertyProvider(FileUtil.toFile(projectPropertiesFile));
-                PropertyEvaluator evaluator = PropertyUtils.sequentialPropertyEvaluator(PropertyUtils.globalPropertyProvider(), provider);
-                propertiesFile = evaluator.evaluate(propertiesFile);
-            }
-
-            File checkstylePropertiesFile = getCreateCheckstylePropertiesFile(propertiesFile);
-            if (null == checkstylePropertiesFile) {
-                checkstylePropertiesFile = getCreateCheckstylePropertiesFile(DEFAULT_CHECKSTYLE_PROPERTIES_FILE);
-            }
-
-            return FileUtil.toFileObject(checkstylePropertiesFile);
+            String propertiesFile = AntUtilities.evaluate(prefs().get(CHECKSTYLE_PROPERTIES_FILE, DEFAULT_CHECKSTYLE_PROPERTIES_FILE), project);
+            return FileUtil.toFileObject(AntUtilities.resolveFile(propertiesFile, project));
         }
 
         public Properties getProperties() {
             return System.getProperties();
         }
 
-        private File getCreateCheckstyleConfigurationFile(String settingsFile) {
-
-            File checkstyleConfigurationFile = new File(settingsFile);
-            try {
-                if (!checkstyleConfigurationFile.isAbsolute()) {
-                    FileObject settingsFileObject = project.getProjectDirectory().getFileObject("nbproject/" + settingsFile);
-                    if (null == settingsFileObject) {
-                        FileObject targetDir = project.getProjectDirectory().getFileObject("nbproject");
-                        FileObject copy = FileUtil.copyFile(GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile(), targetDir, settingsFile.substring(0, settingsFile.indexOf(".")));
-                        return FileUtil.toFile(copy);
-                    }
-                    return FileUtil.toFile(settingsFileObject);
-                }
-
-                if (checkstyleConfigurationFile.exists()) {
-                    return checkstyleConfigurationFile;
-                } else {
-                    FileObject targetDir = FileUtil.toFileObject(checkstyleConfigurationFile.getParentFile());
-                    String targetFile = checkstyleConfigurationFile.getName();
-                    FileObject copy = FileUtil.copyFile(GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile(), targetDir, targetFile);
-                    return FileUtil.toFile(copy);
-                }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            return checkstyleConfigurationFile;
-        }
-
-        private File getCreateCheckstylePropertiesFile(String settingsFile) {
-
-            File checkstylePropertiesFile = new File(settingsFile);
-            try {
-                if (!checkstylePropertiesFile.isAbsolute()) {
-                    FileObject settingsFileObject = project.getProjectDirectory().getFileObject("nbproject/" + settingsFile);
-                    if (null == settingsFileObject) {
-                        settingsFileObject = project.getProjectDirectory().getFileObject("nbproject").createData(settingsFile);
-                    }
-                    checkstylePropertiesFile = FileUtil.toFile(settingsFileObject);
-                }
-
-                return checkstylePropertiesFile;
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            return checkstylePropertiesFile;
-        }
-
-        
         public void setCheckstyleConfigurationPath(String configFilePath) {
-            EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-            sqeProperties.setProperty(CHECKSTYLE_CONFIGURATION_FILE, configFilePath);
-            AntUtilities.putSQEProperties(sqeProperties, project);
+            prefs().put(CHECKSTYLE_CONFIGURATION_FILE, configFilePath);
         }
 
         public void setPropertiesPath(String propertiesFilePath) {
-            EditableProperties sqeProperties = AntUtilities.getSQEProperties(project);
-            sqeProperties.setProperty(CHECKSTYLE_PROPERTIES_FILE, propertiesFilePath);
-            AntUtilities.putSQEProperties(sqeProperties, project);
+            prefs().put(CHECKSTYLE_PROPERTIES_FILE, propertiesFilePath);
         }
 
         public void setProperties(String properties) {
             // TODO
         }
 
+        private Preferences prefs() {
+            return ProjectUtils.getPreferences(project, CheckstyleSettingsProviderImpl.class, true);
+        }
+
     }
+
 }

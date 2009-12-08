@@ -46,7 +46,7 @@ class DisableRuleAction extends AbstractAction {
         PMDSettingsProvider settingsProvider = project.getLookup().lookup(PMDSettingsProvider.class);
         if (null != settingsProvider) {
             PMDSettings pmdSettings = settingsProvider.getPMDSettings();
-            pmdSettings.deavtivateRule(rule);
+            pmdSettings.deactivateRule(rule);
         }
 
         PMDSession qualitySession = project.getLookup().lookup(PMDSession.class);

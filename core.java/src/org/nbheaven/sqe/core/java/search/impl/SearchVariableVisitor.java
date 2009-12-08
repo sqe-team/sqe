@@ -19,7 +19,7 @@ package org.nbheaven.sqe.core.java.search.impl;
 
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.tree.VariableTree;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.Element;
 import org.nbheaven.sqe.core.java.search.VariableElementDescriptor;
 import org.nbheaven.sqe.core.java.utils.TypeUtilities;
 import org.netbeans.api.java.source.CompilationInfo;
@@ -44,8 +44,8 @@ public class SearchVariableVisitor extends SearchClassVisitor {
             return false;
         }
         if (variableTree.getName().contentEquals(descriptor.getName())) {            
-            VariableElement variable = ((VariableElement)TreePathHandle.create(getCurrentPath(), getInfo()).resolveElement(getInfo()));
-            if (TypeUtilities.convertTypeMirrorToBinayRepresentation(variable.asType()).equals(descriptor.getSignature())) {
+            Element element = TreePathHandle.create(getCurrentPath(), getInfo()).resolveElement(getInfo());
+            if (TypeUtilities.convertTypeMirrorToBinaryRepresentation(element.asType()).equals(descriptor.getSignature())) {
                 return true;
             }        
         }

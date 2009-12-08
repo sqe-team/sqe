@@ -17,96 +17,83 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
+import java.io.File;
 import java.net.URL;
-import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.nbheaven.sqe.core.java.utils.CompileOnSaveHelper;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.Project;
-import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
-import org.netbeans.spi.java.classpath.ClassPathProvider;
-import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
  * @author Sven Reimers
  */
-public class FindBugsFileScannerJob extends FindBugsScannerJob {
+class FindBugsFileScannerJob extends FindBugsScannerJob {
 
-    FindBugsSession findBugsSession;
-    FileObject[] fileObjects;
+    private static final Logger LOG = Logger.getLogger(FindBugsFileScannerJob.class.getName());
 
-    FindBugsFileScannerJob(Project project, FileObject... fileObjects) {
+    private final FileObject sourceFile;
+
+    FindBugsFileScannerJob(Project project, FileObject sourceFile) {
         super(project);
-        this.fileObjects = fileObjects;
-        findBugsSession = project.getLookup().lookup(FindBugsSession.class);
+        this.sourceFile = sourceFile;
     }
 
     protected edu.umd.cs.findbugs.Project createFindBugsProject() {
-        Sources s = getProject().getLookup().lookup(org.netbeans.api.project.Sources.class);
-        ClassPathProvider cpp = getProject().getLookup().lookup(org.netbeans.spi.java.classpath.ClassPathProvider.class);
-
         edu.umd.cs.findbugs.Project fibuProject = new edu.umd.cs.findbugs.Project();
 
-        for (FileObject fo: fileObjects) {
-//            try {
-                if (fo.isValid()) {
-                    fibuProject.addFile(fo.getPath());
-                }
-//            } catch (UnsupportedEncodingException uee) {
-//                Throwable t = ErrorManager.getDefault().annotate(uee,
-//                        "Failure decoding BinaryRoot" + fo);
-//                ErrorManager.getDefault().notify(t);
-//            } catch (FileStateInvalidException fsie) {
-//                ErrorManager.getDefault().notify(fsie);
-//            }
+        ClassPath sourcePath = ClassPath.getClassPath(sourceFile, ClassPath.SOURCE);
+        if (sourcePath == null) {
+            return fibuProject;
         }
+        for (FileObject sourceRoot : sourcePath.getRoots()) {
+            File sourceRootF = FileUtil.toFile(sourceRoot);
+            if (sourceRootF != null) {
+                // XXX this does not seem to suffice to suppress "unread field" on a field used from another class
+                fibuProject.addSourceDir(sourceRootF.getAbsolutePath());
+            }
+        }
+        FileObject sourceRoot = sourcePath.findOwnerRoot(sourceFile);
 
-        SourceGroup[] groups = s.getSourceGroups("java");
-
-        for (SourceGroup g : groups) {
-            FileObject fo = g.getRootFolder();
-            // add source dir findbugs
-            fibuProject.addSourceDir(fo.getPath());
-
-            ClassPath cp = cpp.findClassPath(fo, ClassPath.COMPILE);
-
-            if (null != cp) {
-                for (ClassPath.Entry entry : cp.entries()) {
-                    try {
-                        URL url = entry.getURL();
-
-                        if (null != entry.getRoot()) {
-                            String pathName = url.getFile();
-
-                            if (url.getProtocol().equals("jar")) {
-                                pathName = pathName.substring(0,
-                                        pathName.length() - 2);
-                                url = new URL(pathName);
-                            }
-
-                            pathName = url.getFile();
-
-                            try {
-                                fibuProject.addAuxClasspathEntry(URLDecoder.decode(
-                                        pathName, "UTF-8"));
-                            } catch (UnsupportedEncodingException uee) {
-                                Throwable t = ErrorManager.getDefault().annotate(uee,
-                                        "Failure decoding AuxClassPath Entry" +
-                                        pathName);
-                                ErrorManager.getDefault().notify(t);
-                            }
+        String binaryName = sourcePath.getResourceName(sourceFile, '/', false); // "org/foo/MyClass"
+        try {
+            URL binaryRootU = CompileOnSaveHelper.forSourceRoot(sourceRoot).binaryRoot(false);
+            if (binaryRootU != null && binaryRootU.getProtocol().equals("file")) {
+                File binaryRoot = new File(binaryRootU.toURI());
+                File clazz = new File(binaryRoot, binaryName + ".class");
+                if (clazz.isFile()) {
+                    LOG.log(Level.FINE, "addFile: {0}", clazz);
+                    fibuProject.addFile(clazz.getAbsolutePath());
+                    // Also check for nested classes:
+                    for (File kid : clazz.getParentFile().listFiles()) {
+                        String n = kid.getName();
+                        if (n.endsWith(".class") && n.startsWith(binaryName.replaceFirst(".+/", "") + "$")) {
+                            LOG.log(Level.FINE, "addFile: {0}", kid);
+                            fibuProject.addFile(kid.getAbsolutePath());
                         }
-                    } catch (MalformedURLException ex) {
-                        ex.printStackTrace();
                     }
                 }
             }
-        }
 
+            ClassPath cp = ClassPath.getClassPath(sourceRoot, ClassPath.COMPILE);
+            if (cp == null) {
+                return fibuProject;
+            }
+            for (ClassPath.Entry entry : cp.entries()) {
+                URL url = CompileOnSaveHelper.forClassPathEntry(entry.getURL()).binaryRoot(false);
+                File checkFile = FileUtil.archiveOrDirForURL(url);
+                if (checkFile != null && checkFile.exists()) {
+                    fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
+                } else {
+                    LOG.warning("Bad file on auxiliary classpath: " + checkFile);
+                }
+            }
+        } catch (Exception x) {
+            LOG.log(Level.INFO, null, x);
+        }
         return fibuProject;
     }
 

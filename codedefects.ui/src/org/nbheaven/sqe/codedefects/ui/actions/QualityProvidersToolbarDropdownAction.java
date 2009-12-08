@@ -18,10 +18,8 @@
 package org.nbheaven.sqe.codedefects.ui.actions;
 
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +29,6 @@ import java.util.List;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.openide.awt.Actions;
@@ -39,7 +36,6 @@ import org.openide.awt.DropDownButtonFactory;
 import org.openide.cookies.InstanceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.util.ContextAwareAction;
@@ -72,13 +68,14 @@ public class QualityProvidersToolbarDropdownAction implements Action, Presenter.
     }
 
     private static List<Action> findProviderActions(Lookup context) {
-        FileObject actionsFO = Repository.getDefault().getDefaultFileSystem().findResource("Menu/Quality/CodeDefects");
+        // XXX could probably use Utilities.actionsForPath + Utilities.actionsToPopup
+        FileObject actionsFO = FileUtil.getConfigFile("Menu/Quality/CodeDefects");
         ArrayList<Action> actions = new ArrayList<Action>();
         for (FileObject actionsFileObject : FileUtil.getOrder(Arrays.asList(actionsFO.getChildren()), true)) {
             try {
                 if (actionsFileObject.isData()) {
                     DataObject dob = DataObject.find(actionsFileObject);
-                    InstanceCookie cookie = dob.getCookie(InstanceCookie.class);
+                    InstanceCookie cookie = dob.getLookup().lookup(InstanceCookie.class);
                     if (null != cookie) {
                         Action action = (Action) cookie.instanceCreate();
                         if (null != context && action instanceof ContextAwareAction) {

@@ -17,6 +17,17 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.hints;
 
+import com.sun.source.tree.AnnotationTree;
+import com.sun.source.tree.AssignmentTree;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.IdentifierTree;
+import com.sun.source.tree.LiteralTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.ModifiersTree;
+import com.sun.source.tree.NewArrayTree;
+import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.ClassAnnotation;
@@ -27,18 +38,20 @@ import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.config.UserPreferences;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.java.search.ClassElementDescriptor;
@@ -66,9 +79,18 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSetting
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.api.java.queries.BinaryForSourceQuery.Result;
+import org.netbeans.api.java.source.ClassIndex.NameKind;
+import org.netbeans.api.java.source.ClassIndex.SearchScope;
+import org.netbeans.api.java.source.ElementHandle;
+import org.netbeans.api.java.source.GeneratorUtilities;
+import org.netbeans.api.java.source.JavaSource;
+import org.netbeans.api.java.source.TreeMaker;
+import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.HintsController;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileAttributeEvent;
 import org.openide.filesystems.FileChangeListener;
 import org.openide.filesystems.FileEvent;
@@ -78,7 +100,9 @@ import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbCollections;
 import org.openide.util.RequestProcessor;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This is heavily inspired by the work done ny Jan Lahoda - Big thank you!
@@ -86,6 +110,8 @@ import org.openide.util.RequestProcessor;
  */
 public class FindBugsHint {
 
+    private FindBugsHint() {}
+    
     private static RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
 
     private static class Task implements CancellableTask<CompilationInfo> {
@@ -107,19 +133,17 @@ public class FindBugsHint {
                 try {
                     String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
                     String name =  base + ".class"; //XXX
-                    int lastSlashIndex = base.lastIndexOf(File.separatorChar);
-                    String className = base.substring(lastSlashIndex > 0 ? lastSlashIndex + 1 : 0);
+                    // XXX this needs to listen to CompileOnSaveHelper instead
                     Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
                     for (URL u : bin.getRoots()) {
                         if ("file".equals(u.getProtocol())) {
                             try {
-                                File cls = new File(URLDecoder.decode(u.getPath(), "UTF-8"), name);
+                                File cls = new File(new File(u.toURI()), name);
                                 if (cls.exists()) {
-                                    FileChangeListener clsWeakFileChangeListener = FileUtil.weakFileChangeListener(listener, cls);
-                                    FileUtil.toFileObject(cls).addFileChangeListener(clsWeakFileChangeListener);
+                                    FileUtil.addFileChangeListener(listener, cls);
                                 }
-                            } catch (UnsupportedEncodingException uee) {
-                                Exceptions.printStackTrace(uee);
+                            } catch (URISyntaxException x) {
+                                Exceptions.printStackTrace(x);
                             }
                         }
                     }
@@ -134,15 +158,15 @@ public class FindBugsHint {
         }
 
         public void run(final CompilationInfo compilationInfo) throws Exception {
-            final FileObject fileObject = compilationInfo.getFileObject();
+            final FileObject fo = compilationInfo.getFileObject();
             final Document document = compilationInfo.getDocument();
 
-            if (null == errors && null != fileObject && null != document) {
+            if (null == errors && null != fo && null != document) {
                 HINT_PROCESSOR.post(new Runnable() {
 
                     public void run() {
                         try {
-                            errors = computeErrors(fileObject, document);
+                            errors = computeErrors(fo, document);
                             refresh(false);
                         } catch (Exception ex) {
                             Exceptions.printStackTrace(ex);
@@ -151,8 +175,8 @@ public class FindBugsHint {
                 });
                 errors = Collections.emptyList();
             }
-            if (null != errors && null != fileObject) {
-                HintsController.setErrors(fileObject, Task.class.getName(), errors);
+            if (null != errors && null != fo) {
+                HintsController.setErrors(fo, Task.class.getName(), errors);
             }
         }
 
@@ -163,11 +187,11 @@ public class FindBugsHint {
                 if (null != session) {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
                         List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
-                        Map<Object, Collection<BugInstance>> instanceByClass = session.computeResultAndWait(getFileObjectsToScan()).getInstanceByClass(true);
+                        Map<FindBugsResult.ClassKey,Collection<BugInstance>> instanceByClass =
+                                session.computeResultAndWait(fileObject).getInstanceByClass(true);
                         Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
                         for (String className : classes) {
-                            for (Object key : instanceByClass.keySet()) {
-                                FindBugsResult.ClassKey classKey = (FindBugsResult.ClassKey) key;
+                            for (FindBugsResult.ClassKey classKey : instanceByClass.keySet()) {
                                 if (classKey.getDisplayName().equals(className)) {
                                     Collection<BugInstance> bugs = instanceByClass.get(classKey);
                                     computedErrors.addAll(getErrors(project, bugs, fileObject, document));
@@ -196,81 +220,31 @@ public class FindBugsHint {
             List<ErrorDescription> errorDescriptions = new LinkedList<ErrorDescription>();
             for (final BugInstance bugInstance : bugs) {
                 try {
-                    ErrorDescription error = null;
+                    int line = 0;
                     // Highest priority: return the first top level source line annotation
-
-                    Fix fix = new Fix() {
-
-                        public String getText() {
-                            return "Disable FindBugs Detector for BugPattern: " + bugInstance.getBugPattern().getShortDescription();
-                        }
-
-                        public ChangeInfo implement() throws Exception {
-                            FindBugsSettingsProvider settingsProvider = project.getLookup().lookup(FindBugsSettingsProvider.class);
-                            if (null != settingsProvider) {
-                                UserPreferences findBugsSettings = settingsProvider.getFindBugsSettings();
-                                for (Iterator<DetectorFactory> factoryIterator = DetectorFactoryCollection.instance().factoryIterator(); factoryIterator.hasNext();) {
-                                    DetectorFactory detectorFactory = factoryIterator.next();
-                                    if (detectorFactory.getReportedBugPatterns().contains(bugInstance.getBugPattern())) {
-                                        findBugsSettings.enableDetector(detectorFactory, false);
-                                    }
-                                }
-                                settingsProvider.setFindBugsSettings(findBugsSettings);
-
-                                FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
-                                FindBugsResult result = qualitySession.getResult();
-                                if (null != result) {
-                                    result.removeAllBugInstancesForBugPattern(bugInstance.getBugPattern());
-                                }
-
-                            }
-                            return new ChangeInfo();
-                        }
-                    };
-
-
-                    for (Iterator<BugAnnotation> annotationIterator = bugInstance.annotationIterator(); annotationIterator.hasNext();) {
-                        BugAnnotation annotation = annotationIterator.next();
+                    // XXX why is this not using just one call to getPrimarySourceLineAnnotation? seems to work just as well, and always non-null
+                    for (BugAnnotation annotation : bugInstance.getAnnotations()) {
                         if (annotation instanceof SourceLineAnnotation) {
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, bugInstance.getPrimarySourceLineAnnotation().getStartLine()));
+                            line = Math.max(1, bugInstance.getPrimarySourceLineAnnotation().getStartLine());
                             break;
                         }
                     }
-
-                    if (null == error) {
-                        FieldAnnotation fieldAnnotation = bugInstance.getPrimaryField();
-                        if (null != fieldAnnotation) {
-                            VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
-                            JavaElement findFieldElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findVariableElement(desc);
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, findFieldElement.getLine().getLineNumber() + 1));
+                    JavaElement findElement = locateElement(bugInstance, project);
+                    if (line == 0) {
+                        if (findElement != null) {
+                            line = Math.max(1, findElement.getLine().getLineNumber() + 1);
                         }
                     }
-                    if (null == error) {
-                        MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
-                        if (null != methodAnnotation) {
-                            MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
-                            JavaElement findMethodElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findMethodElement(desc);
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, findMethodElement.getLine().getLineNumber() + 1));
+                    if (line > 0) {
+                        List<Fix> fixes = new ArrayList<Fix>();
+                        if (findElement != null) {
+                            fixes.add(new SuppressWarningsFix(bugInstance.getType(), findElement.getHandle(), file));
                         }
-
+                        fixes.add(new DisableDetectorFix(bugInstance, project));
+                        errorDescriptions.add(ErrorDescriptionFactory.createErrorDescription(
+                                    Severity.WARNING, "[FindBugs] " + bugInstance.getAbridgedMessage(),
+                                    fixes, document, line));
                     }
-                    if (null == error) {
-                        ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
-                        if (null != classAnnotation) {
-                            ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
-                            JavaElement findClassElement = org.nbheaven.sqe.core.java.search.SearchUtilities.findClassElement(desc);
-                            error = ErrorDescriptionFactory.createErrorDescription(
-                                    Severity.WARNING, "[FindBugs] " + bugInstance.getMessage(), Arrays.asList(new Fix[]{fix}),
-                                    document, Math.max(1, findClassElement.getLine().getLineNumber() + 1));
-                        }
-                    }
-                    errorDescriptions.add(error);
                 } catch (RuntimeException e) {
                     System.err.println("INFO: Can't create ErrorDescription for FindBugs bug instance: " +
                             bugInstance.getMessage());
@@ -280,43 +254,190 @@ public class FindBugsHint {
             return errorDescriptions;
         }
 
-        private FileObject[] getFileObjectsToScan() {
-            Collection<FileObject> fileObjectCollection = new LinkedList<FileObject>();
-            ClassPath sourceCP = ClassPath.getClassPath(fileObject, ClassPath.SOURCE);
-            if (sourceCP != null) {
-                FileObject root = sourceCP.findOwnerRoot(fileObject);
-                try {
-                    String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
-                    String name =  base + ".class"; //XXX
-                    int lastSlashIndex = base.lastIndexOf(File.separatorChar);
-                    String className = base.substring(lastSlashIndex > 0 ? lastSlashIndex + 1 : 0);
-                    Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
-                    for (URL u : bin.getRoots()) {
-                        if ("file".equals(u.getProtocol())) {
-                            try {
-                                File cls = new File(URLDecoder.decode(u.getPath(), "UTF-8"), name);
-                                if (cls.exists()) {
-                                    for(FileObject child: FileUtil.toFileObject(cls.getParentFile()).getChildren()) {
-                                        if(!child.isFolder() && child.getName().startsWith(className)) {
-                                            fileObjectCollection.add(child);
-                                        }
-                                    }
-                                }
-                            } catch (UnsupportedEncodingException uee) {
-                                Exceptions.printStackTrace(uee);
-                            }
-                        }
-                    }
-                } catch (FileStateInvalidException ex) {
-                    Exceptions.printStackTrace(ex);
+        private JavaElement locateElement(BugInstance bugInstance, Project project) {
+            MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
+            if (methodAnnotation != null) {
+                MethodElementDescriptor desc = new MethodElementDescriptorImpl(bugInstance.getPrimaryClass(), methodAnnotation, project);
+                JavaElement e = SearchUtilities.findMethodElement(desc);
+                if (e != null) {
+                    return e;
                 }
             }
-            return fileObjectCollection.toArray(new FileObject[fileObjectCollection.size()]);
+            FieldAnnotation fieldAnnotation = bugInstance.getPrimaryField();
+            if (fieldAnnotation != null) {
+                VariableElementDescriptor desc = new VariableElementDescriptorImpl(bugInstance.getPrimaryClass(), fieldAnnotation, project);
+                JavaElement e = SearchUtilities.findVariableElement(desc);
+                if (e != null) {
+                    return e;
+                }
+            }
+            ClassAnnotation classAnnotation = bugInstance.getPrimaryClass();
+            if (classAnnotation != null) {
+                ClassElementDescriptor desc = new ClassElementDescriptorImpl(classAnnotation, project);
+                JavaElement e = SearchUtilities.findClassElement(desc);
+                if (e != null) {
+                    return e;
+                }
+            }
+            return null;
+        }
+
+        private static class DisableDetectorFix implements Fix {
+
+            private final BugInstance bugInstance;
+            private final Project project;
+
+            public DisableDetectorFix(BugInstance bugInstance, Project project) {
+                this.bugInstance = bugInstance;
+                this.project = project;
+            }
+
+            public String getText() {
+                return "Disable detector for \"" + bugInstance.getBugPattern().getShortDescription() + "\"";
+            }
+
+            public ChangeInfo implement() throws Exception {
+                FindBugsSettingsProvider settingsProvider = project.getLookup().lookup(FindBugsSettingsProvider.class);
+                if (settingsProvider != null) {
+                    UserPreferences findBugsSettings = settingsProvider.getFindBugsSettings();
+                    for (DetectorFactory detectorFactory : NbCollections.iterable(DetectorFactoryCollection.instance().factoryIterator())) {
+                        if (detectorFactory.getReportedBugPatterns().contains(bugInstance.getBugPattern())) {
+                            findBugsSettings.enableDetector(detectorFactory, false);
+                        }
+                    }
+                    settingsProvider.setFindBugsSettings(findBugsSettings);
+                    FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
+                    FindBugsResult result = qualitySession.getResult();
+                    if (result != null) {
+                        result.removeAllBugInstancesForBugPattern(bugInstance.getBugPattern());
+                    }
+                }
+                return null;
+            }
+        }
+
+        private static class SuppressWarningsFix implements Fix { // SQE-8
+
+            private final String bugType;
+            private final ElementHandle<?> handle;
+            private final FileObject file;
+
+            SuppressWarningsFix(String bugType, ElementHandle<?> handle, FileObject file) {
+                this.bugType = bugType;
+                this.handle = handle;
+                this.file = file;
+            }
+
+            public String getText() {
+                return "Suppress warning";
+            }
+
+            public ChangeInfo implement() throws Exception {
+                JavaSource.forFileObject(file).runModificationTask(new org.netbeans.api.java.source.Task<WorkingCopy>() {
+                    public void run(WorkingCopy wc) throws Exception {
+                        wc.toPhase(JavaSource.Phase.RESOLVED);
+                        TypeElement sw = null;
+                        for (ElementHandle<TypeElement> swh : wc.getClasspathInfo().getClassIndex().
+                                getDeclaredTypes("SuppressWarnings", NameKind.SIMPLE_NAME, EnumSet.of(SearchScope.DEPENDENCIES, SearchScope.SOURCE))) {
+                            TypeElement _sw = swh.resolve(wc);
+                            if (_sw.getKind() != ElementKind.ANNOTATION_TYPE) {
+                                continue;
+                            }
+                            Retention retention = _sw.getAnnotation(Retention.class);
+                            if (retention != null && retention.value() == RetentionPolicy.SOURCE) {
+                                continue;
+                            }
+                            // XXX look up @Target, make sure unspecified or matches element's kind
+                            // XXX verify that it has a String[] value() attribute
+                            sw = _sw;
+                            break;
+                        }
+                        if (sw == null) {
+                            DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(
+                                    "Could not find a @SuppressWarnings with @Retention(CLASS/RUNTIME) in project classpath. " +
+                                    "Try findbugs:annotations:* for Maven, Common Annotations API for NetBeans modules, etc.",
+                                    NotifyDescriptor.WARNING_MESSAGE));
+                            // XXX try to add such a lib if it can be found somewhere
+                            return;
+                        }
+                        TreeMaker make = wc.getTreeMaker();
+                        Element element = handle.resolve(wc);
+                        if (element == null) {
+                            System.err.println("could not find " + handle);
+                            return;
+                        }
+                        Tree elementTree = wc.getTrees().getTree(element);
+                        ModifiersTree old;
+                        if (elementTree.getKind() == Tree.Kind.CLASS) {
+                            old = ((ClassTree) elementTree).getModifiers();
+                        } else if (elementTree.getKind() == Tree.Kind.METHOD) {
+                            old = ((MethodTree) elementTree).getModifiers();
+                        } else if (elementTree.getKind() == Tree.Kind.VARIABLE) {
+                            old = ((VariableTree) elementTree).getModifiers();
+                        } else {
+                            System.err.println("unknown tree kind " + elementTree.getKind());
+                            return;
+                        }
+                        ModifiersTree nue = addSuppressWarnings(make, sw, old);
+                        nue = GeneratorUtilities.get(wc).importFQNs(nue);
+                        wc.rewrite(old, nue);
+                    }
+                }).commit();
+                return null; // XXX would be polite to implement
+            }
+
+            private ModifiersTree addSuppressWarnings(TreeMaker make, TypeElement sw, ModifiersTree original) {
+                LiteralTree toAdd = make.Literal(bugType);
+                // First try to insert into a value list for an existing annotation:
+                List<? extends AnnotationTree> anns = original.getAnnotations();
+                for (int i = 0; i < anns.size(); i++) {
+                    AnnotationTree ann = anns.get(i);
+                    IdentifierTree id = (IdentifierTree) ann.getAnnotationType();
+                    // XXX what if this is the java.lang version? how to distinguish??
+                    if (id.getName().contentEquals("SuppressWarnings")) {
+                        List<? extends ExpressionTree> args = ann.getArguments();
+                        // XXX need to rather skip over non-'value' assignments (e.g. 'justification')
+                        if (args.size() != 1) {
+                            System.err.println("args list for @SW not of size 1: " + args);
+                            return original;
+                        }
+                        AssignmentTree assign = (AssignmentTree) args.get(0);
+                        if (!assign.getVariable().toString().equals("value")) {
+                            System.err.println("weird attribute for @SW: " + assign);
+                            return original;
+                        }
+                        ExpressionTree arg = assign.getExpression();
+                        NewArrayTree arr;
+                        if (arg.getKind() == Tree.Kind.STRING_LITERAL) {
+                            arr = make.NewArray(null, Collections.<ExpressionTree>emptyList(), Collections.singletonList(arg));
+                        } else if (arg.getKind() == Tree.Kind.NEW_ARRAY) {
+                            arr = (NewArrayTree) arg;
+                        } else {
+                            System.err.println("unknown arg kind " + arg.getKind() + ": " + arg);
+                            return original;
+                        }
+                        for (ExpressionTree existing : arr.getInitializers()) {
+                            if (((LiteralTree) existing).getValue().equals(bugType)) {
+                                // Already suppressing this warning - perhaps have just not yet reanalyzed.
+                                return original;
+                            }
+                        }
+                        arr = make.addNewArrayInitializer(arr, toAdd);
+                        ann = make.Annotation(id, Collections.singletonList(arr));
+                        return make.insertModifiersAnnotation(make.removeModifiersAnnotation(original, i), i, ann);
+                    }
+                }
+                // Not found, so create a new annotation:
+                ExpressionTree annotationTypeTree = make.QualIdent(sw);
+                List<ExpressionTree> arguments = new ArrayList<ExpressionTree>();
+                arguments.add(/*make.Assignment(make.Identifier("value"), */toAdd/*)*/);
+                AnnotationTree annTree = make.Annotation(annotationTypeTree, arguments);
+                return make.addModifiersAnnotation(original, annTree);
+            }
+
         }
 
     }
-
-
 
     private static final class FCL implements FileChangeListener {
 
@@ -351,6 +472,7 @@ public class FindBugsHint {
         }
     }
 
+    @ServiceProvider(service=JavaSourceTaskFactory.class)
     public static final class Factory extends EditorAwareJavaSourceTaskFactory {
 
         public Factory() {
@@ -362,7 +484,7 @@ public class FindBugsHint {
             return new Task(fileObject);
         }
 
-        protected void refreshImpl(FileObject file) {
+        private void refreshImpl(FileObject file) {
             reschedule(file);
         }
     }

@@ -34,7 +34,12 @@ import org.openide.util.lookup.Lookups;
  *
  * @author sven
  */
-//@NodeFactory.Registration
+@NodeFactory.Registration(projectType={
+    "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject",
+    "org-netbeans-modules-web-project"
+}, position=1000)
 public class SQENodeFactory implements NodeFactory {
 
     public SQENodeFactory() {

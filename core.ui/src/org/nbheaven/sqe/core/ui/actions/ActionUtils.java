@@ -36,7 +36,6 @@ import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 
@@ -74,7 +73,7 @@ public class ActionUtils {
     private Collection<JMenuItem> menus;
 
     private ActionUtils(String folder) {
-        this(Repository.getDefault().getDefaultFileSystem().findResource(folder));
+        this(FileUtil.getConfigFile(folder));
     }
 
     private ActionUtils(FileObject fo) {

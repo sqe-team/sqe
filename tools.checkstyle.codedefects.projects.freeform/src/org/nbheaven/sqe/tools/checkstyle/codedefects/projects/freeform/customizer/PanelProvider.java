@@ -24,7 +24,6 @@ import javax.swing.JComponent;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.CheckstyleConfiguration;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform.CheckstyleSettingsProviderImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
@@ -56,8 +55,13 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
         final CheckstyleSettings checkstyleSettings = checkstyleSettingsProvider.getCheckstyleSettings();
 
         final CheckstyleConfiguration checkstyleConfiguration = new CheckstyleConfiguration();
-        String cleanAbsoluteFile = FileUtil.toFile(checkstyleSettings.getCheckstyleConfigurationFile()).getAbsolutePath();
-        checkstyleConfiguration.setConfigFilePath(cleanAbsoluteFile);
+        FileObject checkstyleConfigurationFile = checkstyleSettings.getCheckstyleConfigurationFile();
+        if (checkstyleConfigurationFile != null) {
+            String cleanAbsoluteFile = FileUtil.toFile(checkstyleConfigurationFile).getAbsolutePath();
+            checkstyleConfiguration.setConfigFilePath(cleanAbsoluteFile);
+        } else {
+            checkstyleConfiguration.setConfigFilePath("");
+        }
         FileObject checkstylePropertiesFile = checkstyleSettings.getPropertiesFile();
         if (null != checkstylePropertiesFile) {
             String propertiesFilePath = FileUtil.toFile(checkstylePropertiesFile).getAbsolutePath();

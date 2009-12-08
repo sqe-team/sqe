@@ -54,7 +54,7 @@ public class FindBugsQualityProvider extends AbstractQualityProvider {
     }
 
     public FindBugsSession createQualitySession(Project project) {
-        return new FindBugsSession(this, project);
+        return new FindBugsSession(project);
     }
 
     public String getDisplayName() {

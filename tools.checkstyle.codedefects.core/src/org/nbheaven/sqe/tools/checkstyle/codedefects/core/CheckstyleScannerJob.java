@@ -69,6 +69,8 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
     }
 
     private final void init() {
+        // #170426 workaround - this call to project lookup must happen with the default CCL
+        CheckstyleSettingsProvider settingsProvider = getProject().getLookup().lookup(CheckstyleSettingsProvider.class);
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         InputStream istream = null;
         try {
@@ -77,8 +79,8 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             FileObject checkStyleConfigFile = null;
             URL checkStyleConfigURL = null;
             Properties properties = System.getProperties();
-            if (null != getProject().getLookup().lookup(CheckstyleSettingsProvider.class)) {
-                CheckstyleSettings checkstyleSettings = getProject().getLookup().lookup(CheckstyleSettingsProvider.class).getCheckstyleSettings();
+            if (settingsProvider != null) {
+                CheckstyleSettings checkstyleSettings = settingsProvider.getCheckstyleSettings();
                 checkStyleConfigFile = checkstyleSettings.getCheckstyleConfigurationFile();
                 checkStyleConfigURL = checkstyleSettings.getCheckstyleConfigurationURL();
                 properties = checkstyleSettings.getProperties();

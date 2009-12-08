@@ -25,19 +25,19 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.asm</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>3.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.nbheaven.sqe.wrapper.bcel</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>5.2</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.dom4j</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -49,11 +49,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.asm</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.wrapper.dom4j</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>3.1</specification-version>
+                        <specification-version>1.0</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -61,7 +61,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>6.4.1</specification-version>
+                        <specification-version>7.19</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -134,9 +134,12 @@
                 <package>edu.umd.cs.findbugs.classfile.engine.asm</package>
                 <package>edu.umd.cs.findbugs.classfile.engine.bcel</package>
                 <package>edu.umd.cs.findbugs.classfile.impl</package>
+                <package>edu.umd.cs.findbugs.cloud</package>
+                <package>edu.umd.cs.findbugs.cloud.db</package>
                 <package>edu.umd.cs.findbugs.config</package>
                 <package>edu.umd.cs.findbugs.detect</package>
                 <package>edu.umd.cs.findbugs.filter</package>
+                <package>edu.umd.cs.findbugs.formatStringChecker</package>
                 <package>edu.umd.cs.findbugs.graph</package>
                 <package>edu.umd.cs.findbugs.gui</package>
                 <package>edu.umd.cs.findbugs.gui2</package>
@@ -154,6 +157,7 @@
                 <package>edu.umd.cs.findbugs.workflow</package>
                 <package>edu.umd.cs.findbugs.xml</package>
                 <package>javax.annotation</package>
+                <package>javax.annotation.concurrent</package>
                 <package>javax.annotation.meta</package>
                 <package>net.jcip.annotations</package>
             </public-packages>
@@ -176,10 +180,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jFormatString.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jFormatString.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/plugin/coreplugin.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/plugin/coreplugin.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

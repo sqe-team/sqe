@@ -56,7 +56,8 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
 
         final PMDSettings pmdSettings = pmdSettingsProvider.getPMDSettings();
 
-        final ConfigureRulesPanel rulesPanel = new ConfigureRulesPanel(pmdSettings);
+        final ConfigureRulesPanel rulesPanel = new ConfigureRulesPanel();
+        rulesPanel.setSettings(pmdSettings);
 
         category.setOkButtonListener(new ActionListener() {
 

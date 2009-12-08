@@ -21,6 +21,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -45,7 +46,7 @@ class AuditEventNode extends DefaultMutableTreeNode {
     }
 
     String getRelativeFileName() {
-        String path = session.getProject().getProjectDirectory().getPath();
+        String path = FileUtil.toFile(session.getProject().getProjectDirectory()).getAbsolutePath();
         String fileName = auditEvent.getFileName();
         fileName = fileName.replaceAll("\\\\", "/");
         if (fileName.startsWith(path)) {

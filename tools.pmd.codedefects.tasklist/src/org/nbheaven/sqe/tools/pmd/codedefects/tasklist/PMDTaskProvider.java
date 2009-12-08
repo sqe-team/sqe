@@ -18,6 +18,7 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.tasklist;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -71,17 +72,22 @@ public final class PMDTaskProvider extends PushTaskScanner {
         for (Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
             if (null != project.getLookup().lookup(PMDSession.class)) {
                 PMDResult result = getResult(project);
-                List<Task> tasks = new LinkedList<Task>();
-                for (Map.Entry<Object, Collection<IRuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
-                    tasks.addAll(getTasks(classKey.getValue(), ((PMDResult.ClassKey) classKey.getKey()).getFileObject()));
-                }            
-                callback.setTasks(project.getProjectDirectory(), tasks);
+                if (result != null) {
+                    List<Task> tasks = new LinkedList<Task>();
+                    for (Map.Entry<Object, Collection<IRuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
+                        tasks.addAll(getTasks(classKey.getValue(), ((PMDResult.ClassKey) classKey.getKey()).getFileObject()));
+                    }
+                    callback.setTasks(project.getProjectDirectory(), tasks);
+                }
             }
         }    
         
     }
 
     private List<Task> getTasks(Collection<IRuleViolation> bugs, FileObject file) {
+        if (file == null) {
+            return Collections.emptyList();
+        }
         List<Task> tasks = new LinkedList<Task>();
         for(IRuleViolation ruleViolation: bugs) {
             tasks.add(Task.create(file, "sqe-tasklist-pmd", ruleViolation.getDescription(), ruleViolation.getBeginLine()));                                

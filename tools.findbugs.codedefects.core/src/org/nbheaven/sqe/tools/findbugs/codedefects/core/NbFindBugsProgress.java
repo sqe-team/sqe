@@ -40,6 +40,10 @@ class NbFindBugsProgress implements FindBugsProgress {
         setProgressHandleDisplayName("Scanning Archives");
     }
 
+    public void startArchive(String archiveName) {
+        setProgressHandleDisplayName("Scanning Archive:" + archiveName);;
+    }
+
     public void finishArchive() {
     }
 

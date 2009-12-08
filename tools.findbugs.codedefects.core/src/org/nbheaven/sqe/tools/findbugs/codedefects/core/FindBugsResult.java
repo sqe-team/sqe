@@ -53,25 +53,25 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/class.gif") {
 
-            public Map<Object, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
+            public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByClass(coreBugsOnly);
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/package.gif") {
 
-            public Map<Object, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
+            public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByPackage(coreBugsOnly);
             }
         },
         CATEGORY("HINT_VIEW_BY_CATEGORY", "edu/umd/cs/findbugs/gui/bug.png") {
 
-            public Map<Object, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
+            public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByCategory(coreBugsOnly);
             }
         },
         TYPE("HINT_VIEW_BY_CATEGORY", "edu/umd/cs/findbugs/gui/bug2.png") {
 
-            public Map<Object, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
+            public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByType(coreBugsOnly);
             }
         };
@@ -91,16 +91,16 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             return icon;
         }
 
-        public abstract Map<Object, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly);
+        public abstract Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly);
     }
-    private Map<Object, Collection<BugInstance>> instanceByClass = new TreeMap<Object, Collection<BugInstance>>();
-    private Map<Object, Collection<BugInstance>> instanceByPackage = new TreeMap<Object, Collection<BugInstance>>();
-    private Map<Object, Collection<BugInstance>> instanceByCategory = new TreeMap<Object, Collection<BugInstance>>();
-    private Map<Object, Collection<BugInstance>> instanceByType = new TreeMap<Object, Collection<BugInstance>>();
-    private Map<Object, Collection<BugInstance>> filteredInstanceByClass;
-    private Map<Object, Collection<BugInstance>> filteredInstanceByPackage;
-    private Map<Object, Collection<BugInstance>> filteredInstanceByCategory;
-    private Map<Object, Collection<BugInstance>> filteredInstanceByType;
+    private Map<ClassKey, Collection<BugInstance>> instanceByClass = new TreeMap<ClassKey, Collection<BugInstance>>();
+    private Map<PackageKey, Collection<BugInstance>> instanceByPackage = new TreeMap<PackageKey, Collection<BugInstance>>();
+    private Map<CategoryKey, Collection<BugInstance>> instanceByCategory = new TreeMap<CategoryKey, Collection<BugInstance>>();
+    private Map<BugPattern, Collection<BugInstance>> instanceByType = new TreeMap<BugPattern, Collection<BugInstance>>();
+    private Map<ClassKey, Collection<BugInstance>> filteredInstanceByClass;
+    private Map<PackageKey, Collection<BugInstance>> filteredInstanceByPackage;
+    private Map<CategoryKey, Collection<BugInstance>> filteredInstanceByCategory;
+    private Map<BugPattern, Collection<BugInstance>> filteredInstanceByType;
     private long bugCount = 0;
     private long coreBugCount = 0;
     private long infoBugCount = 0;
@@ -111,7 +111,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     /** Creates a new instance of FindBugsResult */
     FindBugsResult(Project project) {
-        lookup = Lookups.fixed(new Object[]{this});
+        lookup = Lookups.singleton(this);
         this.session = project.getLookup().lookup(FindBugsSession.class);
     }
 
@@ -119,8 +119,8 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         return lookup;
     }
 
-    private void removeAllBugInstancesForBugPattern(BugPattern bugPattern, Map<Object, Collection<BugInstance>> mapToClear) {
-        for (Map.Entry<Object, Collection<BugInstance>> entry : new HashMap<Object, Collection<BugInstance>>(mapToClear).entrySet()) {
+    private <T> void removeAllBugInstancesForBugPattern(BugPattern bugPattern, Map<T, Collection<BugInstance>> mapToClear) {
+        for (Map.Entry<T, Collection<BugInstance>> entry : new HashMap<T, Collection<BugInstance>>(mapToClear).entrySet()) {
             for (BugInstance bugInstance : new ArrayList<BugInstance>(entry.getValue())) {
                 if (bugInstance.getBugPattern().equals(bugPattern)) {
                     entry.getValue().remove(bugInstance);
@@ -211,7 +211,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public Map<Object, Collection<BugInstance>> getInstanceByClass(boolean coreBugsOnly) {
+    public Map<ClassKey, Collection<BugInstance>> getInstanceByClass(boolean coreBugsOnly) {
         reallyUpdateMaps();
         if (coreBugsOnly) {
             if (null == filteredInstanceByClass) {
@@ -223,7 +223,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public Map<Object, Collection<BugInstance>> getInstanceByPackage(boolean coreBugsOnly) {
+    public Map<PackageKey, Collection<BugInstance>> getInstanceByPackage(boolean coreBugsOnly) {
         reallyUpdateMaps();
         if (coreBugsOnly) {
             if (null == filteredInstanceByPackage) {
@@ -235,7 +235,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public Map<Object, Collection<BugInstance>> getInstanceByCategory(boolean coreBugsOnly) {
+    public Map<CategoryKey, Collection<BugInstance>> getInstanceByCategory(boolean coreBugsOnly) {
         reallyUpdateMaps();
         if (coreBugsOnly) {
             if (null == filteredInstanceByCategory) {
@@ -247,7 +247,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public Map<Object, Collection<BugInstance>> getInstanceByType(boolean coreBugsOnly) {
+    public Map<BugPattern, Collection<BugInstance>> getInstanceByType(boolean coreBugsOnly) {
         reallyUpdateMaps();
         if (coreBugsOnly) {
             if (null == filteredInstanceByType) {
@@ -259,9 +259,9 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    private Map<Object, Collection<BugInstance>> createFilteredMap(Map<Object, Collection<BugInstance>> originalMap) {
-        Map<Object, Collection<BugInstance>> filteredMap = new TreeMap<Object, Collection<BugInstance>>();
-        for (Map.Entry<Object, Collection<BugInstance>> entry : originalMap.entrySet()) {
+    private <T> Map<T, Collection<BugInstance>> createFilteredMap(Map<T, Collection<BugInstance>> originalMap) {
+        Map<T, Collection<BugInstance>> filteredMap = new TreeMap<T, Collection<BugInstance>>();
+        for (Map.Entry<T, Collection<BugInstance>> entry : originalMap.entrySet()) {
             filteredMap.put(entry.getKey(), new FilteredCollection<BugInstance>(entry.getValue()));
         }
         return filteredMap;
@@ -299,30 +299,27 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         return 0;
     }
 
-    public abstract static class DisplayableKey implements Comparable {
+    public abstract static class DisplayableKey<T extends DisplayableKey> implements Comparable<T> {
 
         public abstract String getDisplayName();
 
-        public final boolean equals(Object object) {
+        public @Override final boolean equals(Object object) {
             if (object instanceof DisplayableKey) {
-                return ((DisplayableKey) object).getDisplayName().equals(this.getDisplayName());
+                return ((DisplayableKey) object).getDisplayName().equals(getDisplayName());
             }
             return false;
         }
 
-        public final int hashCode() {
-            return this.getDisplayName().hashCode();
+        public @Override final int hashCode() {
+            return getDisplayName().hashCode();
         }
 
-        public final int compareTo(Object object) {
-            if (object instanceof DisplayableKey) {
-                return this.getDisplayName().compareTo(((DisplayableKey) object).getDisplayName());
-            }
-            throw new IllegalArgumentException("Can't be compared to " + object.getClass());
+        public final int compareTo(T object) {
+            return getDisplayName().compareTo(object.getDisplayName());
         }
     }
 
-    public static class StringKey extends DisplayableKey {
+    public static class StringKey extends DisplayableKey<StringKey> {
 
         private String displayName;
 
@@ -335,7 +332,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public static class ClassKey extends DisplayableKey {
+    public static class ClassKey extends DisplayableKey<ClassKey> {
 
         private final ClassAnnotation classAnnotation;
         private final FileObject fileObject;
@@ -354,7 +351,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public static class PackageKey extends DisplayableKey {
+    public static class PackageKey extends DisplayableKey<PackageKey> {
 
         private ClassAnnotation classAnnotation;
 
@@ -367,7 +364,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    public static class CategoryKey extends DisplayableKey {
+    public static class CategoryKey extends DisplayableKey<CategoryKey> {
 
         private BugPattern bugPattern;
 

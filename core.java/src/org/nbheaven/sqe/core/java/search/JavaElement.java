@@ -17,6 +17,7 @@
  */
 package org.nbheaven.sqe.core.java.search;
 
+import org.netbeans.api.java.source.ElementHandle;
 import org.openide.text.Line;
 
 
@@ -33,5 +34,7 @@ public interface JavaElement {
     public int getEndColumn();
     
     public Line getLine();
+
+    ElementHandle<?> getHandle();
     
 }

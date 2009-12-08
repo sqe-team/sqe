@@ -20,8 +20,6 @@ package org.nbheaven.sqe.codedefects.dashboard.controlcenter.panels;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
@@ -95,7 +93,6 @@ public class Statistics extends JPanel implements PropertyChangeListener {
         overviewPlot.setRangeAxis(rangeAxis);
 
         CategoryItemRenderer categoryItemRenderer = new StackedBarRenderer(); //3D();
-        categoryItemRenderer.setItemLabelsVisible(true);
 //        categoryItemRenderers[0].setPaint(Color.RED);
         categoryItemRenderer.setSeriesPaint(0, Color.RED);
         categoryItemRenderer.setSeriesPaint(1, Color.ORANGE);
@@ -124,7 +121,7 @@ public class Statistics extends JPanel implements PropertyChangeListener {
         // Update per project view first
         perProjectDataSet.clear();
         for (QualityProvider qualityProvider : SQEUtilities.getProviders()) {
-            String providerName = qualityProvider.getName();
+            String providerName = qualityProvider.getDisplayName();
             perProjectDataSet.addValue(0, CodeDefectSeverity.ERROR, providerName);
             perProjectDataSet.addValue(0, CodeDefectSeverity.WARNING, providerName);
             perProjectDataSet.addValue(0, CodeDefectSeverity.INFO, providerName);
@@ -136,9 +133,9 @@ public class Statistics extends JPanel implements PropertyChangeListener {
                 if (null == session.getResult()) {
                     continue;
                 }
-                QualityResultStatistic statistic = (QualityResultStatistic) session.getResult().getLookup().lookup(QualityResultStatistic.class);
+                QualityResultStatistic statistic = session.getResult().getLookup().lookup(QualityResultStatistic.class);
                 if (null != statistic) {
-                    String providerName = session.getProvider().getName();
+                    String providerName = session.getProvider().getDisplayName();
                     perProjectDataSet.addValue(statistic.getCodeDefactCount(CodeDefectSeverity.ERROR), CodeDefectSeverity.ERROR, providerName);
                     perProjectDataSet.addValue(statistic.getCodeDefactCount(CodeDefectSeverity.WARNING), CodeDefectSeverity.WARNING, providerName);
                     perProjectDataSet.addValue(statistic.getCodeDefactCount(CodeDefectSeverity.INFO), CodeDefectSeverity.INFO, providerName);

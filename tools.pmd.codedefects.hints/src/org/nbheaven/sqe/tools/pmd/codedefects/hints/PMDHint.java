@@ -54,6 +54,7 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This is heavily inspired by the work done ny Jan Lahoda - Big thank you!
@@ -129,19 +130,22 @@ public class PMDHint {
                 PMDSession session = project.getLookup().lookup(PMDSession.class);
                 if (null != session) {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
-                        Map<Object, Collection<IRuleViolation>> instanceByClass = session.computeResultAndWait(fileObject).getInstanceByClass();
-                        Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
-                        List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
-                        for (String className : classes) {
-                            for (Object key : instanceByClass.keySet()) {
-                                PMDResult.ClassKey classKey = (PMDResult.ClassKey) key;
-                                if (classKey.getDisplayName().equals(className)) {
-                                    Collection<IRuleViolation> bugs = instanceByClass.get(classKey);
-                                    computedErrors.addAll(getErrors(project, bugs, fileObject, document));
+                        PMDResult result = session.computeResultAndWait(fileObject);
+                        if (result != null) { // SQE-35
+                            Map<Object, Collection<IRuleViolation>> instanceByClass = result.getInstanceByClass();
+                            Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
+                            List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
+                            for (String className : classes) {
+                                for (Object key : instanceByClass.keySet()) {
+                                    PMDResult.ClassKey classKey = (PMDResult.ClassKey) key;
+                                    if (classKey.getDisplayName().equals(className)) {
+                                        Collection<IRuleViolation> bugs = instanceByClass.get(classKey);
+                                        computedErrors.addAll(getErrors(project, bugs, fileObject, document));
+                                    }
                                 }
                             }
+                            return computedErrors;
                         }
-                        return computedErrors;
                     }
                 }
             }
@@ -173,7 +177,7 @@ public class PMDHint {
                         PMDSettingsProvider settingsProvider = project.getLookup().lookup(PMDSettingsProvider.class);
                         if (null != settingsProvider) {
                             PMDSettings pmdSettings = settingsProvider.getPMDSettings();
-                            pmdSettings.deavtivateRule(ruleViolation.getRule());
+                            pmdSettings.deactivateRule(ruleViolation.getRule());
                         }
 
                         PMDSession qualitySession = project.getLookup().lookup(PMDSession.class);
@@ -230,6 +234,7 @@ public class PMDHint {
         }
     }
 
+    @ServiceProvider(service=JavaSourceTaskFactory.class)
     public static final class Factory extends EditorAwareJavaSourceTaskFactory {
 
         public Factory() {

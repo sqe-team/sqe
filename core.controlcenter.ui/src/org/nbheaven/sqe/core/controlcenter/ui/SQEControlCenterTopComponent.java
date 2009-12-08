@@ -43,7 +43,6 @@ import org.netbeans.api.project.ProjectUtils;
 import org.openide.cookies.InstanceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
@@ -65,7 +64,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
 
     private static SQEControlCenterTopComponent instance;
     /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "org/nbheaven/sqe/core/controlcenter/ui/resources/sqe_16.png";
+    private static final String ICON_PATH = "org/nbheaven/sqe/core/controlcenter/ui/resources/sqe_16.png";
     private static final String PREFERRED_ID = "SQEControlCenterTopComponent";
     private static final String TC_GROUP = "SQEControlCenter";
 
@@ -88,12 +87,12 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
 
-        FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("SQE/ControlCenter/Panels");
+        FileObject fo = FileUtil.getConfigFile("SQE/ControlCenter/Panels");
         for (FileObject panelObject : FileUtil.getOrder(Arrays.asList(fo.getChildren()), true)) {
             try {
                 DataObject dao = DataObject.find(panelObject);
                 Boolean collapsed = (Boolean) panelObject.getAttribute("collapsed");
-                InstanceCookie cookie = dao.getCookie(InstanceCookie.class);
+                InstanceCookie cookie = dao.getLookup().lookup(InstanceCookie.class);
 
                 if (null != cookie) {
                     JComponent component = (JComponent) cookie.instanceCreate();
@@ -248,12 +247,12 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
         assert SwingUtilities.isEventDispatchThread();
 
         if (null != project) {
-            setDisplayName("SQE [" + ProjectUtils.getInformation(project).getDisplayName() + "]");
+            setDisplayName("Quality [" + ProjectUtils.getInformation(project).getDisplayName() + "]"); // XXX I18N
             Node[] activatedNodes = new Node[]{new AbstractNode(Children.LEAF, Lookups.fixed(project))};
             setActivatedNodes(activatedNodes);
 
         } else {
-            setDisplayName("SQE [No project]");
+            setDisplayName("Quality [no project]"); // XXX I18N
             setActivatedNodes(new Node[]{});
         }
     }

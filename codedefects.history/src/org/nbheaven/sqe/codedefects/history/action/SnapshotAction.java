@@ -17,62 +17,92 @@
  */
 package org.nbheaven.sqe.codedefects.history.action;
 
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.history.util.CodeDefectHistoryPersistence;
-import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
-import org.openide.nodes.Node;
-import org.openide.util.HelpCtx;
+import org.openide.util.ContextAwareAction;
+import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.NodeAction;
+import org.openide.util.Utilities;
 
 /**
  *
  * @author Sven Reimers
  */
-public class SnapshotAction extends NodeAction {
+public class SnapshotAction extends AbstractAction implements LookupListener, ContextAwareAction {
+
+    private Lookup context;
+    private Lookup.Result<Project> lkpInfo;
+
     public SnapshotAction() {
+        this(Utilities.actionsGlobalContext());
+    }
+
+    public SnapshotAction(Lookup context) {
         putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.SHORT_DESCRIPTION,
             NbBundle.getMessage(SnapshotAction.class, "HINT_Action"));
-        setEnabled(false);
+        putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/codedefects/history/resources/camera.png")));
+        this.context = context;
+        //The thing we want to listen for the presence or absence of
+        //on the global selection
+        Lookup.Template<Project> tpl = new Lookup.Template<Project>(Project.class);
+        lkpInfo = context.lookup(tpl);
+        lkpInfo.addLookupListener(this);
+        resultChanged(null);
+    }
+
+    public Action createContextAwareInstance(Lookup context) {
+        return new SnapshotAction(context);
+    }
+
+    public void resultChanged(LookupEvent ev) {
+        updateEnableState();
     }
 
     public String getName() {
         return NbBundle.getMessage(SnapshotAction.class, "LBL_Action");
     }
 
-    @Override
-    protected String iconResource() {
-        return "org/nbheaven/sqe/codedefects/history/resources/camera.png";
-    }
 
     @Override
-    protected boolean asynchronous() {
-        return false;
-    }
-
-    @Override
-    protected void performAction(Node[] nodes) {
-        if (enable(nodes)) {
-            Project project = SQEProjectSupport.findProject(nodes[0]);
+    public void actionPerformed(ActionEvent actionEvent) {
+        if (null != getActiveProject()) {
+            Project project = getActiveProject();
             CodeDefectHistoryPersistence.addSnapshot(project);
         }
     }
 
-    @Override
-    protected boolean enable(Node[] nodes) {
-        if (null == nodes || nodes.length > 1 || 0 == nodes.length) {
-            return false;
+    private void updateEnableState() {
+        if (!EventQueue.isDispatchThread()) {
+            EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    updateEnableState();
+                }
+            });
+            return;
         }
-        Project project = SQEProjectSupport.findProject(nodes[0]);
-        
-        return (null == project || null == project.getLookup().lookup(QualitySession.class));
+        Project project = getActiveProject();
+
+        setEnabled (null != project && null != project.getLookup().lookup(QualitySession.class));
     }
 
-    @Override
-    public HelpCtx getHelpCtx() {
-        return HelpCtx.DEFAULT_HELP;
+    private Project getActiveProject() {
+        Collection<? extends Project> projects = lkpInfo.allInstances();
+        if (projects.size() == 1) {
+            Project project = projects.iterator().next();
+            return project;
+        }
+        return null;
     }
+
 }

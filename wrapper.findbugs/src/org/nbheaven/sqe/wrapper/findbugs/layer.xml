@@ -22,7 +22,7 @@
     <folder name="FindBugs">
         <folder name="Plugins">
             <file name="FindBugs-Core-Plugin">
-                <attr name="jar" urlvalue="nbinst:///modules/ext/plugin/coreplugin.jar"/>
+                <attr name="jar" urlvalue="nbinst:///modules/ext/findbugs.jar"/>
             </file>
         </folder>
     </folder>    

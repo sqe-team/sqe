@@ -21,23 +21,31 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.LookupProvider.Registration.ProjectType;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 
 /**
  * 
  * @author Sven Reimers
  */
+@ProjectServiceProvider(service={FindBugsSession.class, QualitySession.class}, projectType={
+    "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-java-j2seproject",
+    "org-netbeans-modules-web-project",
+    "org-netbeans-modules-maven"
+}, projectTypes=@ProjectType(id="org-netbeans-modules-ant-freeform", position=0))
 public class FindBugsSession extends AbstractQualitySession {
 
     private FindBugsResult findBugsResult;
     private AtomicBoolean isRunning;
 
-    /** Creates a new instance of FindBugsSession */
-    public FindBugsSession(FindBugsQualityProvider provider, Project project) {
-        super(provider, project);
+    public FindBugsSession(Project project) {
+        super(FindBugsQualityProvider.getDefault(), project);
         isRunning = new AtomicBoolean(false);
     }
 
@@ -53,8 +61,12 @@ public class FindBugsSession extends AbstractQualitySession {
     private Lock waitResultLock = new ReentrantLock();
     private Condition waitForResult = waitResultLock.newCondition();
 
-    public FindBugsResult computeResultAndWait(FileObject... fileObjects) {
-        FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), fileObjects);
+    /**
+     * Analyze a single file.
+     * Call within a Java source task at {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
+     */
+    public FindBugsResult computeResultAndWait(FileObject sourceFile) {
+        FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), sourceFile);
         SQECodedefectScanner.postAndWait(job);
         return job.getResult();
     }

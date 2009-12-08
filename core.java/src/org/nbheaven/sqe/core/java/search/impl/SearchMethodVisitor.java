@@ -46,14 +46,14 @@ public class SearchMethodVisitor extends SearchClassVisitor {
     private boolean checkMethod(MethodTree methodTree) {
         if (methodTree.getName().contentEquals(descriptor.getName())) { 
             Element el = TreePathHandle.create(getCurrentPath(), getInfo()).resolveElement(getInfo());
-            if (el.getKind().equals(ElementKind.METHOD)) {
+            if (el.getKind().equals(ElementKind.METHOD) || el.getKind().equals(ElementKind.CONSTRUCTOR)) {
                 ExecutableElement method = ((ExecutableElement)TreePathHandle.create(getCurrentPath(), getInfo()).resolveElement(getInfo()));
                 StringBuilder builder = new StringBuilder("(");
                 for (VariableElement variableElement: method.getParameters()) {
-                    builder.append(TypeUtilities.convertTypeMirrorToBinayRepresentation(variableElement.asType()));
+                    builder.append(TypeUtilities.convertTypeMirrorToBinaryRepresentation(variableElement.asType()));
                 }
                 builder.append(")");
-                builder.append(TypeUtilities.convertTypeMirrorToBinayRepresentation(method.getReturnType()));
+                builder.append(TypeUtilities.convertTypeMirrorToBinaryRepresentation(method.getReturnType()));
                 if (descriptor.getSignature().equals(builder.toString())){
                     return true;
                 }              
