@@ -84,10 +84,11 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
         ruleContext.setReport(report);
 
         PMDSettingsProvider settingsProvider = getProject().getLookup().lookup(PMDSettingsProvider.class);
-        if (null == settingsProvider) {
-            settings = PMDSettingsImpl.globalSettings();
-        } else {
+        if (settingsProvider != null) {
             settings = settingsProvider.getPMDSettings();
+        }
+        if (settings == null) {
+            settings = PMDSettingsImpl.globalSettings();
         }
         rules = settings.getActiveRules();
     }

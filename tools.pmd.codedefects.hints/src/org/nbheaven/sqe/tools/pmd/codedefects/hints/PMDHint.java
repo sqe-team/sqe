@@ -130,19 +130,22 @@ public class PMDHint {
                 PMDSession session = project.getLookup().lookup(PMDSession.class);
                 if (null != session) {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
-                        Map<Object, Collection<IRuleViolation>> instanceByClass = session.computeResultAndWait(fileObject).getInstanceByClass();
-                        Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
-                        List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
-                        for (String className : classes) {
-                            for (Object key : instanceByClass.keySet()) {
-                                PMDResult.ClassKey classKey = (PMDResult.ClassKey) key;
-                                if (classKey.getDisplayName().equals(className)) {
-                                    Collection<IRuleViolation> bugs = instanceByClass.get(classKey);
-                                    computedErrors.addAll(getErrors(project, bugs, fileObject, document));
+                        PMDResult result = session.computeResultAndWait(fileObject);
+                        if (result != null) { // SQE-35
+                            Map<Object, Collection<IRuleViolation>> instanceByClass = result.getInstanceByClass();
+                            Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
+                            List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
+                            for (String className : classes) {
+                                for (Object key : instanceByClass.keySet()) {
+                                    PMDResult.ClassKey classKey = (PMDResult.ClassKey) key;
+                                    if (classKey.getDisplayName().equals(className)) {
+                                        Collection<IRuleViolation> bugs = instanceByClass.get(classKey);
+                                        computedErrors.addAll(getErrors(project, bugs, fileObject, document));
+                                    }
                                 }
                             }
+                            return computedErrors;
                         }
-                        return computedErrors;
                     }
                 }
             }

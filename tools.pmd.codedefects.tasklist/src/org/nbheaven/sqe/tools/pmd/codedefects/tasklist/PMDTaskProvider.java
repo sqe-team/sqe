@@ -72,11 +72,13 @@ public final class PMDTaskProvider extends PushTaskScanner {
         for (Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
             if (null != project.getLookup().lookup(PMDSession.class)) {
                 PMDResult result = getResult(project);
-                List<Task> tasks = new LinkedList<Task>();
-                for (Map.Entry<Object, Collection<IRuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
-                    tasks.addAll(getTasks(classKey.getValue(), ((PMDResult.ClassKey) classKey.getKey()).getFileObject()));
-                }            
-                callback.setTasks(project.getProjectDirectory(), tasks);
+                if (result != null) {
+                    List<Task> tasks = new LinkedList<Task>();
+                    for (Map.Entry<Object, Collection<IRuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
+                        tasks.addAll(getTasks(classKey.getValue(), ((PMDResult.ClassKey) classKey.getKey()).getFileObject()));
+                    }
+                    callback.setTasks(project.getProjectDirectory(), tasks);
+                }
             }
         }    
         
