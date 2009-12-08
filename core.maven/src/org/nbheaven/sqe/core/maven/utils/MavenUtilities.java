@@ -206,6 +206,7 @@ public final class MavenUtilities {
 
 //-------------------------------------------------------------------------------
 // start: this part is to be deleted once upgrading to 6.8 nb
+// (XXX but replaced with what?)
 //-------------------------------------------------------------------------------
 
         /**
