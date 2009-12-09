@@ -36,6 +36,9 @@ import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.java.queries.SourceForBinaryQuery.Result2;
 import org.netbeans.api.java.source.BuildArtifactMapper;
 import org.netbeans.api.java.source.JavaSource;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
@@ -161,12 +164,25 @@ public final class CompileOnSaveHelper {
         crc.update(sourcesURL.toString().getBytes("UTF-8"));
         // XXX include some mnemonic portion of sources name, e.g. project name plus source group name
         String key = String.format("%08X", crc.getValue());
-        // XXX better to put this in the user directory somewhere... or use ProjectUtils.getCacheDir in 6.8
         // XXX clean up unused cache dirs when the original cannot be found on disk anywhere
-        File classDir = new File(new File(System.getProperty("java.io.tmpdir"), "CompileOnSaveHelper"), key);
+        File classDir = new File(getCacheDir(), key);
         LOG.log(Level.FINE, "synchronizing {0} to {1}", new Object[] {sigDir, classDir});
         copySigToClass(sigDir, classDir);
         return classDir.toURI().toURL();
+    }
+
+    private File getCacheDir() throws IOException {
+        File tmp = null;
+        if (sources != null) {
+            Project owner = FileOwnerQuery.getOwner(sources);
+            if (owner != null) {
+                tmp = FileUtil.toFile(ProjectUtils.getCacheDirectory(owner, CompileOnSaveHelper.class));
+            }
+        }
+        if (tmp == null) {
+            tmp = new File(System.getProperty("java.io.tmpdir"));
+        }
+        return new File(tmp, "CompileOnSaveHelper");
     }
 
     private static void copySigToClass(File sigDir, File clazzDir) throws IOException {
