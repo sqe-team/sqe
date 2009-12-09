@@ -66,6 +66,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.nbheaven.sqe.core.ui</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.2</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.nbheaven.sqe.wrapper.bcel</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -113,7 +121,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.4</specification-version>
+                        <specification-version>1.14</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

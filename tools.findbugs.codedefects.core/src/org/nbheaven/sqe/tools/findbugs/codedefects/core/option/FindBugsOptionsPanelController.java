@@ -20,10 +20,19 @@ package org.nbheaven.sqe.tools.findbugs.codedefects.core.option;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.JComponent;
+import org.nbheaven.sqe.core.ui.Constants;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
+@OptionsPanelController.SubRegistration(
+    location=Constants.OPTIONS_CATEGORY_ID,
+    displayName="#AdvancedOption_DisplayName_FindBugs",
+    keywords="#AdvancedOption_Keywords_FindBugs",
+    keywordsCategory="SQE",
+//    toolTip="#AdvancedOption_Tooltip_FindBugs",
+    position=200
+)
 public final class FindBugsOptionsPanelController extends OptionsPanelController {
 
     private FindBugsPanel panel;

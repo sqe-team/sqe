@@ -26,7 +26,8 @@
             <attr name="displayName" bundlevalue="org.nbheaven.sqe.core.ui.Bundle#Quality.menu.label"/>
         </folder>
     </folder>
-    
+
+    <!-- XXX #178331: cannot yet be replaced by annotation -->
     <folder name="OptionsDialog">
         <file name="SQE.instance">
             <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.OptionsCategory.createCategory"/>
@@ -39,7 +40,7 @@
             <attr name="position" intvalue="0"/>
         </folder>
     </folder>
-    
+
     <folder name="Projects">
         <folder name="Actions">
             <file name="org-nbheaven-sqe-core-ui-actions-SQEProjectMenuItem.instance">
