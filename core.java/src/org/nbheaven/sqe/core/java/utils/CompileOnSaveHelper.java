@@ -162,9 +162,7 @@ public final class CompileOnSaveHelper {
         }
         CRC32 crc = new CRC32();
         crc.update(sourcesURL.toString().getBytes("UTF-8"));
-        // XXX include some mnemonic portion of sources name, e.g. project name plus source group name
         String key = String.format("%08X", crc.getValue());
-        // XXX clean up unused cache dirs when the original cannot be found on disk anywhere
         File classDir = new File(getCacheDir(), key);
         LOG.log(Level.FINE, "synchronizing {0} to {1}", new Object[] {sigDir, classDir});
         copySigToClass(sigDir, classDir);
