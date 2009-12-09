@@ -44,8 +44,7 @@ import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Parameters;
 
-// XXX file API change request in java/source for jlahoda
-// XXX in NB 6.8 can use FileUtil.addRecursiveListener to listen for changes
+// XXX FileUtil.addRecursiveListener cannot be used to listen for changes (java.source does not use FileObject?);
 //     would allow FB to be rerun automatically after project changes (not necessarily desirable)
 
 /**
@@ -53,6 +52,7 @@ import org.openide.util.Parameters;
  * If a project has "Compile on Save" selected, <em>and</em> it is currently in automatic synchronization mode,
  * this class is mostly unnecessary because {@code BuildArtifactMapper} will copy classes to its regular
  * build directory. In other cases, there is currently no other way to get access to the IDE's internal bytecode cache.
+ * @see <a href="https://netbeans.org/bugzilla/show_bug.cgi?id=178336">Proposed API</a>
  */
 public final class CompileOnSaveHelper {
     
