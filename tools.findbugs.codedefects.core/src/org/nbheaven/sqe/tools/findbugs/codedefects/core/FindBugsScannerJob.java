@@ -42,6 +42,10 @@ import org.openide.ErrorManager;
  */
 public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
 
+    static {
+        Installer.installPluginUpdater();
+    }
+
     private edu.umd.cs.findbugs.Project findBugsProject;
     private FindBugsResult findBugsResult;
     private Project project;

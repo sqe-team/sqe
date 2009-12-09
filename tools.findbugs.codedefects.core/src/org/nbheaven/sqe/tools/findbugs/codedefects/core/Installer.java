@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.wrapper.findbugs;
+package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import java.net.URL;
@@ -27,20 +27,16 @@ import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
-import org.openide.modules.ModuleInstall;
 
-/**
- * Manages a module's lifecycle. Remember that an installer is optional and
- * often not needed at all.
- */
-public class Installer extends ModuleInstall {
+class Installer {
+
+    private Installer() {}
 
     private static FileChangeListener updater;
 
-    public void restored() {
-        installPluginUpdater();
-    }
-
+    /**
+     * Prepares FindBugs plugins.
+     */
     public static synchronized void installPluginUpdater() {
         final FileObject fo = FileUtil.getConfigFile("FindBugs/Plugins");
         if (null != fo) {
