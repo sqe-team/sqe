@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
-import org.nbheaven.sqe.core.java.search.SearchUtilities;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.netbeans.api.java.source.CancellableTask;
@@ -56,6 +55,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Sven Reimers
  */
 public class CheckstyleHint {
+
+    private CheckstyleHint() {}
 
     private static RequestProcessor HINT_PROCESSOR = new RequestProcessor("Checkstyle-Hint-Processor", 1);
 
@@ -126,14 +127,16 @@ public class CheckstyleHint {
                 if (null != session) {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
                         List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
-                        Map<Object, Collection<AuditEvent>> instanceByClass = session.computeResultAndWait(fileObject).getInstanceByClass();
-                        Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
-                        for (Object key : instanceByClass.keySet()) {
-                            CheckstyleResult.ClassKey classKey = (CheckstyleResult.ClassKey) key;
-                            // XXX see comment in ClassKey constructor
-                            if (classKey.getDisplayName().equals(fileObject.getPath())) {
-                                Collection<AuditEvent> bugs = instanceByClass.get(classKey);
-                                computedErrors.addAll(getErrors(project, bugs, fileObject, document));
+                        CheckstyleResult result = session.computeResultAndWait(fileObject);
+                        if (result != null) {
+                            Map<Object, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
+                            for (Object key : instanceByClass.keySet()) {
+                                CheckstyleResult.ClassKey classKey = (CheckstyleResult.ClassKey) key;
+                                // XXX see comment in ClassKey constructor
+                                if (classKey.getDisplayName().equals(fileObject.getPath())) {
+                                    Collection<AuditEvent> bugs = instanceByClass.get(classKey);
+                                    computedErrors.addAll(getErrors(project, bugs, fileObject, document));
+                                }
                             }
                         }
                         return computedErrors;
