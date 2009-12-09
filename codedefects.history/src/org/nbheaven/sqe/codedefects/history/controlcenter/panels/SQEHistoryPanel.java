@@ -222,9 +222,9 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
             int i = 1;
             for (History.Entry entry: activeHistory) {
                 QualityResultStatistic result = entry.get(getSelectedProviders());
-                error.add(new XYDataItem(i, result.getCodeDefactCount(CodeDefectSeverity.ERROR)));
-                warning.add(new XYDataItem(i, result.getCodeDefactCount(CodeDefectSeverity.WARNING)));
-                info.add(new XYDataItem(i, result.getCodeDefactCount(CodeDefectSeverity.INFO)));
+                error.add(new XYDataItem(i, result.getCodeDefectCount(CodeDefectSeverity.ERROR)));
+                warning.add(new XYDataItem(i, result.getCodeDefectCount(CodeDefectSeverity.WARNING)));
+                info.add(new XYDataItem(i, result.getCodeDefectCount(CodeDefectSeverity.INFO)));
                 i++;
              }
             clearHistoryButton.setEnabled(!activeHistory.isEmpty());

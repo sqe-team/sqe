@@ -210,7 +210,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         return getBugCount();
     }
 
-    public long getCodeDefactCount(CodeDefectSeverity severity) {
+    public long getCodeDefectCount(CodeDefectSeverity severity) {
         if (CodeDefectSeverity.INFO == severity) {
             return getBugCount();
         }

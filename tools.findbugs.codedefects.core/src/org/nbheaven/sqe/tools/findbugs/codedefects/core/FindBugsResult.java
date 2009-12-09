@@ -286,7 +286,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         return getBugCount();
     }
 
-    public long getCodeDefactCount(CodeDefectSeverity severity) {
+    public long getCodeDefectCount(CodeDefectSeverity severity) {
         reallyUpdateMaps();
         if (CodeDefectSeverity.INFO == severity) {
             return infoBugCount;

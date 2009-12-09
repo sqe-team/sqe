@@ -24,5 +24,5 @@ package org.nbheaven.sqe.codedefects.core.api;
  */
 public interface QualityResultStatistic {
     long getCodeDefectCountSum();
-    long getCodeDefactCount(CodeDefectSeverity severity);
+    long getCodeDefectCount(CodeDefectSeverity severity);
 }
