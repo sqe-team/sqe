@@ -17,18 +17,15 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
-import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.FilterBugReporter;
+import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.FindBugs2;
 import edu.umd.cs.findbugs.NoClassesFoundToAnalyzeException;
-import edu.umd.cs.findbugs.ba.AnalysisFeatures;
-import edu.umd.cs.findbugs.config.AnalysisFeatureSetting;
+import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.config.UserPreferences;
 import edu.umd.cs.findbugs.filter.Filter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
@@ -88,7 +85,8 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         edu.umd.cs.findbugs.BugReporter textReporter = new NbBugReporter(this.findBugsResult,
                 progressCallback);
 
-        textReporter.setPriorityThreshold(BugReporter.NORMAL);
+        // XXX should this be configurable?
+        textReporter.setPriorityThreshold(Priorities.NORMAL_PRIORITY);
 
         FindBugs2 engine = new FindBugs2();
         engine.setProject(findBugsProject);
@@ -127,14 +125,15 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
 
         engine.setDetectorFactoryCollection(DetectorFactoryCollection.instance());
 
-        //        edu.umd.cs.findbugs.FindBugs findBugs = new edu.umd.cs.findbugs.FindBugs(textReporter,
-        //                findBugsProject);
         engine.setProgressCallback(progressCallback);
 
         //inhibt deep scanning (especially for j2ee projects...)
         engine.setScanNestedArchives(false);
 
         // Set analysis feature settings
+        // XXX should this be configurable?
+        engine.setAnalysisFeatureSettings(FindBugs.DEFAULT_EFFORT);
+        /* Probably better to just use a standard setting:
         List<AnalysisFeatureSetting> settings = new ArrayList<AnalysisFeatureSetting>();
         settings.add(new AnalysisFeatureSetting(
                 AnalysisFeatures.TRACK_VALUE_NUMBERS_IN_NULL_POINTER_ANALYSIS,
@@ -146,11 +145,10 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         settings.add(new AnalysisFeatureSetting(
                 AnalysisFeatures.MODEL_INSTANCEOF, true));
         settings.add(new AnalysisFeatureSetting(
-                AnalysisFeatures.NUM_BOOLEAN_ANALYSIS_PROPERTIES, true));
-        settings.add(new AnalysisFeatureSetting(
                 AnalysisFeatures.SKIP_HUGE_METHODS, false));
         engine.setAnalysisFeatureSettings(settings.toArray(
                 new AnalysisFeatureSetting[settings.size()]));
+         */
 
         // Run the analysis!
         try {
