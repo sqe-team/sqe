@@ -21,6 +21,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.ClassAnnotation;
 import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import java.util.HashMap;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.utils.FiBuUtil;
 import java.util.AbstractCollection;
@@ -47,6 +48,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Sven Reimers
  */
+@SuppressWarnings("IS2_INCONSISTENT_SYNC")
 public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     public enum Mode {
@@ -377,7 +379,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
     }
 
-    private class FilteredCollection<T extends BugInstance> extends AbstractCollection<T> {
+    private static class FilteredCollection<T extends BugInstance> extends AbstractCollection<T> {
 
         Collection<T> originalCollection;
 
@@ -385,6 +387,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             this.originalCollection = originalCollection;
         }
 
+        @SuppressWarnings("DLS_DEAD_LOCAL_STORE")
         public int size() {
             int i = 0;
             for (BugInstance instance : this) {

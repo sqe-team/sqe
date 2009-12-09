@@ -73,10 +73,15 @@ public class FindBugsSession extends AbstractQualitySession {
 
     public FindBugsResult computeResultAndWait() {
         waitResultLock.lock();
-        computeResult();
-        waitForResult.awaitUninterruptibly();
-        waitResultLock.unlock();
-        return this.findBugsResult;
+        try {
+            computeResult();
+            while (isRunning.get()) {
+                waitForResult.awaitUninterruptibly();
+            }
+            return this.findBugsResult;
+        } finally {
+            waitResultLock.unlock();
+        }
     }
 
     public void computeResult() {
@@ -90,9 +95,12 @@ public class FindBugsSession extends AbstractQualitySession {
 
     void scanningDone() {
         waitResultLock.lock();
-        isRunning.set(false);
-        waitForResult.signalAll();
-        waitResultLock.unlock();
+        try {
+            isRunning.set(false);
+            waitForResult.signalAll();
+        } finally {
+            waitResultLock.unlock();
+        }
     }
 
     void setResult(FindBugsResult findBugsResult) {
