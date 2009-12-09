@@ -53,6 +53,7 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
             File sourceRootF = FileUtil.toFile(sourceRoot);
             if (sourceRootF != null) {
                 // XXX this does not seem to suffice to suppress "unread field" on a field used from another class
+                LOG.log(Level.FINER, "addSourceDir: {0}", sourceRootF);
                 fibuProject.addSourceDir(sourceRootF.getAbsolutePath());
             }
         }
@@ -86,6 +87,7 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
                 URL url = CompileOnSaveHelper.forClassPathEntry(entry.getURL()).binaryRoot(false);
                 File checkFile = FileUtil.archiveOrDirForURL(url);
                 if (checkFile != null && checkFile.exists()) {
+                    LOG.log(Level.FINER, "addAuxClasspathEntry: {0}", checkFile);
                     fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
                 } else {
                     LOG.warning("Bad file on auxiliary classpath: " + checkFile);
