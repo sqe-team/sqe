@@ -24,4 +24,6 @@ public class Constants {
 
     public static final String OPTIONS_CATEGORY_ID = "SQE";
 
+    public static final String CUSTOMIZER_CATEGORY_ID = "SQE";
+
 }

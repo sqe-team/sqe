@@ -21,37 +21,32 @@ import edu.umd.cs.findbugs.config.UserPreferences;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.option.ConfigureDetectorsPanel;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.option.ConfigureFeaturesPanel;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
-
 import org.netbeans.api.project.Project;
-
-import org.netbeans.spi.project.ui.support.ProjectCustomizer;
-import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
-
 import org.openide.util.Lookup;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
+import org.nbheaven.sqe.core.ui.Constants;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
 
 /**
  *
  * @author sven
  */
-public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
-    private String name;
-
-    /** Creates a new instance of ProjectPanelProvider */
-    private PanelProvider(String name) {
-        this.name = name;
-    }
+@CompositeCategoryProvider.Registrations({
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-ant-freeform", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-apisupport-project", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-java-j2seproject", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-web-project", category=Constants.CUSTOMIZER_CATEGORY_ID)
+})
+public class PanelProvider implements CompositeCategoryProvider {
 
     public Category createCategory(Lookup context) {
-        return ProjectCustomizer.Category.create(this.name, "FindBugs", null);
+        return Category.create("FindBugs", "FindBugs", null);
     }
 
     public JComponent createComponent(Category category, Lookup context) {
@@ -81,7 +76,4 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
         return panel;
     }
 
-    public static PanelProvider createExample() {
-        return new PanelProvider("Example");
-    }
 }

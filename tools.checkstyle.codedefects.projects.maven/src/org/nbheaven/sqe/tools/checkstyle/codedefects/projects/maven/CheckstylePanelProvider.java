@@ -20,20 +20,22 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.projects.maven;
 
 import javax.swing.JComponent;
 import org.nbheaven.sqe.core.maven.utils.ModelHandleProxy;
-import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.nbheaven.sqe.core.ui.Constants;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author mkleint
  */
-public class CheckstylePanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
+@CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-maven", category=Constants.CUSTOMIZER_CATEGORY_ID)
+public class CheckstylePanelProvider implements CompositeCategoryProvider {
 
     public Category createCategory(Lookup lkp) {
         ModelHandleProxy proxy = ModelHandleProxy.create(lkp);
         assert proxy != null;
-        return ProjectCustomizer.Category.create("Checkstyle", "Checkstyle", null);
+        return Category.create("Checkstyle", "Checkstyle", null);
     }
 
     public JComponent createComponent(Category ctgr, Lookup lkp) {
