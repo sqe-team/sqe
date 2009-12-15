@@ -52,7 +52,11 @@ class Installer {
             Object jar = pluginsFileObject.getAttribute("jar");
             urls.add((URL) jar);
         }
-        DetectorFactoryCollection.rawInstance().setPluginList(urls.toArray(new URL[urls.size()]));
+        try {
+            DetectorFactoryCollection.rawInstance().setPluginList(urls.toArray(new URL[urls.size()]));
+        } catch (IllegalStateException x) {
+            // SQE-41: can't do anything about it?
+        }
     }
 
     private static class PluginListChangedListener implements FileChangeListener {
