@@ -163,7 +163,7 @@ public final class CompileOnSaveHelper {
         String key = String.format("%08X", crc.getValue());
         // XXX better to put this in the user directory somewhere... or use ProjectUtils.getCacheDir in 6.8
         // XXX clean up unused cache dirs when the original cannot be found on disk anywhere
-        File classDir = new File(new File(System.getProperty("java.io.tmpdir"), "CompileOnSaveHelper"), key);
+        File classDir = new File(new File(System.getProperty("netbeans.user"), "var/cache/CompileOnSaveHelper"), key);
         LOG.log(Level.FINE, "synchronizing {0} to {1}", new Object[] {sigDir, classDir});
         copySigToClass(sigDir, classDir);
         return classDir.toURI().toURL();
