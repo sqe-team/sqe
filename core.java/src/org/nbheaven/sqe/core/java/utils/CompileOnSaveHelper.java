@@ -178,7 +178,7 @@ public final class CompileOnSaveHelper {
             }
         }
         if (tmp == null) {
-            tmp = new File(System.getProperty("java.io.tmpdir"));
+            tmp = new File(System.getProperty("netbeans.user"), "var/cache/CompileOnSaveHelper");
         }
         return new File(tmp, "CompileOnSaveHelper");
     }

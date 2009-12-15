@@ -81,10 +81,13 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             Properties properties = System.getProperties();
             if (settingsProvider != null) {
                 CheckstyleSettings checkstyleSettings = settingsProvider.getCheckstyleSettings();
-                checkStyleConfigFile = checkstyleSettings.getCheckstyleConfigurationFile();
-                checkStyleConfigURL = checkstyleSettings.getCheckstyleConfigurationURL();
-                properties = checkstyleSettings.getProperties();
-            } else {
+                if (checkstyleSettings != null) {
+                    checkStyleConfigFile = checkstyleSettings.getCheckstyleConfigurationFile();
+                    checkStyleConfigURL = checkstyleSettings.getCheckstyleConfigurationURL();
+                    properties = checkstyleSettings.getProperties();
+                }
+            }
+            if (checkStyleConfigFile == null) {
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
             }
             if (null != checkStyleConfigFile) {

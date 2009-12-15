@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.codedefects.history
 OpenIDE-Module-Layer: org/nbheaven/sqe/codedefects/history/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/codedefects/history/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.1
+OpenIDE-Module-Specification-Version: 1.2
 OpenIDE-Module-Java-Dependencies: Java > 1.5

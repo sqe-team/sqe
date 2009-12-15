@@ -41,33 +41,6 @@ final class NbBugReporter extends TextUIBugReporter {
 
     protected void doReportBug(edu.umd.cs.findbugs.BugInstance bugInstance) {
         findbugsResult.add(bugInstance);
-
-        StringBuilder builder = new StringBuilder();
-
-        if (null != bugInstance.getPrimaryClass()) {
-            builder.append(bugInstance.getPrimaryClass().getClassName() + " ");
-        }
-
-        if (null != bugInstance.getPrimarySourceLineAnnotation()) {
-            builder.append("[" +
-                    bugInstance.getPrimarySourceLineAnnotation().getStartLine() +
-                    "]: ");
-        } else {
-            if ((null != bugInstance.getPrimaryMethod()) &&
-                    (null != bugInstance.getPrimaryMethod().getSourceLines())) {
-                builder.append("[" +
-                        (bugInstance.getPrimaryMethod().getSourceLines().getStartLine() - 1) + "]: ");
-            } else if (null != bugInstance.getPrimaryField()) {
-                builder.append("[Field: " +
-                        bugInstance.getPrimaryField().getFieldName() + "]: ");
-            } else {
-                builder.append("[Class]: ");
-            }
-        }
-
-        if (null != bugInstance.getMessage()) {
-            builder.append(bugInstance.getMessage());
-        }
     }
 
     public void finish() {

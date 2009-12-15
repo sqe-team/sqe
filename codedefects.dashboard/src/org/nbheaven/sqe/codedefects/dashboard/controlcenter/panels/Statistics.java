@@ -136,9 +136,9 @@ public class Statistics extends JPanel implements PropertyChangeListener {
                 QualityResultStatistic statistic = session.getResult().getLookup().lookup(QualityResultStatistic.class);
                 if (null != statistic) {
                     String providerName = session.getProvider().getDisplayName();
-                    perProjectDataSet.addValue(statistic.getCodeDefactCount(CodeDefectSeverity.ERROR), CodeDefectSeverity.ERROR, providerName);
-                    perProjectDataSet.addValue(statistic.getCodeDefactCount(CodeDefectSeverity.WARNING), CodeDefectSeverity.WARNING, providerName);
-                    perProjectDataSet.addValue(statistic.getCodeDefactCount(CodeDefectSeverity.INFO), CodeDefectSeverity.INFO, providerName);
+                    perProjectDataSet.addValue(statistic.getCodeDefectCount(CodeDefectSeverity.ERROR), CodeDefectSeverity.ERROR, providerName);
+                    perProjectDataSet.addValue(statistic.getCodeDefectCount(CodeDefectSeverity.WARNING), CodeDefectSeverity.WARNING, providerName);
+                    perProjectDataSet.addValue(statistic.getCodeDefectCount(CodeDefectSeverity.INFO), CodeDefectSeverity.INFO, providerName);
                 }
             }
         }
