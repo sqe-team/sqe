@@ -26,18 +26,21 @@ import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.config.UserPreferences;
 import edu.umd.cs.findbugs.filter.Filter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
-import org.openide.ErrorManager;
 
 /**
  *
  * @author Sven Reimers
  */
 public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
+
+    private static final Logger LOG = Logger.getLogger(FindBugsScannerJob.class.getName());
 
     static {
         Installer.installPluginUpdater();
@@ -105,7 +108,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
                     Filter filter = new Filter(includeFileName);
                     textReporter = new FilterBugReporter(textReporter, filter, true);
                 } catch (IOException ioe) {
-                    ErrorManager.getDefault().notify(ioe);
+                    LOG.log(Level.INFO, null, ioe);
                 }
             }
             String excludeFileName = findBugsSettingsProvider.getExcludeFilter();
@@ -114,7 +117,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
                     Filter filter = new Filter(excludeFileName);
                     textReporter = new FilterBugReporter(textReporter, filter, false);
                 } catch (IOException ioe) {
-                    ErrorManager.getDefault().notify(ioe);
+                    LOG.log(Level.INFO, null, ioe);
                 }
             }
         }
@@ -156,12 +159,12 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         } catch (NoClassesFoundToAnalyzeException ncftae) {
             // TODO - do something interesting here
             // TODO - add something to the result...
-            ncftae.printStackTrace();
+            LOG.log(Level.FINE, null, ncftae);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOG.log(Level.INFO, null, ex);
             // TODO - do something interesting here
         } catch (InterruptedException iex) {
-            iex.printStackTrace();
+            LOG.log(Level.INFO, null, iex);
             // TODO - do something interesting here
         } finally {
             progressCallback.getProgressHandle().finish();
