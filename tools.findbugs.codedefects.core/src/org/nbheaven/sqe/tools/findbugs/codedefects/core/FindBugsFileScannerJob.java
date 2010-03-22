@@ -76,12 +76,19 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
                             fibuProject.addFile(kid.getAbsolutePath());
                         }
                     }
+                } else {
+                    LOG.log(Level.WARNING, "No such file {0}", clazz);
+                    return null;
                 }
+            } else {
+                LOG.log(Level.WARNING, "Bad or missing binary root {0} found for {1}", new Object[] {binaryRootU, sourceRoot});
+                return null;
             }
 
             ClassPath cp = ClassPath.getClassPath(sourceRoot, ClassPath.COMPILE);
             if (cp == null) {
-                return fibuProject;
+                LOG.log(Level.WARNING, "No compile CP found in {0}", sourceRoot);
+                return null;
             }
             for (ClassPath.Entry entry : cp.entries()) {
                 URL url = CompileOnSaveHelper.forClassPathEntry(entry.getURL()).binaryRoot(false);
@@ -90,11 +97,12 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
                     LOG.log(Level.FINER, "addAuxClasspathEntry: {0}", checkFile);
                     fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
                 } else {
-                    LOG.warning("Bad file on auxiliary classpath: " + checkFile);
+                    LOG.log(Level.WARNING, "Bad file on auxiliary classpath: {0}", checkFile);
                 }
             }
         } catch (Exception x) {
             LOG.log(Level.INFO, null, x);
+            return null;
         }
         return fibuProject;
     }
