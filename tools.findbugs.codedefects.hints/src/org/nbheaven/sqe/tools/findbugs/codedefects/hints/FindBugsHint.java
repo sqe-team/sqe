@@ -105,14 +105,14 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This is heavily inspired by the work done ny Jan Lahoda - Big thank you!
+ * This is heavily inspired by the work done by Jan Lahoda - Big thank you!
  * @author Sven Reimers
  */
 public class FindBugsHint {
 
     private FindBugsHint() {}
     
-    private static RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
+    private static final RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
 
     private static class Task implements CancellableTask<CompilationInfo> {
 
@@ -354,9 +354,10 @@ public class FindBugsHint {
                         }
                         if (sw == null) {
                             DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(
-                                    "Could not find a @SuppressWarnings with @Retention(CLASS/RUNTIME) in project classpath. " +
-                                    "Try findbugs:annotations:* for Maven, Common Annotations API for NetBeans modules, etc.",
-                                    NotifyDescriptor.WARNING_MESSAGE));
+                                    "<html>Could not find a <code>@SuppressWarnings</code> " +
+                                    "with <code>@Retention(CLASS/RUNTIME)</code> in project classpath.<br>" +
+                                    "Try <code>findbugs:annotations:*</code> for Maven, Common Annotations API for NetBeans modules, etc.",
+                                    NotifyDescriptor.INFORMATION_MESSAGE));
                             // XXX try to add such a lib if it can be found somewhere
                             return;
                         }
