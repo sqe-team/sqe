@@ -37,11 +37,8 @@ import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.config.UserPreferences;
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,9 +73,6 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.search.impl.ClassElement
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.search.impl.MethodElementDescriptorImpl;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.search.impl.VariableElementDescriptorImpl;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
-import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.queries.BinaryForSourceQuery;
-import org.netbeans.api.java.queries.BinaryForSourceQuery.Result;
 import org.netbeans.api.java.source.ClassIndex.NameKind;
 import org.netbeans.api.java.source.ClassIndex.SearchScope;
 import org.netbeans.api.java.source.ElementHandle;
@@ -91,12 +85,9 @@ import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.HintsController;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.filesystems.FileAttributeEvent;
-import org.openide.filesystems.FileChangeListener;
+import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileRenameEvent;
-import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -114,43 +105,15 @@ public class FindBugsHint {
     
     private static final RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
 
-    private static class Task implements CancellableTask<CompilationInfo> {
+    private static class Task extends FileChangeAdapter implements CancellableTask<CompilationInfo> {
 
-        private FileObject fileObject;
+        private final FileObject fileObject;
         private List<ErrorDescription> errors;
-        private FileChangeListener listener = null;
 
+        @SuppressWarnings("LeakingThisInConstructor")
         private Task(FileObject fileObject) {
             this.fileObject = fileObject;
-            this.listener = new FCL(this);
-            register();
-        }
-
-        private void register() {
-            ClassPath sourceCP = ClassPath.getClassPath(fileObject, ClassPath.SOURCE);
-            if (sourceCP != null) {
-                FileObject root = sourceCP.findOwnerRoot(fileObject);
-                try {
-                    String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
-                    String name =  base + ".class"; //XXX
-                    // XXX this needs to listen to CompileOnSaveHelper instead
-                    Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
-                    for (URL u : bin.getRoots()) {
-                        if ("file".equals(u.getProtocol())) {
-                            try {
-                                File cls = new File(new File(u.toURI()), name);
-                                if (cls.exists()) {
-                                    FileUtil.addFileChangeListener(listener, cls);
-                                }
-                            } catch (URISyntaxException x) {
-                                Exceptions.printStackTrace(x);
-                            }
-                        }
-                    }
-                } catch (FileStateInvalidException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
+            fileObject.addFileChangeListener(FileUtil.weakFileChangeListener(this, fileObject));
         }
 
         public void cancel() {
@@ -280,6 +243,17 @@ public class FindBugsHint {
                 }
             }
             return null;
+        }
+
+        public @Override void fileChanged(FileEvent fe) {
+            // Just running refresh synchronously does not reliably pick up the new changes.
+            // Nor does JavaSource.runWhenScanFinished. So just wait a second, as a hack.
+            // Better to listen to CompileOnSaveHelper, once that is possible.
+            HINT_PROCESSOR.post(new Runnable() {
+                public void run() {
+                    refresh(true);
+                }
+            }, 1000);
         }
 
         private static class DisableDetectorFix implements Fix {
@@ -438,39 +412,6 @@ public class FindBugsHint {
 
         }
 
-    }
-
-    private static final class FCL implements FileChangeListener {
-
-        private Task task;
-
-        private FCL(Task task) {
-            this.task = task;
-        }
-
-        public void fileFolderCreated(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileDataCreated(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileChanged(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileDeleted(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileRenamed(FileRenameEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileAttributeChanged(FileAttributeEvent fe) {
-            task.refresh(true);
-        }
     }
 
     @ServiceProvider(service=JavaSourceTaskFactory.class)
