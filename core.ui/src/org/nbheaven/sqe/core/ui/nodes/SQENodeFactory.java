@@ -37,6 +37,7 @@ import org.openide.util.lookup.Lookups;
 /* SQE-28: disable until contains something useful
 @NodeFactory.Registration(projectType={
     "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-autoproject",
     "org-netbeans-modules-apisupport-project",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project"
