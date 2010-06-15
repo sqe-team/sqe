@@ -20,6 +20,8 @@ package org.nbheaven.sqe.tools.findbugs.codedefects.projects.maven;
 
 import edu.umd.cs.findbugs.config.ProjectFilterSettings;
 import edu.umd.cs.findbugs.config.UserPreferences;
+import java.util.HashMap;
+import java.util.Map;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
@@ -33,6 +35,22 @@ import org.netbeans.spi.project.ProjectServiceProvider;
  */
 @ProjectServiceProvider(service = FindBugsSettingsProvider.class, projectType = "org-netbeans-modules-maven")
 public class MavenFindBugsSettingsProvider extends FindBugsSettingsProvider {
+    
+    private static final Map<String,String> THRESHOLDS = new HashMap<String,String>(), EFFORTS = new HashMap<String,String>();
+    static {
+        // http://svn.codehaus.org/mojo/trunk/mojo/findbugs-maven-plugin/src/main/groovy/org/codehaus/mojo/findbugs/FindBugsMojo.groovy
+        // http://findbugs.googlecode.com/svn/branches/1.3.9/findbugs/src/java/edu/umd/cs/findbugs/config/UserPreferences.java
+        // http://findbugs.googlecode.com/svn/branches/1.3.9/findbugs/src/java/edu/umd/cs/findbugs/config/ProjectFilterSettings.java
+        THRESHOLDS.put("High", "High");
+        THRESHOLDS.put("high", "High");
+        // Medium is default
+        THRESHOLDS.put("Low", "Low");
+        THRESHOLDS.put("Exp", "Experimental");
+        EFFORTS.put("Min", "min");
+        // default is default
+        EFFORTS.put("Max", "max");
+    }
+    
     private final Project p;
 
     public MavenFindBugsSettingsProvider(Project prj) {
@@ -47,14 +65,12 @@ public class MavenFindBugsSettingsProvider extends FindBugsSettingsProvider {
             ProjectFilterSettings pfs = ProjectFilterSettings.createDefault();
             prefs.setProjectFilterSettings(pfs);
 
-            String threshold = pluginConfiguration.getValue("threshold");
+            String threshold = THRESHOLDS.get(pluginConfiguration.getValue("threshold"));
             if (threshold != null) {
-                //TODO guard valid values
                 pfs.setMinPriority(threshold);
             }
-            String effort = pluginConfiguration.getValue("effort");
+            String effort = EFFORTS.get(pluginConfiguration.getValue("effort"));
             if (effort != null) {
-                //TODO guard valid values
                 prefs.setEffort(effort);
             }
             return prefs;
