@@ -147,7 +147,11 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
     }
 
     public void flush() {
-        modulePreferences.put("default_checkstyle_config_file", FileUtil.toFile(checkstyleConfigFile).getAbsolutePath());
+        if (checkstyleConfigFile != null) {
+            modulePreferences.put("default_checkstyle_config_file", FileUtil.toFile(checkstyleConfigFile).getAbsolutePath());
+        } else {
+            modulePreferences.put("default_checkstyle_config_file", "");
+        }
         if (null != propertiesFile) {
             modulePreferences.put("default_checkstyle_properties_file", FileUtil.toFile(propertiesFile).getAbsolutePath());
         } else {
