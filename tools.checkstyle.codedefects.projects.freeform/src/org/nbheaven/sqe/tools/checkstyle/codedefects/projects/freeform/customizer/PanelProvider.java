@@ -21,6 +21,7 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform.customiz
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.CheckstyleConfiguration;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
@@ -52,6 +53,9 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
     public JComponent createComponent(Category category, Lookup context) {
         Project p = context.lookup(Project.class);
         CheckstyleSettingsProvider checkstyleSettingsProvider = p.getLookup().lookup(CheckstyleSettingsProvider.class);
+        if (checkstyleSettingsProvider == null) {
+            return new JLabel("<not available>");
+        }
         final CheckstyleSettings checkstyleSettings = checkstyleSettingsProvider.getCheckstyleSettings();
 
         final CheckstyleConfiguration checkstyleConfiguration = new CheckstyleConfiguration();
