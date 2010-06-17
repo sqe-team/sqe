@@ -35,7 +35,7 @@ public class FindBugsAnnotationToggleAction extends AbstractShowAnnotationsActio
         this(Lookup.EMPTY);
     }
 
-    public FindBugsAnnotationToggleAction(Lookup lookup) {
+    private FindBugsAnnotationToggleAction(Lookup lookup) {
         super(lookup);
         putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage( "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png")));
     }

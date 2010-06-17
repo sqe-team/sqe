@@ -36,7 +36,7 @@ public class CheckstyleAnnotationToggleAction extends AbstractShowAnnotationsAct
         this(Lookup.EMPTY);
     }
 
-    public CheckstyleAnnotationToggleAction(Lookup lookup) {
+    private CheckstyleAnnotationToggleAction(Lookup lookup) {
         super(lookup);
         putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage( "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png")));
     }
