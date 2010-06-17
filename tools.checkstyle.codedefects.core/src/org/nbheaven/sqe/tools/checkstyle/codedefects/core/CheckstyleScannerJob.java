@@ -114,6 +114,9 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             } catch (CheckstyleException ce) {
                 // Fallback better exception handling necessary
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
+                if (checkStyleConfigFile == null) {
+                    return;
+                }
                 istream = checkStyleConfigFile.getInputStream();
                 properties = GlobalCheckstyleSettings.INSTANCE.getProperties();
                 Configuration config = ConfigurationLoader.loadConfiguration(istream,
