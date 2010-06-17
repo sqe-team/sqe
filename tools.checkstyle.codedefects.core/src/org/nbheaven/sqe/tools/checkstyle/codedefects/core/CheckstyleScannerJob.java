@@ -90,7 +90,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             if (checkStyleConfigFile == null) {
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
             }
-            if (null != checkStyleConfigFile) {
+            if (null != checkStyleConfigFile && checkStyleConfigFile.isData()) {
                 istream = checkStyleConfigFile.getInputStream();
             } else if (null != checkStyleConfigURL) {
                 istream = checkStyleConfigURL.openStream();
