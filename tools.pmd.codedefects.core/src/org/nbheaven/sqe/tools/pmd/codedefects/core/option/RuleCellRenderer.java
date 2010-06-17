@@ -29,9 +29,9 @@ import net.sourceforge.pmd.Rule;
 public class RuleCellRenderer extends DefaultTableCellRenderer {
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        Rule rule = (Rule) value;
-        value = rule.getName();
+        if (value instanceof Rule) {
+            value = ((Rule) value).getName();
+        }
         return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
     }
 }
