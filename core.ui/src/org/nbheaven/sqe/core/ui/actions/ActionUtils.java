@@ -17,6 +17,7 @@
  */
 package org.nbheaven.sqe.core.ui.actions;
 
+import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,29 +97,30 @@ public class ActionUtils {
     }
 
     private final class MenuUpdateListener implements FileChangeListener {
-
+        private void refresh() {
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    menus = createMenuList(fo);
+                }
+            });
+        }
         public void fileAttributeChanged(FileAttributeEvent fileAttributeEvent) {
-            menus = createMenuList(fo);
+            refresh();
         }
-
         public void fileChanged(FileEvent fileEvent) {
-            menus = createMenuList(fo);
+            refresh();
         }
-
         public void fileDataCreated(FileEvent fileEvent) {
-            menus = createMenuList(fo);
+            refresh();
         }
-
         public void fileDeleted(FileEvent fileEvent) {
-            menus = createMenuList(fo);
+            refresh();
         }
-
         public void fileFolderCreated(FileEvent fileEvent) {
-            menus = createMenuList(fo);
+            refresh();
         }
-
         public void fileRenamed(FileRenameEvent fileRenameEvent) {
-            menus = createMenuList(fo);
+            refresh();
         }
     }
 
