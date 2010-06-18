@@ -102,7 +102,7 @@ import org.openide.util.lookup.ServiceProvider;
  * This is heavily inspired by the work done by Jan Lahoda - Big thank you!
  * @author Sven Reimers
  */
-  public class FindBugsHint {
+public class FindBugsHint {
 
     private FindBugsHint() {}
     
