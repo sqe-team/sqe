@@ -45,12 +45,17 @@ class AnnotationToggleListener implements PropertyChangeListener {
     }
         
     public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if (propertyName != null && !propertyName.equals(SQECodedefectProperties.getPropertyNameAnnotateActive(qualityProvider)) && !propertyName.equals(QualitySession.RESULT)) {
+            // #188604: cannot use addPropertyChangeListener(String,PropertyChangeListener) in conjunction with WeakListeners
+            return;
+        }
         if (!SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualityProvider)) {
             SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
             processor.clearAllAnnotations(project);
         }  else {
             final SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
-            if (evt.getPropertyName().equals(QualitySession.RESULT)) {
+            if (propertyName.equals(QualitySession.RESULT)) {
                 // reset annotations
                 processor.clearAllAnnotations(project);
             }
