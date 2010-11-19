@@ -90,7 +90,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             if (checkStyleConfigFile == null) {
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
             }
-            if (null != checkStyleConfigFile) {
+            if (null != checkStyleConfigFile && checkStyleConfigFile.isData()) {
                 istream = checkStyleConfigFile.getInputStream();
             } else if (null != checkStyleConfigURL) {
                 istream = checkStyleConfigURL.openStream();
@@ -114,6 +114,9 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             } catch (CheckstyleException ce) {
                 // Fallback better exception handling necessary
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
+                if (checkStyleConfigFile == null) {
+                    return;
+                }
                 istream = checkStyleConfigFile.getInputStream();
                 properties = GlobalCheckstyleSettings.INSTANCE.getProperties();
                 Configuration config = ConfigurationLoader.loadConfiguration(istream,

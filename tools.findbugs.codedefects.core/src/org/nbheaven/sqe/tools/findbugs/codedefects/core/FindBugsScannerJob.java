@@ -83,6 +83,10 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
     abstract protected edu.umd.cs.findbugs.Project createFindBugsProject();
 
     private void executeFindBugs() {
+        if (findBugsProject == null) {
+            return;
+        }
+
         NbFindBugsProgress progressCallback = new NbFindBugsProgress(getProject(), getProgressHandle());
 
         edu.umd.cs.findbugs.BugReporter textReporter = new NbBugReporter(this.findBugsResult,
@@ -159,7 +163,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         } catch (NoClassesFoundToAnalyzeException ncftae) {
             // TODO - do something interesting here
             // TODO - add something to the result...
-            LOG.log(Level.FINE, null, ncftae);
+            LOG.log(Level.FINE, "coming from a " + getClass().getName(), ncftae);
         } catch (IOException ex) {
             LOG.log(Level.INFO, null, ex);
             // TODO - do something interesting here

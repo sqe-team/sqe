@@ -30,6 +30,8 @@ import javax.swing.event.ChangeListener;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
+import org.netbeans.api.annotations.common.NonNull;
+import org.netbeans.api.annotations.common.NullAllowed;
 import org.netbeans.api.project.Project;
 import org.openide.loaders.DataObject;
 import org.openide.util.ContextAwareAction;
@@ -45,22 +47,19 @@ import org.openide.util.actions.Presenter;
  */
 public abstract class AbstractShowAnnotationsAction extends AbstractAction implements ContextAwareAction, Presenter.Toolbar {
 
-    private Lookup lookup;
+    private final @NonNull Lookup lookup;
     private JToggleButton button; 
     
-    public AbstractShowAnnotationsAction(Lookup lookup) {
-        this.lookup = lookup;
+    /**
+     * @param lookup null for global instance, else a context
+     */
+    protected AbstractShowAnnotationsAction(@NullAllowed Lookup lookup) {
+        this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
+        assert this.lookup != null;
     }
     
     public final void actionPerformed(ActionEvent actionEvent) {
-        Lookup lkp;
-        if (lookup == Lookup.EMPTY) {
-            lkp = Utilities.actionsGlobalContext();
-        } else {
-            lkp = this.lookup;
-        }
-
-        DataObject dataObject = lkp.lookup(DataObject.class);
+        DataObject dataObject = lookup.lookup(DataObject.class);
         Project project = SQEProjectSupport.findProject(dataObject);
         boolean old = SQECodedefectProperties.isQualityProviderAnnotateActive(project, getQualityProvider());
         SQECodedefectProperties.setQualityProviderAnnotateActive(project, getQualityProvider(), !old);   

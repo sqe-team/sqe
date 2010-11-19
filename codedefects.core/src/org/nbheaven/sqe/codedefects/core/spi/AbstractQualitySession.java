@@ -27,6 +27,7 @@ import org.netbeans.api.project.ProjectUtils;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.openide.util.WeakListeners;
 
 
 /**
@@ -38,14 +39,13 @@ public abstract class AbstractQualitySession implements QualitySession {
     private final Project project;
     private final QualityProvider provider;
 
-    /** Creates a new instance of AbstractQualitySession */
     public AbstractQualitySession(final QualityProvider provider,
         final Project project) {
         this.provider = provider;
         this.project = project;
         this.propSupport = new PropertyChangeSupport(this);
         PropertyChangeListener listener = new AnnotationToggleListener(provider, project);
-        SQECodedefectProperties.addPropertyChangeListener(SQECodedefectProperties.getPropertyNameAnnotateActive(provider), listener);        
+        SQECodedefectProperties.addPropertyChangeListener(WeakListeners.propertyChange(listener, SQECodedefectProperties.class));        
         this.addPropertyChangeListener(QualitySession.RESULT, listener);        
     }
 

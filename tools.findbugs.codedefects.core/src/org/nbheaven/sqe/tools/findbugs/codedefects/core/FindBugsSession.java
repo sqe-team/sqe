@@ -34,6 +34,7 @@ import org.openide.filesystems.FileObject;
  * @author Sven Reimers
  */
 @ProjectServiceProvider(service={FindBugsSession.class, QualitySession.class}, projectType={
+    "org-netbeans-modules-autoproject",
     "org-netbeans-modules-apisupport-project",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project",

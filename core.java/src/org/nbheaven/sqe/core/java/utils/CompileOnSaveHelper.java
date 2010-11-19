@@ -69,7 +69,12 @@ public final class CompileOnSaveHelper {
         try {
             _getClassFolder = Class.forName("org.netbeans.modules.java.source.indexing.JavaIndex", true, loader).
                     getMethod("getClassFolder", URL.class, boolean.class);
-            Class<?> taskCacheClass = Class.forName("org.netbeans.modules.java.source.tasklist.TaskCache", true, loader);
+            Class<?> taskCacheClass;
+            try {
+                taskCacheClass = Class.forName("org.netbeans.modules.parsing.impl.indexing.errors.TaskCache", true, loader);
+            } catch (ClassNotFoundException x) {
+                taskCacheClass = Class.forName("org.netbeans.modules.java.source.tasklist.TaskCache", true, loader);
+            }
             _taskCache = taskCacheClass.getMethod("getDefault").invoke(null);
             _isInError = taskCacheClass.getMethod("isInError", FileObject.class, boolean.class);
         } catch (Exception x) {

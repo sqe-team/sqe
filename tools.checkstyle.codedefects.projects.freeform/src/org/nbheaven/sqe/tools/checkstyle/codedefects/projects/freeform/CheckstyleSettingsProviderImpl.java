@@ -87,11 +87,15 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
         }
 
         public void setCheckstyleConfigurationPath(String configFilePath) {
-            prefs().put(CHECKSTYLE_CONFIGURATION_FILE, configFilePath);
+            if (configFilePath.length() > 0) {
+                prefs().put(CHECKSTYLE_CONFIGURATION_FILE, configFilePath);
+            }
         }
 
         public void setPropertiesPath(String propertiesFilePath) {
-            prefs().put(CHECKSTYLE_PROPERTIES_FILE, propertiesFilePath);
+            if (propertiesFilePath.length() > 0) {
+                prefs().put(CHECKSTYLE_PROPERTIES_FILE, propertiesFilePath);
+            }
         }
 
         public void setProperties(String properties) {

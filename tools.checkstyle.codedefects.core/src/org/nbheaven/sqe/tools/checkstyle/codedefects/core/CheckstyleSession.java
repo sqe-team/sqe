@@ -34,6 +34,7 @@ import org.openide.filesystems.FileObject;
  */
 @ProjectServiceProvider(service={CheckstyleSession.class, QualitySession.class}, projectType={
     "org-netbeans-modules-ant-freeform",
+    "org-netbeans-modules-autoproject",
     "org-netbeans-modules-apisupport-project",
     "org-netbeans-modules-java-j2seproject",
 //    "org-netbeans-modules-web-project",

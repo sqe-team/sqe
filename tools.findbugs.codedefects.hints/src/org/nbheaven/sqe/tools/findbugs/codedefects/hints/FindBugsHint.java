@@ -23,10 +23,12 @@ import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.LiteralTree;
+import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ModifiersTree;
 import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.Tree.Kind;
 import com.sun.source.tree.VariableTree;
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
@@ -37,11 +39,8 @@ import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.config.UserPreferences;
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
@@ -76,9 +76,6 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.search.impl.ClassElement
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.search.impl.MethodElementDescriptorImpl;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.search.impl.VariableElementDescriptorImpl;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
-import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.queries.BinaryForSourceQuery;
-import org.netbeans.api.java.queries.BinaryForSourceQuery.Result;
 import org.netbeans.api.java.source.ClassIndex.NameKind;
 import org.netbeans.api.java.source.ClassIndex.SearchScope;
 import org.netbeans.api.java.source.ElementHandle;
@@ -91,12 +88,9 @@ import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.HintsController;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.filesystems.FileAttributeEvent;
-import org.openide.filesystems.FileChangeListener;
+import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileRenameEvent;
-import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -105,52 +99,24 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This is heavily inspired by the work done ny Jan Lahoda - Big thank you!
+ * This is heavily inspired by the work done by Jan Lahoda - Big thank you!
  * @author Sven Reimers
  */
 public class FindBugsHint {
 
     private FindBugsHint() {}
     
-    private static RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
+    private static final RequestProcessor HINT_PROCESSOR = new RequestProcessor("FindBugs-Hint-Processor", 1);
 
-    private static class Task implements CancellableTask<CompilationInfo> {
+    private static class Task extends FileChangeAdapter implements CancellableTask<CompilationInfo> {
 
-        private FileObject fileObject;
+        private final FileObject fileObject;
         private List<ErrorDescription> errors;
-        private FileChangeListener listener = null;
 
+        @SuppressWarnings("LeakingThisInConstructor")
         private Task(FileObject fileObject) {
             this.fileObject = fileObject;
-            this.listener = new FCL(this);
-            register();
-        }
-
-        private void register() {
-            ClassPath sourceCP = ClassPath.getClassPath(fileObject, ClassPath.SOURCE);
-            if (sourceCP != null) {
-                FileObject root = sourceCP.findOwnerRoot(fileObject);
-                try {
-                    String base = sourceCP.getResourceName(fileObject, File.separatorChar, false);
-                    String name =  base + ".class"; //XXX
-                    // XXX this needs to listen to CompileOnSaveHelper instead
-                    Result bin = BinaryForSourceQuery.findBinaryRoots(root.getURL());
-                    for (URL u : bin.getRoots()) {
-                        if ("file".equals(u.getProtocol())) {
-                            try {
-                                File cls = new File(new File(u.toURI()), name);
-                                if (cls.exists()) {
-                                    FileUtil.addFileChangeListener(listener, cls);
-                                }
-                            } catch (URISyntaxException x) {
-                                Exceptions.printStackTrace(x);
-                            }
-                        }
-                    }
-                } catch (FileStateInvalidException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
+            fileObject.addFileChangeListener(FileUtil.weakFileChangeListener(this, fileObject));
         }
 
         public void cancel() {
@@ -282,6 +248,17 @@ public class FindBugsHint {
             return null;
         }
 
+        public @Override void fileChanged(FileEvent fe) {
+            // Just running refresh synchronously does not reliably pick up the new changes.
+            // Nor does JavaSource.runWhenScanFinished. So just wait a second, as a hack.
+            // Better to listen to CompileOnSaveHelper, once that is possible.
+            HINT_PROCESSOR.post(new Runnable() {
+                public void run() {
+                    refresh(true);
+                }
+            }, 1000);
+        }
+
         private static class DisableDetectorFix implements Fix {
 
             private final BugInstance bugInstance;
@@ -354,9 +331,10 @@ public class FindBugsHint {
                         }
                         if (sw == null) {
                             DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(
-                                    "Could not find a @SuppressWarnings with @Retention(CLASS/RUNTIME) in project classpath. " +
-                                    "Try findbugs:annotations:* for Maven, Common Annotations API for NetBeans modules, etc.",
-                                    NotifyDescriptor.WARNING_MESSAGE));
+                                    "<html>Could not find a <code>@SuppressWarnings</code> " +
+                                    "with <code>@Retention(CLASS/RUNTIME)</code> in project classpath.<br>" +
+                                    "Try <code>findbugs:annotations:*</code> for Maven, Common Annotations API for NetBeans modules, etc.",
+                                    NotifyDescriptor.INFORMATION_MESSAGE));
                             // XXX try to add such a lib if it can be found somewhere
                             return;
                         }
@@ -392,9 +370,22 @@ public class FindBugsHint {
                 List<? extends AnnotationTree> anns = original.getAnnotations();
                 for (int i = 0; i < anns.size(); i++) {
                     AnnotationTree ann = anns.get(i);
-                    IdentifierTree id = (IdentifierTree) ann.getAnnotationType();
+                    Tree annotationType = ann.getAnnotationType();
+                    Kind kind = annotationType.getKind();
+                    Name name;
+                    switch (kind) {
+                    case IDENTIFIER:
+                        name = ((IdentifierTree) annotationType).getName();
+                        break;
+                    case MEMBER_SELECT:
+                        name = ((MemberSelectTree) annotationType).getIdentifier();
+                        break;
+                    default:
+                        System.err.println("got strange annotation type (" + kind + "): " + annotationType);
+                        continue;
+                    }
                     // XXX what if this is the java.lang version? how to distinguish??
-                    if (id.getName().contentEquals("SuppressWarnings")) {
+                    if (name.contentEquals("SuppressWarnings")) {
                         List<? extends ExpressionTree> args = ann.getArguments();
                         // XXX need to rather skip over non-'value' assignments (e.g. 'justification')
                         if (args.size() != 1) {
@@ -423,7 +414,7 @@ public class FindBugsHint {
                             }
                         }
                         arr = make.addNewArrayInitializer(arr, toAdd);
-                        ann = make.Annotation(id, Collections.singletonList(arr));
+                        ann = make.Annotation(annotationType, Collections.singletonList(arr));
                         return make.insertModifiersAnnotation(make.removeModifiersAnnotation(original, i), i, ann);
                     }
                 }
@@ -437,39 +428,6 @@ public class FindBugsHint {
 
         }
 
-    }
-
-    private static final class FCL implements FileChangeListener {
-
-        private Task task;
-
-        private FCL(Task task) {
-            this.task = task;
-        }
-
-        public void fileFolderCreated(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileDataCreated(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileChanged(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileDeleted(FileEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileRenamed(FileRenameEvent fe) {
-            task.refresh(true);
-        }
-
-        public void fileAttributeChanged(FileAttributeEvent fe) {
-            task.refresh(true);
-        }
     }
 
     @ServiceProvider(service=JavaSourceTaskFactory.class)

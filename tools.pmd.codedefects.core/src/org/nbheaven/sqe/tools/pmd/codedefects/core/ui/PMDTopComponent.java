@@ -23,7 +23,6 @@ import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -50,7 +49,6 @@ public final class PMDTopComponent extends TopComponent {
     static final String ICON_PATH = "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png";
     private static final String PREFERRED_ID = "PMDTopComponent";
     private SQEManagerListener sqeManagerListener;
-    private final WeakHashMap<PMDSession, JComponent> projectToUIMap = new WeakHashMap<PMDSession, JComponent>();
     private PMDSession activeSession = null;
     private final JComponent emptyComponent;
 
@@ -194,16 +192,7 @@ public final class PMDTopComponent extends TopComponent {
 
             JComponent component;
             if (null != activeSession) {
-                component = projectToUIMap.get(activeSession);
-                if (null == component) {
-                    component = projectToUIMap.get(activeSession);
-                    synchronized (this) {
-                        if (null == component) {
-                            component = new ResultPanel(activeSession);
-                            projectToUIMap.put(activeSession, component);
-                        }
-                    }
-                }
+                component = new ResultPanel(activeSession);
             } else {
                 component = emptyComponent;
             }

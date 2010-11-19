@@ -24,14 +24,17 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSetting
 import org.netbeans.api.project.Project;
 import org.openide.util.Lookup;
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import org.nbheaven.sqe.core.ui.Constants;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -45,34 +48,39 @@ import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryPr
 })
 public class PanelProvider implements CompositeCategoryProvider {
 
+    private static final RequestProcessor RP = new RequestProcessor(PanelProvider.class.getName());
+
     public Category createCategory(Lookup context) {
         return Category.create("FindBugs", "FindBugs", null);
     }
 
-    public JComponent createComponent(Category category, Lookup context) {
+    public JComponent createComponent(final Category category, Lookup context) {
         Project p = context.lookup(Project.class);
         final FindBugsSettingsProvider fibuSettingsProvider = p.getLookup().lookup(FindBugsSettingsProvider.class);
-
-        final UserPreferences findBugsSettings = fibuSettingsProvider.getFindBugsSettings();
-        
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-
-        JTabbedPane jTabbedPane = new JTabbedPane();
-        final ConfigureDetectorsPanel detectorsPanel = new ConfigureDetectorsPanel(findBugsSettings);
-        jTabbedPane.addTab("Configure Detectors", detectorsPanel);
-
-        JPanel featuresPanel = new ConfigureFeaturesPanel();
-        jTabbedPane.addTab("Configure Features", featuresPanel);
-        panel.add(jTabbedPane, BorderLayout.CENTER);
-
-        category.setOkButtonListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                detectorsPanel.applyDetectorChangesToUserPreferences(findBugsSettings);
-                fibuSettingsProvider.setFindBugsSettings(findBugsSettings);
+        panel.add(new JLabel("Loading..."), BorderLayout.CENTER); // SQE-42
+        RP.post(new Runnable() {
+            public void run() {
+                final UserPreferences findBugsSettings = fibuSettingsProvider.getFindBugsSettings();
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        JTabbedPane jTabbedPane = new JTabbedPane();
+                        final ConfigureDetectorsPanel detectorsPanel = new ConfigureDetectorsPanel(findBugsSettings);
+                        jTabbedPane.addTab("Configure Detectors", detectorsPanel);
+                        JPanel featuresPanel = new ConfigureFeaturesPanel();
+                        jTabbedPane.addTab("Configure Features", featuresPanel);
+                        panel.add(jTabbedPane, BorderLayout.CENTER);
+                        category.setOkButtonListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                detectorsPanel.applyDetectorChangesToUserPreferences(findBugsSettings);
+                                fibuSettingsProvider.setFindBugsSettings(findBugsSettings);
+                            }
+                        });
+                    }
+                });
             }
-        });        
-        
+        });
         return panel;
     }
 

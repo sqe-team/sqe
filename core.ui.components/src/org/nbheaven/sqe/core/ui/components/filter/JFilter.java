@@ -42,7 +42,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
-import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -420,7 +419,6 @@ public class JFilter extends JPanel {
 
     //--- Private implementation -----
     private void initComponents() {
-        Border textFieldBorder;
         Color textFieldBackground;
 
         ActionListener setClearButtonsActionListner = new SetClearButtonsActionListener();
@@ -428,8 +426,6 @@ public class JFilter extends JPanel {
         filterStringCombo = new StringComboBox();
 
         filterStringCombo.setEditable(true);
-        textFieldBorder = filterStringCombo.getBorder();
-        filterStringCombo.setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 0));
         filterStringCombo.setMaximumRowCount(7);
         filterStringCombo.addActionListener(new FilterStringComboActionListener());
         filterStringCombo.getAccessibleContext().setAccessibleName(FILTER_STRING_COMBO_ACCESS_NAME);
@@ -514,8 +510,6 @@ public class JFilter extends JPanel {
         filterTypePopup.setBackground(Color.WHITE);
 
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createCompoundBorder(textFieldBorder,
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         setBackground(textFieldBackground);
 
         add(filterTypeButton, BorderLayout.WEST);
