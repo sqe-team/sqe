@@ -18,11 +18,10 @@
 
 package org.nbheaven.sqe.core.maven.utils;
 
+import org.apache.maven.project.MavenProject;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.netbeans.api.project.Project;
-import org.netbeans.modules.maven.api.customizer.ModelHandle;
-import org.netbeans.modules.maven.model.pom.POMModel;
-import org.netbeans.modules.maven.model.profile.ProfilesModel;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.openide.util.Lookup;
 
 /**
@@ -31,37 +30,37 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public class ModelHandleProxy {
-    private final ModelHandle handle;
+    private final Project p;
 
-    private ModelHandleProxy(ModelHandle hand, Project prj) {
-        handle = hand;
+    private ModelHandleProxy(Project p) {
+        this.p = p;
     }
 
     public static ModelHandleProxy create(Lookup customizerLookup) {
-        ModelHandle h = customizerLookup.lookup(ModelHandle.class);
         Project p = customizerLookup.lookup(Project.class);
-        assert h != null;
-        return new ModelHandleProxy(h, p);
-    }
-
-    public POMModel getPOMModel() {
-        return handle.getPOMModel();
-    }
-
-    public ProfilesModel getProfilesModel() {
-        return handle.getProfileModel();
-    }
-
-    public void markAsModified(POMModel model) {
-        handle.markAsModified(model);
-    }
-
-    public void markAsModified(ProfilesModel model) {
-        handle.markAsModified(model);
+        assert p != null;
+        return new ModelHandleProxy(p);
     }
 
     public MavenPluginConfiguration getMavenPluginConfig(String groupId, String artifactId) {
-        return MavenUtilities.getReportPluginConfigurationImpl(handle.getProject(), groupId, artifactId);
+        NbMavenProject nbmp = p.getLookup().lookup(NbMavenProject.class);
+        if (nbmp != null) {
+            MavenProject mp = nbmp.getMavenProject();
+            if (mp != null) {
+                return MavenUtilities.getReportPluginConfigurationImpl(mp, groupId, artifactId);
+            } // else impossible in NB 7.0
+        }
+        return new MavenPluginConfiguration() {
+            public boolean isDefinedInProject() {
+                return false;
+            }
+            public String getValue(String path) {
+                return null;
+            }
+            public String[] getStringListValue(String listParent, String listChild) {
+                return new String[0];
+            }
+        };
     }
 
 }

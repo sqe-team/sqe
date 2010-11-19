@@ -19,6 +19,7 @@ package org.nbheaven.sqe.core.maven.utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -112,6 +113,16 @@ public final class MavenUtilities {
      * @return list of files in local repository
      */
     public static List<File> findDependencyArtifacts(Project project, String pluginGroupId, String pluginArtifactId, boolean includePluginArtifact) {
+        try {
+            return doFindDependencyArtifacts(project, pluginGroupId, pluginArtifactId, includePluginArtifact);
+        } catch (LinkageError e) {
+            // XXX would need to be rewritten for Maven 3 in NB 7.0.
+            // CheckstyleSettingsProviderImpl and MavenPmdSettingsProvider need to find resources inside dependencies of configured plugins.
+            // MavenProject.classRealm is not useful since these are not likely to be extension plugins.
+            return Collections.emptyList();
+        }
+    }
+    private static List<File> doFindDependencyArtifacts(Project project, String pluginGroupId, String pluginArtifactId, boolean includePluginArtifact) {
         List<File> cpFiles = new ArrayList<File>();
         final NbMavenProject p = project.getLookup().lookup(NbMavenProject.class);
         final MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
@@ -207,17 +218,6 @@ public final class MavenUtilities {
 //-------------------------------------------------------------------------------
 // start: this part is to be deleted once upgrading to 6.8 nb
 //-------------------------------------------------------------------------------
-
-        /**
-     * gets the list of values for the given property, if configured in the current project.
-     * @param multiproperty list's root element (eg. "sourceRoots")
-     * @param singleproperty - list's single value element (eg. "sourceRoot")
-     */
-    private static String[] getReportPluginPropertyList(Project prj, String groupId, String artifactId, String multiproperty, String singleproperty, String goal) {
-        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
-        assert project != null : "Requires a maven project instance"; //NOI18N
-        return getReportPluginPropertyList(project.getMavenProject(), groupId, artifactId, multiproperty, singleproperty, goal);
-    }
 
     /**
      * gets the list of values for the given property, if configured in the current project.
