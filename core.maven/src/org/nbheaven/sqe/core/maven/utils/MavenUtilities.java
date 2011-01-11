@@ -28,6 +28,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.ReportPlugin;
@@ -35,6 +36,7 @@ import org.apache.maven.model.ReportSet;
 import org.apache.maven.project.DefaultProjectBuilderConfiguration;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.MavenProjectBuildingResult;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.netbeans.modules.maven.api.NbMavenProject;
@@ -44,7 +46,6 @@ import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.maven.api.PluginPropertyUtils;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
-import org.netbeans.modules.maven.embedder.MavenEmbedder;
 import org.netbeans.modules.maven.embedder.NBPluginParameterExpressionEvaluator;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -142,21 +143,24 @@ public final class MavenUtilities {
                         try {
                             online.resolve(a, p.getMavenProject().getRemoteArtifactRepositories(), online.getLocalRepository());
                         } catch (ArtifactResolutionException ex) {
-                            Exceptions.printStackTrace(ex);
+                            ex.printStackTrace();
+//                                        Exceptions.printStackTrace(ex);
                         } catch (ArtifactNotFoundException ex) {
-                            Exceptions.printStackTrace(ex);
+                            ex.printStackTrace();
+//                            Exceptions.printStackTrace(ex);
                         }
                     }
                     if (f.exists()) {
                         cpFiles.add(f);
                         try {
-                            MavenProjectBuilder mpb = (MavenProjectBuilder) online.getPlexus().lookup(MavenProjectBuilder.class);
+                            MavenProjectBuilder mpb = (MavenProjectBuilder) online.getPlexusContainer().lookup(MavenProjectBuilder.class);
                             DefaultProjectBuilderConfiguration dpbc = new DefaultProjectBuilderConfiguration();
                             dpbc.setLocalRepository(online.getLocalRepository());
                             MavenProject mp = mpb.buildFromRepository(a, p.getMavenProject().getRemoteArtifactRepositories(), online.getLocalRepository());
                             if (mp != null) {
                                 File pom = new File(f.getParentFile(), f.getName().replace(".jar", ".pom"));
-                                mp = mpb.build(pom, dpbc);
+                                MavenProjectBuildingResult res = mpb.buildProjectWithDependencies(pom, dpbc);
+                                mp = res.getProject();
                                 @SuppressWarnings("unchecked")
                                 Set<Artifact> depArts = mp.getDependencyArtifacts();
                                 for (Artifact depA : depArts) {
@@ -182,7 +186,7 @@ public final class MavenUtilities {
                     pluginGroupId.equals(plug.getGroupId())) {
                 try {
                     List<Dependency> deps = NbCollections.checkedListByCopy(plug.getDependencies(), Dependency.class, true);
-                    ArtifactFactory artifactFactory = (ArtifactFactory) online.getPlexus().lookup(ArtifactFactory.class);
+                    ArtifactFactory artifactFactory = (ArtifactFactory) online.getPlexusContainer().lookup(ArtifactFactory.class);
                     for (Dependency d : deps) {
                         final Artifact projectArtifact = artifactFactory.createArtifactWithClassifier(d.getGroupId(), d.getArtifactId(), d.getVersion(), d.getType(), d.getClassifier());
                         String localPath = online.getLocalRepository().pathOf(projectArtifact);
