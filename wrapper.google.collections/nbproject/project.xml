@@ -34,7 +34,9 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
+                <package>com.google.common.annotations</package>
                 <package>com.google.common.base</package>
+                <package>com.google.common.base.internal</package>
                 <package>com.google.common.collect</package>
             </public-packages>
             <class-path-extension>
