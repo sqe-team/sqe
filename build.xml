@@ -50,14 +50,4 @@
         </zip>
     </target>
     
-    <target name="fix-crlf">
-        <fixcrlf eol="unix" srcdir="." eof="remove" fixlast="false">
-            <exclude name=".hg"/>
-            <include name="**/*.java"/>
-            <include name="**/*.xml"/>
-            <include name="**/*.mf"/>
-            <include name="**/*.properties"/>
-        </fixcrlf>    
-    </target>
-
 </project>
