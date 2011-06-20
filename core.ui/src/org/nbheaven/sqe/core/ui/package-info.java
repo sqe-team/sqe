@@ -16,14 +16,12 @@
  * along with SQE.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* XXX #178331: does not work
 @OptionsPanelController.ContainerRegistration(
     id=OPTIONS_CATEGORY_ID,
     categoryName="#OptionsCategory_Name",
     iconBase="org/nbheaven/sqe/core/ui/resources/sqe_32.png",
     position=350
 )
- */
 @Registrations({
     @Registration(projectType="org-netbeans-modules-ant-freeform", category=CUSTOMIZER_CATEGORY_ID, categoryLabel="#customizer_category_name", position=650),
     @Registration(projectType="org-netbeans-modules-apisupport-project", category=CUSTOMIZER_CATEGORY_ID, categoryLabel="#customizer_category_name", position=450),
@@ -33,6 +31,7 @@
 })
 package org.nbheaven.sqe.core.ui;
 
+import org.netbeans.spi.options.OptionsPanelController;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider.Registration;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider.Registrations;
 import static org.nbheaven.sqe.core.ui.Constants.*;

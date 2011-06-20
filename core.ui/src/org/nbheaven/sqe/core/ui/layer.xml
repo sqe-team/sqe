@@ -27,20 +27,6 @@
         </folder>
     </folder>
 
-    <!-- XXX #178331: cannot yet be replaced by annotation -->
-    <folder name="OptionsDialog">
-        <file name="SQE.instance">
-            <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.OptionsCategory.createCategory"/>
-            <attr name="advancedOptionsFolder" stringvalue="OptionsDialog/SQE"/>
-            <attr name="categoryName" bundlevalue="org.nbheaven.sqe.core.ui.Bundle#OptionsCategory_Name"/>
-            <attr name="iconBase" stringvalue="org/nbheaven/sqe/core/ui/resources/sqe_32.png"/>
-            <attr name="position" intvalue="350"/>
-        </file>
-        <folder name="SQE">
-            <attr name="position" intvalue="0"/>
-        </folder>
-    </folder>
-
     <folder name="Projects">
         <folder name="Actions">
             <file name="org-nbheaven-sqe-core-ui-actions-SQEProjectMenuItem.instance">
