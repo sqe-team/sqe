@@ -41,6 +41,7 @@ import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Exceptions;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -117,9 +118,9 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
                 if (checkStyleConfigFile == null) {
                     return;
                 }
-                istream = checkStyleConfigFile.getInputStream();
+                InputSource inputSource = new InputSource(checkStyleConfigFile.getInputStream());
                 properties = GlobalCheckstyleSettings.INSTANCE.getProperties();
-                Configuration config = ConfigurationLoader.loadConfiguration(istream,
+                Configuration config = ConfigurationLoader.loadConfiguration(inputSource,
                         new PropertiesExpander(properties), true);
                 checker.setModuleClassLoader(Checker.class.getClassLoader());
                 checker.configure(config);
