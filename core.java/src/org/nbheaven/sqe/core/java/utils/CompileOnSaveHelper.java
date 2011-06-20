@@ -36,13 +36,15 @@ import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.java.queries.SourceForBinaryQuery.Result2;
 import org.netbeans.api.java.source.BuildArtifactMapper;
 import org.netbeans.api.java.source.JavaSource;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Parameters;
 
-// XXX file API change request in java/source for jlahoda
-// XXX in NB 6.8 can use FileUtil.addRecursiveListener to listen for changes
+// XXX FileUtil.addRecursiveListener cannot be used to listen for changes (java.source does not use FileObject?);
 //     would allow FB to be rerun automatically after project changes (not necessarily desirable)
 
 /**
@@ -50,6 +52,7 @@ import org.openide.util.Parameters;
  * If a project has "Compile on Save" selected, <em>and</em> it is currently in automatic synchronization mode,
  * this class is mostly unnecessary because {@code BuildArtifactMapper} will copy classes to its regular
  * build directory. In other cases, there is currently no other way to get access to the IDE's internal bytecode cache.
+ * @see <a href="https://netbeans.org/bugzilla/show_bug.cgi?id=178336">Proposed API</a>
  */
 public final class CompileOnSaveHelper {
     
@@ -66,7 +69,12 @@ public final class CompileOnSaveHelper {
         try {
             _getClassFolder = Class.forName("org.netbeans.modules.java.source.indexing.JavaIndex", true, loader).
                     getMethod("getClassFolder", URL.class, boolean.class);
-            Class<?> taskCacheClass = Class.forName("org.netbeans.modules.java.source.tasklist.TaskCache", true, loader);
+            Class<?> taskCacheClass;
+            try {
+                taskCacheClass = Class.forName("org.netbeans.modules.parsing.impl.indexing.errors.TaskCache", true, loader);
+            } catch (ClassNotFoundException x) {
+                taskCacheClass = Class.forName("org.netbeans.modules.java.source.tasklist.TaskCache", true, loader);
+            }
             _taskCache = taskCacheClass.getMethod("getDefault").invoke(null);
             _isInError = taskCacheClass.getMethod("isInError", FileObject.class, boolean.class);
         } catch (Exception x) {
@@ -159,14 +167,25 @@ public final class CompileOnSaveHelper {
         }
         CRC32 crc = new CRC32();
         crc.update(sourcesURL.toString().getBytes("UTF-8"));
-        // XXX include some mnemonic portion of sources name, e.g. project name plus source group name
         String key = String.format("%08X", crc.getValue());
-        // XXX better to put this in the user directory somewhere... or use ProjectUtils.getCacheDir in 6.8
-        // XXX clean up unused cache dirs when the original cannot be found on disk anywhere
-        File classDir = new File(new File(System.getProperty("java.io.tmpdir"), "CompileOnSaveHelper"), key);
+        File classDir = new File(getCacheDir(), key);
         LOG.log(Level.FINE, "synchronizing {0} to {1}", new Object[] {sigDir, classDir});
         copySigToClass(sigDir, classDir);
         return classDir.toURI().toURL();
+    }
+
+    private File getCacheDir() throws IOException {
+        File tmp = null;
+        if (sources != null) {
+            Project owner = FileOwnerQuery.getOwner(sources);
+            if (owner != null) {
+                tmp = FileUtil.toFile(ProjectUtils.getCacheDirectory(owner, CompileOnSaveHelper.class));
+            }
+        }
+        if (tmp == null) {
+            tmp = new File(System.getProperty("netbeans.user"), "var/cache/CompileOnSaveHelper");
+        }
+        return new File(tmp, "CompileOnSaveHelper");
     }
 
     private static void copySigToClass(File sigDir, File clazzDir) throws IOException {

@@ -237,7 +237,7 @@ public final class History implements Iterable<History.Entry> {
                 return sum;
             }
 
-            public long getCodeDefactCount(CodeDefectSeverity severity) {
+            public long getCodeDefectCount(CodeDefectSeverity severity) {
                 switch(severity) {
                     case ERROR : return errors;
                     case WARNING : return warnings;

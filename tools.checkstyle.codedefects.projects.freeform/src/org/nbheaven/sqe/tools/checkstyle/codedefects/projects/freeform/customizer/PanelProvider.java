@@ -17,17 +17,18 @@
  */
 package org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform.customizer;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
+import org.nbheaven.sqe.core.ui.Constants;
+import javax.swing.JLabel;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.option.CheckstyleConfiguration;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.projects.freeform.CheckstyleSettingsProviderImpl;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
@@ -36,22 +37,24 @@ import org.openide.util.Lookup;
  *
  * @author Sven Reimers
  */
-public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
-
-    private String name;
-
-    /** Creates a new instance of ProjectPanelProvider */
-    private PanelProvider(String name) {
-        this.name = name;
-    }
+@CompositeCategoryProvider.Registrations({
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-ant-freeform", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-apisupport-project", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-java-j2seproject", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-web-project", category=Constants.CUSTOMIZER_CATEGORY_ID)
+})
+public class PanelProvider implements CompositeCategoryProvider {
 
     public Category createCategory(Lookup lookup) {
-        return ProjectCustomizer.Category.create(this.name, "CheckStyle", null);
+        return Category.create("CheckStyle", "CheckStyle", null);
     }
 
     public JComponent createComponent(Category category, Lookup context) {
         Project p = context.lookup(Project.class);
         CheckstyleSettingsProvider checkstyleSettingsProvider = p.getLookup().lookup(CheckstyleSettingsProvider.class);
+        if (checkstyleSettingsProvider == null) {
+            return new JLabel("<not available>");
+        }
         final CheckstyleSettings checkstyleSettings = checkstyleSettingsProvider.getCheckstyleSettings();
 
         final CheckstyleConfiguration checkstyleConfiguration = new CheckstyleConfiguration();
@@ -85,7 +88,4 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
         return checkstyleConfiguration;
     }
 
-    public static PanelProvider createExample() {
-        return new PanelProvider("Example");
-    }
 }

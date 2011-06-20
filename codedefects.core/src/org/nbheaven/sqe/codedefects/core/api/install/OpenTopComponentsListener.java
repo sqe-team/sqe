@@ -40,6 +40,8 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
 
     static PropertyChangeListener INSTANCE = new OpenTopComponentsListener();
 
+    private static final RequestProcessor RP = new RequestProcessor(OpenTopComponentsListener.class.getName());
+
     public void propertyChange(final PropertyChangeEvent event) {
 
         // The list of open projects has changed
@@ -55,7 +57,7 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                 final DataObject dao = tc.getLookup().lookup(DataObject.class);
 
                 if (null != dao) {
-                    RequestProcessor.getDefault().post(new Runnable() {
+                    RP.post(new Runnable() {
                         public void run() {
                     for (final Project project : OpenProjects.getDefault().getOpenProjects()) {
                             SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);

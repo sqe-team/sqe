@@ -21,7 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.netbeans.api.project.Project;
-import org.openide.util.NbPreferences;
+import org.netbeans.api.project.ProjectUtils;
 
 /**
  *
@@ -29,8 +29,10 @@ import org.openide.util.NbPreferences;
  */
 public final class SQECodedefectProperties {
 
-    private static final String QUALITY_PROVIDER_PREFIX_ACTIVE = "run.provider.";
-    private static final String QUALITY_PROVIDER_PREFIX_ANNOTATION_ACTIVE = "annotation.provider.";
+    private SQECodedefectProperties() {}
+    
+    private static final String QUALITY_PROVIDER_PREFIX_ACTIVE = "run-provider-";
+    private static final String QUALITY_PROVIDER_PREFIX_ANNOTATION_ACTIVE = "annotation-provider-";
 
     private static PropertyChangeSupport changeSupport = new PropertyChangeSupport(SQECodedefectProperties.class);
     
@@ -65,13 +67,11 @@ public final class SQECodedefectProperties {
         if (null == project.getLookup().lookup(qualityProvider.getQualitySessionClass())) {
             return false;
         }
-        return NbPreferences.forModule(QualityProvider.class).node("project").getBoolean(project.getProjectDirectory() + "." + getPropertyNameActive(qualityProvider), true);
+        return ProjectUtils.getPreferences(project, QualityProvider.class, false).getBoolean(getPropertyNameActive(qualityProvider), true);
     }
 
     public static void setQualityProviderActive(Project project, QualityProvider qualityProvider, boolean active) {
-        
-        NbPreferences.forModule(QualityProvider.class).node("project").putBoolean(project.getProjectDirectory() + "." + getPropertyNameActive(qualityProvider), active);
-        
+        ProjectUtils.getPreferences(project, QualityProvider.class, false).putBoolean(getPropertyNameActive(qualityProvider), active);
         firePropertyChange(getPropertyNameActive(qualityProvider), null, active);
     }
 
@@ -80,11 +80,11 @@ public final class SQECodedefectProperties {
         if (null == project.getLookup().lookup(qualityProvider.getQualitySessionClass())) {
             return false;
         }
-        return NbPreferences.forModule(QualityProvider.class).node("project").getBoolean(project.getProjectDirectory() + "." + getPropertyNameAnnotateActive(qualityProvider), false);
+        return ProjectUtils.getPreferences(project, QualityProvider.class, false).getBoolean(getPropertyNameAnnotateActive(qualityProvider), false);
     }
 
     public static void setQualityProviderAnnotateActive(Project project, QualityProvider qualityProvider, boolean active) {
-        NbPreferences.forModule(QualityProvider.class).node("project").putBoolean(project.getProjectDirectory() + "." + getPropertyNameAnnotateActive(qualityProvider), active);
+        ProjectUtils.getPreferences(project, QualityProvider.class, false).putBoolean(getPropertyNameAnnotateActive(qualityProvider), active);
         firePropertyChange(getPropertyNameAnnotateActive(qualityProvider), null, active);
     }
     

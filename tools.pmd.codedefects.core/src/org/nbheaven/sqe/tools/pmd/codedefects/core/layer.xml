@@ -83,20 +83,6 @@
         </folder>
     </folder>
     
-    <folder name="OptionsDialog">
-        <folder name="SQE">
-            <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-option-PMDAdvancedOption.instance">
-                <attr name="controller" newvalue="org.nbheaven.sqe.tools.pmd.codedefects.core.option.PMDOptionsPanelController"/>
-                <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.pmd.codedefects.core.option.Bundle#AdvancedOption_DisplayName_PMD"/>
-                <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
-                <attr name="keywords" bundlevalue="org.nbheaven.sqe.tools.pmd.codedefects.core.option.Bundle#AdvancedOption_Keywords_PMD"/>
-                <attr name="keywordsCategory" stringvalue="SQE"/>
-                <attr name="toolTip" bundlevalue="org.nbheaven.sqe.tools.pmd.codedefects.core.option.Bundle#AdvancedOption_Tooltip_PMD"/>
-                <attr name="position" intvalue="300"/>
-            </file>
-        </folder>
-    </folder>
-   
     <!-- SQE Integration -->
     <folder name="SQE">
         <folder name="Providers">

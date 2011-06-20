@@ -93,23 +93,21 @@ class BugTree extends JTree {
     }
 
     public void refresh() {
-        if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    refresh();
-                }
-            });
-            return;
-        }
-
-        TreeNode rootNode = createRootTreeNode(session, coreFilterEnabled, resultMode);
-        setModel(new DefaultTreeModel(rootNode));
-        if (isCollapsed) {
-            collapseAll();
-        } else {
-            expandAll();
-        }
+        requestProcessor.post(new Runnable() {
+            public void run() {
+                final TreeNode rootNode = createRootTreeNode(session, coreFilterEnabled, resultMode);
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        setModel(new DefaultTreeModel(rootNode));
+                        if (isCollapsed) {
+                            collapseAll();
+                        } else {
+                            expandAll();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public void collapseAll() {

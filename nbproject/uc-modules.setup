@@ -2,6 +2,6 @@
 # Setup for SQE dev UC
 #################################
 
-sqe1 * codename sqe
+sqe * codename sqe
 sqe * displayname Software Quality Environment (SQE)
 sqe * description Tools for improving and controlling quality of written software

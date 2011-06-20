@@ -35,7 +35,7 @@ public class PMDAnnotationToggleAction extends AbstractShowAnnotationsAction {
         this(Lookup.EMPTY);
     }
 
-    public PMDAnnotationToggleAction(Lookup lookup) {
+    private PMDAnnotationToggleAction(Lookup lookup) {
         super(lookup);
         putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage( "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png")));
     }

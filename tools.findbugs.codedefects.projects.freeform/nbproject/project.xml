@@ -25,7 +25,23 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.findbugs</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.codedefects.core</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.core.ant</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.8</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.core.ui</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -41,16 +57,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.codedefects.core</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                </dependency>                
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.core.ant</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.wrapper.findbugs</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.8</specification-version>
+                        <specification-version>1.2</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -68,7 +79,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.22.0.5</specification-version>
+                        <specification-version>1.38</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

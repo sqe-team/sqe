@@ -47,9 +47,9 @@ public final class CodeDefectHistoryPersistence {
                 QualityResult result = session.getResult();
                 if (null != result) {
                     QualityResultStatistic statistic = result.getLookup().lookup(QualityResultStatistic.class);
-                    long errors = statistic.getCodeDefactCount(CodeDefectSeverity.ERROR);
-                    long warns = statistic.getCodeDefactCount(CodeDefectSeverity.WARNING);
-                    long infos = statistic.getCodeDefactCount(CodeDefectSeverity.INFO);
+                    long errors = statistic.getCodeDefectCount(CodeDefectSeverity.ERROR);
+                    long warns = statistic.getCodeDefectCount(CodeDefectSeverity.WARNING);
+                    long infos = statistic.getCodeDefectCount(CodeDefectSeverity.INFO);
                     snapshots.add(new QualityProviderStatisticSnapshot(session.getProvider(), errors, warns, infos));
                 }
             }

@@ -33,7 +33,6 @@ import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -90,7 +89,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
                 URL url = new URL(configLocation);
                 return new CheckstyleSettingsImpl(url, properties);
             } catch (MalformedURLException ex) {
-                Exceptions.printStackTrace(ex);
+                // OK, not a URL (no protocol)
             }
                 // TODO: better error handling here - pass it to session and result somehow for display to user
                 //       something like a problem report for executing the tool

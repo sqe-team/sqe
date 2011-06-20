@@ -30,11 +30,7 @@ import javax.swing.JMenuItem;
 import org.openide.awt.Actions;
 import org.openide.awt.Mnemonics;
 import org.openide.cookies.InstanceCookie;
-import org.openide.filesystems.FileAttributeEvent;
-import org.openide.filesystems.FileChangeListener;
-import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
@@ -45,81 +41,22 @@ import org.openide.loaders.DataObjectNotFoundException;
  */
 public class ActionUtils {
 
-    private static ActionUtils projectActionUtils;
-    private static ActionUtils packageActionUtils;
-
     public static ActionUtils getProjectUtils() {
-        if (null == projectActionUtils) {
-            synchronized (ActionUtils.class) {
-                if (null == projectActionUtils) {
-                    projectActionUtils = new ActionUtils("SQE/Projects/Actions");
-                }
-            }
-        }
-        return projectActionUtils;
+        return new ActionUtils("SQE/Projects/Actions");
     }
 
     public static ActionUtils getPackageUtils() {
-        if (null == packageActionUtils) {
-            synchronized (ActionUtils.class) {
-                if (null == packageActionUtils) {
-                    packageActionUtils = new ActionUtils("SQE/Packages/Actions");
-                }
-            }
-        }
-        return packageActionUtils;
+        return new ActionUtils("SQE/Packages/Actions");
     }
+    
     private final FileObject fo;
-    private Collection<JMenuItem> menus;
 
     private ActionUtils(String folder) {
-        this(FileUtil.getConfigFile(folder));
-    }
-
-    private ActionUtils(FileObject fo) {
-        this.fo = fo;
-        if (null == fo) {
-            menus = Collections.emptyList();
-        }
+        this.fo = FileUtil.getConfigFile(folder);
     }
 
     public final Collection<JMenuItem> getMenuItems() {
-        if (null == menus) {
-            synchronized (this) {
-                if (null == menus) {
-                    menus = createMenuList(fo);
-                    fo.addFileChangeListener(new MenuUpdateListener());
-                }
-            }
-        }
-        return menus;
-    }
-
-    private final class MenuUpdateListener implements FileChangeListener {
-
-        public void fileAttributeChanged(FileAttributeEvent fileAttributeEvent) {
-            menus = createMenuList(fo);
-        }
-
-        public void fileChanged(FileEvent fileEvent) {
-            menus = createMenuList(fo);
-        }
-
-        public void fileDataCreated(FileEvent fileEvent) {
-            menus = createMenuList(fo);
-        }
-
-        public void fileDeleted(FileEvent fileEvent) {
-            menus = createMenuList(fo);
-        }
-
-        public void fileFolderCreated(FileEvent fileEvent) {
-            menus = createMenuList(fo);
-        }
-
-        public void fileRenamed(FileRenameEvent fileRenameEvent) {
-            menus = createMenuList(fo);
-        }
+        return fo != null ? createMenuList(fo) : Collections.<JMenuItem>emptySet();
     }
 
     private static Collection<JMenuItem> createMenuList(FileObject fo) {

@@ -22,29 +22,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import org.nbheaven.sqe.core.ui.Constants;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.option.ConfigureRulesPanel;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author antoni
  */
-public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
-
-    private final String name;
-
-    /** Creates a new instance of ProjectPanelProvider */
-    private PanelProvider(String name) {
-        this.name = name;
-    }
+@CompositeCategoryProvider.Registrations({
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-ant-freeform", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-apisupport-project", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-java-j2seproject", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-web-project", category=Constants.CUSTOMIZER_CATEGORY_ID)
+})
+public class PanelProvider implements CompositeCategoryProvider {
 
     public Category createCategory(Lookup lookup) {
-        return ProjectCustomizer.Category.create(this.name, "PMD", null);
+        return Category.create("PMD", "PMD", null);
     }
 
     public JComponent createComponent(Category category, Lookup context) {
@@ -71,7 +71,4 @@ public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvide
         return panel;
     }
 
-    public static PanelProvider createExample() {
-        return new PanelProvider("Example");
-    }
 }

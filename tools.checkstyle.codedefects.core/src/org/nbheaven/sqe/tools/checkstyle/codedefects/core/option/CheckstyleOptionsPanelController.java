@@ -20,10 +20,19 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.core.option;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.JComponent;
+import org.nbheaven.sqe.core.ui.Constants;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
+@OptionsPanelController.SubRegistration(
+    location=Constants.OPTIONS_CATEGORY_ID,
+    displayName="#AdvancedOption_DisplayName_Checkstyle",
+    keywords="#AdvancedOption_Keywords_Checkstyle",
+    keywordsCategory="SQE",
+//    toolTip="#AdvancedOption_Tooltip_Checkstyle",
+    position=400
+)
 public final class CheckstyleOptionsPanelController extends OptionsPanelController {
 
     private CheckstylePanel panel;

@@ -23,7 +23,6 @@ import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.WeakHashMap;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -50,7 +49,6 @@ public final class CheckstyleTopComponent extends TopComponent {
     static final String ICON_PATH = "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png";
     private static final String PREFERRED_ID = "CheckstyleTopComponent";
     private SQEManagerListener sqeManagerListener;
-    private final WeakHashMap<CheckstyleSession, JComponent> projectToUIMap = new WeakHashMap<CheckstyleSession, JComponent>();
     private CheckstyleSession activeSession = null;
     private final JComponent emptyComponent;
 
@@ -187,16 +185,7 @@ public final class CheckstyleTopComponent extends TopComponent {
 
             JComponent component;
             if (null != activeSession) {
-                component = projectToUIMap.get(activeSession);
-                if (null == component) {
-                    component = projectToUIMap.get(activeSession);
-                    synchronized (this) {
-                        if (null == component) {
-                            component = new ResultPanel(activeSession);
-                            projectToUIMap.put(activeSession, component);
-                        }
-                    }
-                }
+                component = new ResultPanel(activeSession);
             } else {
                 component = emptyComponent;
             }

@@ -30,7 +30,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.12.2</specification-version>
+                        <specification-version>1.14</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -48,7 +48,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.33</specification-version>
+                        <specification-version>1.38</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -102,10 +102,8 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
+                <package>org.nbheaven.sqe.core.ui</package>
                 <package>org.nbheaven.sqe.core.ui.actions</package>
-                <package>org.nbheaven.sqe.core.ui.components.collapser</package>
-                <package>org.nbheaven.sqe.core.ui.components.filter</package>
-                <package>org.nbheaven.sqe.core.ui.options</package>
             </public-packages>
         </data>
     </configuration>

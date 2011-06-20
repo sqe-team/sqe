@@ -17,30 +17,34 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
-import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.FilterBugReporter;
+import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.FindBugs2;
 import edu.umd.cs.findbugs.NoClassesFoundToAnalyzeException;
-import edu.umd.cs.findbugs.ba.AnalysisFeatures;
-import edu.umd.cs.findbugs.config.AnalysisFeatureSetting;
+import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.config.UserPreferences;
 import edu.umd.cs.findbugs.filter.Filter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
-import org.openide.ErrorManager;
 
 /**
  *
  * @author Sven Reimers
  */
 public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
+
+    private static final Logger LOG = Logger.getLogger(FindBugsScannerJob.class.getName());
+
+    static {
+        Installer.installPluginUpdater();
+    }
 
     private edu.umd.cs.findbugs.Project findBugsProject;
     private FindBugsResult findBugsResult;
@@ -79,12 +83,17 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
     abstract protected edu.umd.cs.findbugs.Project createFindBugsProject();
 
     private void executeFindBugs() {
+        if (findBugsProject == null) {
+            return;
+        }
+
         NbFindBugsProgress progressCallback = new NbFindBugsProgress(getProject(), getProgressHandle());
 
         edu.umd.cs.findbugs.BugReporter textReporter = new NbBugReporter(this.findBugsResult,
                 progressCallback);
 
-        textReporter.setPriorityThreshold(BugReporter.NORMAL);
+        // XXX should this be configurable?
+        textReporter.setPriorityThreshold(Priorities.NORMAL_PRIORITY);
 
         FindBugs2 engine = new FindBugs2();
         engine.setProject(findBugsProject);
@@ -103,7 +112,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
                     Filter filter = new Filter(includeFileName);
                     textReporter = new FilterBugReporter(textReporter, filter, true);
                 } catch (IOException ioe) {
-                    ErrorManager.getDefault().notify(ioe);
+                    LOG.log(Level.INFO, null, ioe);
                 }
             }
             String excludeFileName = findBugsSettingsProvider.getExcludeFilter();
@@ -112,7 +121,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
                     Filter filter = new Filter(excludeFileName);
                     textReporter = new FilterBugReporter(textReporter, filter, false);
                 } catch (IOException ioe) {
-                    ErrorManager.getDefault().notify(ioe);
+                    LOG.log(Level.INFO, null, ioe);
                 }
             }
         }
@@ -123,14 +132,15 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
 
         engine.setDetectorFactoryCollection(DetectorFactoryCollection.instance());
 
-        //        edu.umd.cs.findbugs.FindBugs findBugs = new edu.umd.cs.findbugs.FindBugs(textReporter,
-        //                findBugsProject);
         engine.setProgressCallback(progressCallback);
 
         //inhibt deep scanning (especially for j2ee projects...)
         engine.setScanNestedArchives(false);
 
         // Set analysis feature settings
+        // XXX should this be configurable?
+        engine.setAnalysisFeatureSettings(FindBugs.DEFAULT_EFFORT);
+        /* Probably better to just use a standard setting:
         List<AnalysisFeatureSetting> settings = new ArrayList<AnalysisFeatureSetting>();
         settings.add(new AnalysisFeatureSetting(
                 AnalysisFeatures.TRACK_VALUE_NUMBERS_IN_NULL_POINTER_ANALYSIS,
@@ -142,11 +152,10 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         settings.add(new AnalysisFeatureSetting(
                 AnalysisFeatures.MODEL_INSTANCEOF, true));
         settings.add(new AnalysisFeatureSetting(
-                AnalysisFeatures.NUM_BOOLEAN_ANALYSIS_PROPERTIES, true));
-        settings.add(new AnalysisFeatureSetting(
                 AnalysisFeatures.SKIP_HUGE_METHODS, false));
         engine.setAnalysisFeatureSettings(settings.toArray(
                 new AnalysisFeatureSetting[settings.size()]));
+         */
 
         // Run the analysis!
         try {
@@ -154,12 +163,12 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         } catch (NoClassesFoundToAnalyzeException ncftae) {
             // TODO - do something interesting here
             // TODO - add something to the result...
-            ncftae.printStackTrace();
+            LOG.log(Level.FINE, "coming from a " + getClass().getName(), ncftae);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOG.log(Level.INFO, null, ex);
             // TODO - do something interesting here
         } catch (InterruptedException iex) {
-            iex.printStackTrace();
+            LOG.log(Level.INFO, null, iex);
             // TODO - do something interesting here
         } finally {
             progressCallback.getProgressHandle().finish();

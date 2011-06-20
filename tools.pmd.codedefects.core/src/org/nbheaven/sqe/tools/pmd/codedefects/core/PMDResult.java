@@ -202,7 +202,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return getBugCount();
     }
 
-    public long getCodeDefactCount(CodeDefectSeverity severity) {
+    public long getCodeDefectCount(CodeDefectSeverity severity) {
         if (CodeDefectSeverity.INFO == severity) {
             return getBugCount();
         }

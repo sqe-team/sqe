@@ -31,6 +31,7 @@ import org.netbeans.spi.project.ProjectServiceProvider;
  */
 @ProjectServiceProvider(service=SQEInformationProvider.class, projectType={
     "org-netbeans-modules-apisupport-project",
+    "org-netbeans-modules-autoproject",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project",
     "org-netbeans-modules-maven"

@@ -53,6 +53,7 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
             File sourceRootF = FileUtil.toFile(sourceRoot);
             if (sourceRootF != null) {
                 // XXX this does not seem to suffice to suppress "unread field" on a field used from another class
+                LOG.log(Level.FINER, "addSourceDir: {0}", sourceRootF);
                 fibuProject.addSourceDir(sourceRootF.getAbsolutePath());
             }
         }
@@ -75,24 +76,33 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
                             fibuProject.addFile(kid.getAbsolutePath());
                         }
                     }
+                } else {
+                    LOG.log(Level.WARNING, "No such file {0}", clazz);
+                    return null;
                 }
+            } else {
+                LOG.log(Level.WARNING, "Bad or missing binary root {0} found for {1}", new Object[] {binaryRootU, sourceRoot});
+                return null;
             }
 
             ClassPath cp = ClassPath.getClassPath(sourceRoot, ClassPath.COMPILE);
             if (cp == null) {
-                return fibuProject;
+                LOG.log(Level.WARNING, "No compile CP found in {0}", sourceRoot);
+                return null;
             }
             for (ClassPath.Entry entry : cp.entries()) {
                 URL url = CompileOnSaveHelper.forClassPathEntry(entry.getURL()).binaryRoot(false);
                 File checkFile = FileUtil.archiveOrDirForURL(url);
                 if (checkFile != null && checkFile.exists()) {
+                    LOG.log(Level.FINER, "addAuxClasspathEntry: {0}", checkFile);
                     fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
                 } else {
-                    LOG.warning("Bad file on auxiliary classpath: " + checkFile);
+                    LOG.log(Level.WARNING, "Bad file on auxiliary classpath: {0}", checkFile);
                 }
             }
         } catch (Exception x) {
             LOG.log(Level.INFO, null, x);
+            return null;
         }
         return fibuProject;
     }

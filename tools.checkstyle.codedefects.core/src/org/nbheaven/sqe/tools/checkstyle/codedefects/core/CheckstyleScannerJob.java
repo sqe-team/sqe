@@ -41,6 +41,7 @@ import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Exceptions;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -81,13 +82,16 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             Properties properties = System.getProperties();
             if (settingsProvider != null) {
                 CheckstyleSettings checkstyleSettings = settingsProvider.getCheckstyleSettings();
-                checkStyleConfigFile = checkstyleSettings.getCheckstyleConfigurationFile();
-                checkStyleConfigURL = checkstyleSettings.getCheckstyleConfigurationURL();
-                properties = checkstyleSettings.getProperties();
-            } else {
+                if (checkstyleSettings != null) {
+                    checkStyleConfigFile = checkstyleSettings.getCheckstyleConfigurationFile();
+                    checkStyleConfigURL = checkstyleSettings.getCheckstyleConfigurationURL();
+                    properties = checkstyleSettings.getProperties();
+                }
+            }
+            if (checkStyleConfigFile == null) {
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
             }
-            if (null != checkStyleConfigFile) {
+            if (null != checkStyleConfigFile && checkStyleConfigFile.isData()) {
                 istream = checkStyleConfigFile.getInputStream();
             } else if (null != checkStyleConfigURL) {
                 istream = checkStyleConfigURL.openStream();
@@ -111,9 +115,12 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             } catch (CheckstyleException ce) {
                 // Fallback better exception handling necessary
                 checkStyleConfigFile = GlobalCheckstyleSettings.INSTANCE.getCheckstyleConfigurationFile();
-                istream = checkStyleConfigFile.getInputStream();
+                if (checkStyleConfigFile == null) {
+                    return;
+                }
+                InputSource inputSource = new InputSource(checkStyleConfigFile.getInputStream());
                 properties = GlobalCheckstyleSettings.INSTANCE.getProperties();
-                Configuration config = ConfigurationLoader.loadConfiguration(istream,
+                Configuration config = ConfigurationLoader.loadConfiguration(inputSource,
                         new PropertiesExpander(properties), true);
                 checker.setModuleClassLoader(Checker.class.getClassLoader());
                 checker.configure(config);

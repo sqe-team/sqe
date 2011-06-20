@@ -21,67 +21,67 @@ import edu.umd.cs.findbugs.config.UserPreferences;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.option.ConfigureDetectorsPanel;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.option.ConfigureFeaturesPanel;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
-
 import org.netbeans.api.project.Project;
-
-import org.netbeans.spi.project.ui.support.ProjectCustomizer;
-import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
-
 import org.openide.util.Lookup;
-
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
+import org.nbheaven.sqe.core.ui.Constants;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
+import org.openide.util.RequestProcessor;
 
 /**
  *
  * @author sven
  */
-public class PanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
-    private String name;
+@CompositeCategoryProvider.Registrations({
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-ant-freeform", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-apisupport-project", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-java-j2seproject", category=Constants.CUSTOMIZER_CATEGORY_ID),
+    @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-web-project", category=Constants.CUSTOMIZER_CATEGORY_ID)
+})
+public class PanelProvider implements CompositeCategoryProvider {
 
-    /** Creates a new instance of ProjectPanelProvider */
-    private PanelProvider(String name) {
-        this.name = name;
-    }
+    private static final RequestProcessor RP = new RequestProcessor(PanelProvider.class.getName());
 
     public Category createCategory(Lookup context) {
-        return ProjectCustomizer.Category.create(this.name, "FindBugs", null);
+        return Category.create("FindBugs", "FindBugs", null);
     }
 
-    public JComponent createComponent(Category category, Lookup context) {
+    public JComponent createComponent(final Category category, Lookup context) {
         Project p = context.lookup(Project.class);
         final FindBugsSettingsProvider fibuSettingsProvider = p.getLookup().lookup(FindBugsSettingsProvider.class);
-
-        final UserPreferences findBugsSettings = fibuSettingsProvider.getFindBugsSettings();
-        
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-
-        JTabbedPane jTabbedPane = new JTabbedPane();
-        final ConfigureDetectorsPanel detectorsPanel = new ConfigureDetectorsPanel(findBugsSettings);
-        jTabbedPane.addTab("Configure Detectors", detectorsPanel);
-
-        JPanel featuresPanel = new ConfigureFeaturesPanel();
-        jTabbedPane.addTab("Configure Features", featuresPanel);
-        panel.add(jTabbedPane, BorderLayout.CENTER);
-
-        category.setOkButtonListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                detectorsPanel.applyDetectorChangesToUserPreferences(findBugsSettings);
-                fibuSettingsProvider.setFindBugsSettings(findBugsSettings);
+        panel.add(new JLabel("Loading..."), BorderLayout.CENTER); // SQE-42
+        RP.post(new Runnable() {
+            public void run() {
+                final UserPreferences findBugsSettings = fibuSettingsProvider.getFindBugsSettings();
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        JTabbedPane jTabbedPane = new JTabbedPane();
+                        final ConfigureDetectorsPanel detectorsPanel = new ConfigureDetectorsPanel(findBugsSettings);
+                        jTabbedPane.addTab("Configure Detectors", detectorsPanel);
+                        JPanel featuresPanel = new ConfigureFeaturesPanel();
+                        jTabbedPane.addTab("Configure Features", featuresPanel);
+                        panel.add(jTabbedPane, BorderLayout.CENTER);
+                        category.setOkButtonListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                detectorsPanel.applyDetectorChangesToUserPreferences(findBugsSettings);
+                                fibuSettingsProvider.setFindBugsSettings(findBugsSettings);
+                            }
+                        });
+                    }
+                });
             }
-        });        
-        
+        });
         return panel;
     }
 
-    public static PanelProvider createExample() {
-        return new PanelProvider("Example");
-    }
 }

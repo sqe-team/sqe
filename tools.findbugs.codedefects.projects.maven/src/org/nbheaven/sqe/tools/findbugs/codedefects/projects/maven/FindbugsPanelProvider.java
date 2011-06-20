@@ -20,20 +20,22 @@ package org.nbheaven.sqe.tools.findbugs.codedefects.projects.maven;
 
 import javax.swing.JComponent;
 import org.nbheaven.sqe.core.maven.utils.ModelHandleProxy;
-import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.nbheaven.sqe.core.ui.Constants;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.CompositeCategoryProvider;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author mkleint
  */
-public class FindbugsPanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
+@CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-maven", category=Constants.CUSTOMIZER_CATEGORY_ID)
+public class FindbugsPanelProvider implements CompositeCategoryProvider {
 
     public Category createCategory(Lookup lkp) {
         ModelHandleProxy proxy = ModelHandleProxy.create(lkp);
         assert proxy != null;
-        return ProjectCustomizer.Category.create("Findbugs", "Findbugs", null);
+        return Category.create("Findbugs", "Findbugs", null);
     }
 
     public JComponent createComponent(Category ctgr, Lookup lkp) {
