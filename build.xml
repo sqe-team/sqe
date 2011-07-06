@@ -27,7 +27,7 @@
                 <include name="*.nbm"/>
             </fileset>
             <updaterjar>
-                <resources refid="updater.jar"/>
+                <pathelement location="${netbeans.dest.dir}/platform/modules/ext/updater.jar"/>
             </updaterjar>
         </makeupdatedesc>
     </target>
