@@ -19,7 +19,6 @@ package org.nbheaven.sqe.core.maven.utils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -28,28 +27,27 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.model.ReportSet;
-import org.apache.maven.project.DefaultProjectBuilderConfiguration;
+import org.apache.maven.model.building.ModelBuildingRequest;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.MavenProjectBuildingResult;
-import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.project.ProjectBuildingResult;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
-import org.netbeans.modules.maven.api.NbMavenProject;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.PluginPropertyUtils;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
+import org.netbeans.modules.maven.embedder.MavenEmbedder;
 import org.netbeans.modules.maven.embedder.NBPluginParameterExpressionEvaluator;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
-import org.openide.util.NbCollections;
 
 /**
  *
@@ -113,24 +111,14 @@ public final class MavenUtilities {
      * @return list of files in local repository
      */
     public static List<File> findDependencyArtifacts(Project project, String pluginGroupId, String pluginArtifactId, boolean includePluginArtifact) {
-        try {
-            return doFindDependencyArtifacts(project, pluginGroupId, pluginArtifactId, includePluginArtifact);
-        } catch (LinkageError e) {
-            // XXX would need to be rewritten for Maven 3 in NB 7.0.
-            // CheckstyleSettingsProviderImpl and MavenPmdSettingsProvider need to find resources inside dependencies of configured plugins.
-            // MavenProject.classRealm is not useful since these are not likely to be extension plugins.
-            return Collections.emptyList();
-        }
-    }
-    private static List<File> doFindDependencyArtifacts(Project project, String pluginGroupId, String pluginArtifactId, boolean includePluginArtifact) {
         List<File> cpFiles = new ArrayList<File>();
         final NbMavenProject p = project.getLookup().lookup(NbMavenProject.class);
         final MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+        MavenProject mp = p.getMavenProject();
         if (includePluginArtifact) {
-            //TODO check also getReportArtifacts()?
             Set<Artifact> arts = new HashSet<Artifact>();
-            arts.addAll(NbCollections.checkedSetByFilter(p.getMavenProject().getReportArtifacts(), Artifact.class, true));
-            arts.addAll(NbCollections.checkedSetByFilter(p.getMavenProject().getPluginArtifacts(), Artifact.class, true));
+            arts.addAll(mp.getReportArtifacts());
+            arts.addAll(mp.getPluginArtifacts());
             for (Artifact a : arts) {
                 if (pluginArtifactId.equals(a.getArtifactId()) &&
                     pluginGroupId.equals(a.getGroupId())) {
@@ -141,59 +129,55 @@ public final class MavenUtilities {
                     }
                     if (!f.exists()) {
                         try {
-                            online.resolve(a, p.getMavenProject().getRemoteArtifactRepositories(), online.getLocalRepository());
+                            online.resolve(a, mp.getRemoteArtifactRepositories(), online.getLocalRepository());
                         } catch (ArtifactResolutionException ex) {
-                            ex.printStackTrace();
-//                                        Exceptions.printStackTrace(ex);
+                            Exceptions.printStackTrace(ex);
                         } catch (ArtifactNotFoundException ex) {
-                            ex.printStackTrace();
-//                            Exceptions.printStackTrace(ex);
+                            Exceptions.printStackTrace(ex);
                         }
                     }
                     if (f.exists()) {
                         cpFiles.add(f);
                         try {
-                            MavenProjectBuilder mpb = (MavenProjectBuilder) online.getPlexusContainer().lookup(MavenProjectBuilder.class);
-                            DefaultProjectBuilderConfiguration dpbc = new DefaultProjectBuilderConfiguration();
-                            dpbc.setLocalRepository(online.getLocalRepository());
-                            MavenProject mp = mpb.buildFromRepository(a, p.getMavenProject().getRemoteArtifactRepositories(), online.getLocalRepository());
-                            if (mp != null) {
-                                File pom = new File(f.getParentFile(), f.getName().replace(".jar", ".pom"));
-                                MavenProjectBuildingResult res = mpb.buildProjectWithDependencies(pom, dpbc);
-                                mp = res.getProject();
-                                @SuppressWarnings("unchecked")
-                                Set<Artifact> depArts = mp.getDependencyArtifacts();
-                                for (Artifact depA : depArts) {
-                                    File df = FileUtil.normalizeFile(new File(new File(online.getLocalRepository().getBasedir()), online.getLocalRepository().pathOf(depA)));
+                            ProjectBuildingRequest req = new DefaultProjectBuildingRequest();
+                            req.setRemoteRepositories(mp.getRemoteArtifactRepositories());
+                            req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
+                            req.setSystemProperties(online.getSystemProperties());
+                            ProjectBuildingResult res = online.buildProject(a, req);
+                            MavenProject mp2 = res.getProject();
+                            if (mp2 != null) {
+                                // XXX this is not really right, but mp.dependencyArtifacts = null for some reason
+                                for (Dependency dep : mp2.getDependencies()) {
+                                    Artifact a2 = online.createArtifact(dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), "jar");
+                                    online.resolve(a2, mp.getRemoteArtifactRepositories(), online.getLocalRepository());
+                                    File df = a2.getFile();
                                     if (df.exists()) {
                                         cpFiles.add(df);
                                     }
                                 }
                             }
-                        } catch (ProjectBuildingException ex) {
-                            Exceptions.printStackTrace(ex);
-                        } catch (ComponentLookupException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (Exception x) {
+                            Exceptions.printStackTrace(x);
                         }
                     }
                 }
             }
             
         }
-        List<Plugin> plugins = NbCollections.checkedListByCopy(p.getMavenProject().getBuildPlugins(), Plugin.class, true);
+        List<Plugin> plugins = mp.getBuildPlugins();
         for (Plugin plug : plugins) {
             if (pluginArtifactId.equals(plug.getArtifactId()) &&
                     pluginGroupId.equals(plug.getGroupId())) {
                 try {
-                    List<Dependency> deps = NbCollections.checkedListByCopy(plug.getDependencies(), Dependency.class, true);
-                    ArtifactFactory artifactFactory = (ArtifactFactory) online.getPlexusContainer().lookup(ArtifactFactory.class);
+                    List<Dependency> deps = plug.getDependencies();
+                    ArtifactFactory artifactFactory = online.getPlexus().lookup(ArtifactFactory.class);
                     for (Dependency d : deps) {
                         final Artifact projectArtifact = artifactFactory.createArtifactWithClassifier(d.getGroupId(), d.getArtifactId(), d.getVersion(), d.getType(), d.getClassifier());
                         String localPath = online.getLocalRepository().pathOf(projectArtifact);
                         File f = FileUtil.normalizeFile(new File(online.getLocalRepository().getBasedir(), localPath));
                         if (!f.exists()) {
                             try {
-                                online.resolve(projectArtifact, p.getMavenProject().getRemoteArtifactRepositories(), online.getLocalRepository());
+                                online.resolve(projectArtifact, mp.getRemoteArtifactRepositories(), online.getLocalRepository());
                             } catch (ArtifactResolutionException ex) {
                                 ex.printStackTrace();
     //                                        Exceptions.printStackTrace(ex);
