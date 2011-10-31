@@ -2,11 +2,7 @@
 <project name="Software Quality Environment" basedir=".">
     <import file="nbproject/build-impl.xml"/>
 
-    <target name="build-full-sqe-updatecenter" depends="-init" description="Create complete NBM release including wrappers.">
-        <!-- https://issues.apache.org/bugzilla/show_bug.cgi?id=30569 means in Ant 1.8.0 we would want dir="wrapper" allownativebasedir="true" -->
-        <ant antfile="wrapper/build.xml" target="nbms" inheritall="false"/>
-        <antcall target="nbms"/>
-
+    <target name="build-full-sqe-updatecenter" depends="nbms" description="Create complete NBM release including wrappers.">
         <property name="build.updates.dir.sqe" location="build/updates"/>
         <property name="build.updates.dir.wrapper" location="wrapper/build/updates"/>
         <property name="build.updates.dir.full" location="build/full-sqe-updatecenter"/>
@@ -32,10 +28,7 @@
         </makeupdatedesc>
     </target>
 
-    <target name="build-full-sqe-dist" depends="-init" description="Create complete cluster and ZIP including wrappers.">
-        <ant antfile="wrapper/build.xml" target="build" inheritall="false"/>
-        <antcall target="build"/>
-
+    <target name="build-full-sqe-dist" depends="build" description="Create complete cluster and ZIP including wrappers.">
         <property name="build.cluster.dir.sqe" location="build/cluster"/>
         <property name="build.cluster.dir.wrapper" location="wrapper/build/cluster"/>
         <property name="build.cluster.dir.full" location="build/full-sqe-cluster"/>
