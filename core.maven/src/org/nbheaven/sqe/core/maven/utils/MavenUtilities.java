@@ -28,7 +28,6 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
@@ -79,25 +78,7 @@ public final class MavenUtilities {
 
     @SuppressWarnings("deprecation")
     static boolean definesReportPlugin(MavenProject mp, String groupId, String artifactId) {
-        for (ReportPlugin rp : mp.getReportPlugins()) {
-            if (groupId.equals(rp.getGroupId()) && artifactId.equals(rp.getArtifactId())) {
-                return true;
-            }
-        }
-        for (Plugin plugin : mp.getBuildPlugins()) {
-            if (groupId.equals(plugin.getGroupId()) && artifactId.equals(plugin.getArtifactId())) {
-                return true;
-            }
-        }
-        if (mp.getPluginManagement() != null) {
-            for (Plugin plug : mp.getPluginManagement().getPlugins()) {
-                if (groupId.equals(plug.getGroupId()) &&
-                    artifactId.equals(plug.getArtifactId())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return PluginPropertyUtils.getPluginVersion(mp, groupId, artifactId) != null || PluginPropertyUtils.getReportPluginVersion(mp, groupId, artifactId) != null;
     }
 
 //    private static final RequestProcessor RP = new RequestProcessor("Download plugin classpath", 1);
