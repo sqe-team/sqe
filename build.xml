@@ -2,52 +2,10 @@
 <project name="Software Quality Environment" basedir=".">
     <import file="nbproject/build-impl.xml"/>
 
-    <target name="build-full-sqe-updatecenter" depends="-init" description="Create complete NBM release including wrappers.">
-        <!-- https://issues.apache.org/bugzilla/show_bug.cgi?id=30569 means in Ant 1.8.0 we would want dir="wrapper" allownativebasedir="true" -->
-        <ant antfile="wrapper/build.xml" target="nbms" inheritall="false"/>
-        <antcall target="nbms"/>
-
-        <property name="build.updates.dir.sqe" location="build/updates"/>
-        <property name="build.updates.dir.wrapper" location="wrapper/build/updates"/>
-        <property name="build.updates.dir.full" location="build/full-sqe-updatecenter"/>
-
-        <copy todir="${build.updates.dir.full}">
-            <fileset dir="${build.updates.dir.wrapper}">
-                <include name="*.nbm"/>
-            </fileset>
-            <fileset dir="${build.updates.dir.sqe}">
-                <include name="*.nbm"/>
-            </fileset>
+    <target name="build-full-sqe-updatecenter" depends="nbms" description="For Hudson job compatibility only; output dir is hardcoded in update center URL.">
+        <copy todir="build/full-sqe-updatecenter">
+            <fileset dir="build/updates"/>
         </copy>
-
-        <mkdir dir="${build.updates.dir.full}"/>
-
-        <makeupdatedesc desc="${build.updates.dir.full}/updates.xml" distbase="." automaticgrouping="true" uselicenseurl="true">
-            <fileset dir="${build.updates.dir.full}">
-                <include name="*.nbm"/>
-            </fileset>
-            <updaterjar>
-                <resources refid="updater.jar"/>
-            </updaterjar>
-        </makeupdatedesc>
-    </target>
-
-    <target name="build-full-sqe-dist" depends="-init" description="Create complete cluster and ZIP including wrappers.">
-        <ant antfile="wrapper/build.xml" target="build" inheritall="false"/>
-        <antcall target="build"/>
-
-        <property name="build.cluster.dir.sqe" location="build/cluster"/>
-        <property name="build.cluster.dir.wrapper" location="wrapper/build/cluster"/>
-        <property name="build.cluster.dir.full" location="build/full-sqe-cluster"/>
-
-        <copy todir="${build.cluster.dir.full}">
-            <fileset dir="${build.cluster.dir.wrapper}"/>
-            <fileset dir="${build.cluster.dir.sqe}"/>
-        </copy>
-
-        <zip destfile="build/sqe.zip" compress="true">
-            <fileset dir="${build.cluster.dir.full}"/>
-        </zip>
     </target>
     
 </project>

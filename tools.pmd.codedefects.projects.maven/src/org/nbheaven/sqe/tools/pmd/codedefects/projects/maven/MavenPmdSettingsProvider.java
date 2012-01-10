@@ -94,7 +94,7 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
                     }
-                } else {
+                } else if (!setString.startsWith("/")) {
                     try {
                         URL url = new URL(setString);
                         toRet.addRuleSet(rsf.createRuleSet(url.openStream()));

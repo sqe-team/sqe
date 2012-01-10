@@ -183,6 +183,7 @@ public final class CompileOnSaveHelper {
             }
         }
         if (tmp == null) {
+            // XXX use Places.getCacheSubdirectory("CompileOnSaveHelper") in NB 7.1
             tmp = new File(System.getProperty("netbeans.user"), "var/cache/CompileOnSaveHelper");
         }
         return new File(tmp, "CompileOnSaveHelper");

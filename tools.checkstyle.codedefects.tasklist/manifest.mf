@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.tools.checkstyle.codedefects.tasklist
 OpenIDE-Module-Layer: org/nbheaven/sqe/tools/checkstyle/codedefects/tasklist/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/tools/checkstyle/codedefects/tasklist/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.1
 OpenIDE-Module-Java-Dependencies: Java > 1.5

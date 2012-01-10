@@ -65,11 +65,11 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
                     continue;
                 }
                 Map<Object, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
-                List<Task> tasks = new LinkedList<Task>();
                 CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(file);
                 Collection<AuditEvent> auditEvents = instanceByClass.get(key);
-                tasks.addAll(getTasks(auditEvents, file));
-                callback.setTasks(file, tasks);
+                if (auditEvents != null) { // SQE-57
+                    callback.setTasks(file, new LinkedList<Task>(getTasks(auditEvents, file)));
+                }
             }
         }
         
