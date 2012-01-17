@@ -22,32 +22,37 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
-import java.util.logging.Logger;
+import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.result.ResultPanel;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-/**
- * Top component which displays something.
- */
+@ConvertAsProperties(dtd="-//org.nbheaven.sqe.tools.findbugs.codedefects.core.ui//FindBugsTopComponent//EN", autostore=false)
+@TopComponent.Description(
+    preferredID=FindBugsTopComponent.PREFERRED_ID,
+    iconBase="org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png",
+    persistenceType=TopComponent.PERSISTENCE_ALWAYS
+)
+@TopComponent.Registration(mode="output", position=3212, openAtStartup=false)
+@ActionID(category="Window", id="org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.FindBugsTopComponent")
+@TopComponent.OpenActionRegistration(displayName="#Actions/Window/org-nbheaven-sqe-tools-findbugs-codedefects-core-ui-FindBugsAction.instance", preferredID=FindBugsTopComponent.PREFERRED_ID)
+@ActionReference(path="Menu/Window/Quality", position=200)
 public final class FindBugsTopComponent extends TopComponent {
 
-    private static FindBugsTopComponent instance;
-    /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png";
-    private static final String PREFERRED_ID = "FindBugsTopComponent";
+    static final String PREFERRED_ID = "FindBugsTopComponent";
     private SQEManagerListener sqeManagerListener;
     private FindBugsSession activeSession = null;
     private final JComponent emptyComponent;
@@ -61,8 +66,7 @@ public final class FindBugsTopComponent extends TopComponent {
 
         setName(NbBundle.getMessage(FindBugsTopComponent.class, "CTL_FindBugsTopComponent"));
         setToolTipText(NbBundle.getMessage(FindBugsTopComponent.class, "HINT_FindBugsTopComponent"));
-        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
-//        putClientProperty("netbeans.winsys.tc.keep_preferred_size_when_slided_in", Boolean.TRUE);
+//        putClientProperty(PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, true);
     }
 
     /** This method is called from within the constructor to
@@ -99,39 +103,11 @@ public final class FindBugsTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
 
     /**
-     * Gets default instance. Do not use directly: reserved for *.settings files only,
-     * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
-     * To obtain the singleton instance, use {@link #findInstance}.
-     */
-    public static synchronized FindBugsTopComponent getDefault() {
-        if (instance == null) {
-            instance = new FindBugsTopComponent();
-        }
-        return instance;
-    }
-
-    /**
-     * Obtain the FindBugsTopComponent instance. Never call {@link #getDefault} directly!
+     * Obtain the FindBugsTopComponent instance.
      */
     public static synchronized FindBugsTopComponent findInstance() {
         TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-        if (win == null) {
-            Logger.getLogger(FindBugsTopComponent.class.getName()).warning(
-                    "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
-            return getDefault();
-        }
-        if (win instanceof FindBugsTopComponent) {
-            return (FindBugsTopComponent) win;
-        }
-        Logger.getLogger(FindBugsTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
-        return getDefault();
-    }
-
-    @Override
-    public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
+        return win instanceof FindBugsTopComponent ? (FindBugsTopComponent) win : new FindBugsTopComponent();
     }
 
     @Override
@@ -146,15 +122,11 @@ public final class FindBugsTopComponent extends TopComponent {
         setActiveSession(null);
     }
 
-    /** replaces this in object stream */
-    @Override
-    public Object writeReplace() {
-        return new ResolvableHelper();
+    void writeProperties(Properties p) {
+        p.setProperty("version", "1.0");
     }
 
-    @Override
-    protected String preferredID() {
-        return PREFERRED_ID;
+    void readProperties(Properties p) {
     }
 
     private void setActiveSessionByProject(final Project project) {
@@ -213,12 +185,4 @@ public final class FindBugsTopComponent extends TopComponent {
         }
     }
 
-    final static class ResolvableHelper implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        public Object readResolve() {
-            return FindBugsTopComponent.getDefault();
-        }
-    }
 }
