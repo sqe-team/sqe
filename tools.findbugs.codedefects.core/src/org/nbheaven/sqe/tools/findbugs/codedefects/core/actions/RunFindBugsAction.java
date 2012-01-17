@@ -31,6 +31,10 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.FindBugsTopComponent;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.netbeans.api.project.Project;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -43,6 +47,12 @@ import org.openide.util.Utilities;
  * Action to trigger findbugs run on actual project
  * @author Florian Vogler
  */
+@ActionID(id = "org.nbheaven.sqe.tools.findbugs.codedefects.core.actions.RunFindBugsAction", category = "Quality")
+@ActionRegistration(displayName = "#LBL_RunFindBugsAction")
+@ActionReferences({
+    @ActionReference(path = "Menu/Quality/CodeDefects", name = "RunFindBugsAction", position = 200),
+    @ActionReference(path = "SQE/Projects/Actions/CodeDefects", name = "RunFindBugsAction", position = 200)
+})
 public class RunFindBugsAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
 
     private Lookup context;
