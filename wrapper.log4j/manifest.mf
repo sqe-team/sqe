@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.wrapper.log4j
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/log4j/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.2
-OpenIDE-Module-Java-Dependencies: Java > 1.5
+OpenIDE-Module-Java-Dependencies: Java > 1.7

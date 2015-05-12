@@ -4,4 +4,4 @@ OpenIDE-Module: org.nbheaven.sqe.wrapper.findbugs.contrib
 OpenIDE-Module-Layer: org/nbheaven/sqe/wrapper/findbugs/contrib/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/findbugs/contrib/Bundle.properties
 OpenIDE-Module-Specification-Version: 4.0.0
-OpenIDE-Module-Java-Dependencies: Java > 1.5
+OpenIDE-Module-Java-Dependencies: Java > 1.7

@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.wrapper.dom4j
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/dom4j/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.6.1
-OpenIDE-Module-Java-Dependencies: Java > 1.5
+OpenIDE-Module-Java-Dependencies: Java > 1.7

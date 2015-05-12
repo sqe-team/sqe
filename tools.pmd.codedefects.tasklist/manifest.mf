@@ -4,4 +4,4 @@ OpenIDE-Module: org.nbheaven.sqe.tools.pmd.codedefects.tasklist
 OpenIDE-Module-Layer: org/nbheaven/sqe/tools/pmd/codedefects/tasklist/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/tools/pmd/codedefects/tasklist/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.1
-OpenIDE-Module-Java-Dependencies: Java > 1.5
+OpenIDE-Module-Java-Dependencies: Java > 1.7

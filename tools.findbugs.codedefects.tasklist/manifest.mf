@@ -4,4 +4,4 @@ OpenIDE-Module: org.nbheaven.sqe.tools.findbugs.codedefects.tasklist
 OpenIDE-Module-Layer: org/nbheaven/sqe/tools/findbugs/codedefects/tasklist/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/tools/findbugs/codedefects/tasklist/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
-OpenIDE-Module-Java-Dependencies: Java > 1.5
+OpenIDE-Module-Java-Dependencies: Java > 1.7
