@@ -31,6 +31,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
+import org.openide.util.Lookup;
 
 /**
  * Panel for PMD rules
@@ -74,6 +75,7 @@ public class ConfigureRulesPanel extends javax.swing.JPanel {
 
         Collection<Rule> rules = new ArrayList<Rule>();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.setClassLoader(Lookup.getDefault().lookup(ClassLoader.class));
         try {
             Iterator<RuleSet> iterator = ruleSetFactory.getRegisteredRuleSets();
 

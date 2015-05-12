@@ -17,7 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<project name="org.nbheaven.sqe.wrapper.google.collections" default="netbeans" basedir=".">
-    <description>Builds, tests, and runs the project org.nbheaven.sqe.wrapper.google.collections.</description>
+<project name="org.nbheaven.sqe.wrapper.guava" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project org.nbheaven.sqe.wrapper.guava.</description>
     <import file="nbproject/build-impl.xml"/>
 </project>

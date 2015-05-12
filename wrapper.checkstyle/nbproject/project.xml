@@ -41,6 +41,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.antlr.runtime</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>4.3</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.nbheaven.sqe.wrapper.commons.beanutils.core</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -49,11 +57,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.google.collections</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.wrapper.guava</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>1.0</specification-version>
+                        <specification-version>18.0</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
@@ -61,6 +69,7 @@
                 <package>com.puppycrawl.tools.checkstyle</package>
                 <package>com.puppycrawl.tools.checkstyle.api</package>
                 <package>com.puppycrawl.tools.checkstyle.checks</package>
+                <package>com.puppycrawl.tools.checkstyle.checks.annotation</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.blocks</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.coding</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.design</package>
@@ -72,6 +81,7 @@
                 <package>com.puppycrawl.tools.checkstyle.checks.metrics</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.modifier</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.naming</package>
+                <package>com.puppycrawl.tools.checkstyle.checks.regexp</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.sizes</package>
                 <package>com.puppycrawl.tools.checkstyle.checks.whitespace</package>
                 <package>com.puppycrawl.tools.checkstyle.doclets</package>

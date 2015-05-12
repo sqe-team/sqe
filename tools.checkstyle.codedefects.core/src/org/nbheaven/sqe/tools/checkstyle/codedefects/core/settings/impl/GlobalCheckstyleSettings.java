@@ -69,7 +69,7 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
             if (null == possibleCheckstyleConfigFile || !possibleCheckstyleConfigFile.isValid()) {
                 try {
                     OutputStream os = new FileOutputStream(new File(FileUtil.toFile(targetDir), "checkstyle.xml"));
-                    URL checkstyleDefaultURL = CheckstyleSettingsProvider.class.getResource("/org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/sun_checks.xml");
+                    URL checkstyleDefaultURL = CheckstyleSettingsProvider.class.getResource("/org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/google_checks.xml");
                     InputStream is = checkstyleDefaultURL.openStream();
                     FileUtil.copy(is, os);
                     checkstyleConfigFile = targetDir.getFileObject("checkstyle.xml");
