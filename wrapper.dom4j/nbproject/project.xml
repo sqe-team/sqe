@@ -57,6 +57,7 @@
                 <package>org.dom4j.util</package>
                 <package>org.dom4j.xpath</package>
                 <package>org.dom4j.xpp</package>
+                <package>org.jaxen.dom4j</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/dom4j.jar</runtime-relative-path>
