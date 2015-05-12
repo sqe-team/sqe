@@ -2,10 +2,13 @@
 <project name="Software Quality Environment" basedir=".">
     <import file="nbproject/build-impl.xml"/>
 
-    <target name="build-full-sqe-updatecenter" depends="nbms" description="For Hudson job compatibility only; output dir is hardcoded in update center URL.">
-        <copy todir="build/full-sqe-updatecenter">
-            <fileset dir="build/updates"/>
-        </copy>
+    <target name="dronio" depends="nbms" description="Build target for drone.io ci build">
+        <zip destfile="build/sqe-cluster.zip">
+            <zipfileset dir="build/cluster" prefix="sqe"/>
+        </zip>
+        <zip destfile="build/sqe-updatecenter.zip">
+            <zipfileset dir="build/updates" prefix="updates"/>
+        </zip>
     </target>
     
 </project>
