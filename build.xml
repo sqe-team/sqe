@@ -2,7 +2,7 @@
 <project name="Software Quality Environment" basedir=".">
     <import file="nbproject/build-impl.xml"/>
 
-    <target name="dronio" depends="nbms" description="Build target for drone.io ci build">
+    <target name="drone.io" depends="nbms" description="Build target for drone.io ci build">
         <zip destfile="build/sqe-cluster.zip">
             <zipfileset dir="build/cluster" prefix="sqe"/>
         </zip>
