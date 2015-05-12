@@ -66,7 +66,7 @@ public class FindBugsQualityProvider extends AbstractQualityProvider {
     }
 
     public Icon getIcon() {
-        return new ImageIcon(ImageUtilities.loadImage("edu/umd/cs/findbugs/gui/bug.png"));
+        return new ImageIcon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug.png"));
     }
 
     public Class<? extends QualitySession> getQualitySessionClass() {

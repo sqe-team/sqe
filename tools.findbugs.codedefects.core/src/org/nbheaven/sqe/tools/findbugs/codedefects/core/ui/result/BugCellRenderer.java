@@ -63,14 +63,14 @@ class BugCellRenderer extends DefaultTreeCellRenderer {
 
     private BugCellRenderer() {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        bugGroupIcon = new ImageIcon(classLoader.getResource("edu/umd/cs/findbugs/gui/bug.png"));
+        bugGroupIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug.png"));
         packageIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/package.gif"));
-        bugIcon = new ImageIcon(classLoader.getResource("edu/umd/cs/findbugs/gui/bug2.png"));
+        bugIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug2.png"));
         classIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/class.gif"));
-        methodIcon = new ImageIcon(classLoader.getResource("edu/umd/cs/findbugs/gui/method.png"));
-        fieldIcon = new ImageIcon(classLoader.getResource("edu/umd/cs/findbugs/gui/field.png"));
-        localVariableIcon = new ImageIcon(classLoader.getResource("edu/umd/cs/findbugs/gui/field.png")); //TODO find icon
-        sourceFileIcon = new ImageIcon(classLoader.getResource("edu/umd/cs/findbugs/gui/sourcefile.png"));
+        methodIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/method.png"));
+        fieldIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/field.png"));
+        localVariableIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/field.png")); //TODO find icon
+        sourceFileIcon = new ImageIcon(classLoader.getResource("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/sourcefile.png"));
     }
 
     /**

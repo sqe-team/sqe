@@ -18,6 +18,8 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import edu.umd.cs.findbugs.AnalysisError;
+import edu.umd.cs.findbugs.BugCollection;
+import edu.umd.cs.findbugs.SortedBugCollection;
 import edu.umd.cs.findbugs.TextUIBugReporter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,19 +32,27 @@ final class NbBugReporter extends TextUIBugReporter {
 
     private static final Logger LOG = Logger.getLogger(NbBugReporter.class.getName());
 
-    private FindBugsResult findbugsResult;
-    private NbFindBugsProgress progressCallback;
+    private final FindBugsResult findbugsResult;
+    private final NbFindBugsProgress progressCallback;
+    private final SortedBugCollection bugCollection = new SortedBugCollection();
 
-    NbBugReporter(FindBugsResult findbugsResult,
-            NbFindBugsProgress progressCallback) {
+    NbBugReporter(FindBugsResult findbugsResult, NbFindBugsProgress progressCallback) {
         this.progressCallback = progressCallback;
         this.findbugsResult = findbugsResult;
     }
 
+    @Override
     protected void doReportBug(edu.umd.cs.findbugs.BugInstance bugInstance) {
         findbugsResult.add(bugInstance);
     }
 
+    @Override
+    public BugCollection getBugCollection() {
+        System.err.println("Call to getBugCollection");
+        return bugCollection;
+    }
+
+    @Override
     public void finish() {
     }
 
@@ -50,16 +60,18 @@ final class NbBugReporter extends TextUIBugReporter {
         progressCallback.getProgressHandle().progress("Scanning " + javaClass.getClassName());
     }
 
-    public void observeClass(
-            edu.umd.cs.findbugs.classfile.ClassDescriptor classDescriptor) {
+    @Override
+    public void observeClass(edu.umd.cs.findbugs.classfile.ClassDescriptor classDescriptor) {
         progressCallback.getProgressHandle().progress("Scanning " + classDescriptor.getClassName());
     }
 
-    public @Override void reportAnalysisError(AnalysisError error) {
+    @Override
+    public void reportAnalysisError(AnalysisError error) {
         LOG.log(Level.INFO, error.getMessage(), error.getException());
     }
 
-    public @Override void reportMissingClass(String message) {
+    @Override
+    public void reportMissingClass(String message) {
         /* XXX printed for javax.annotation.NonNull on every run; not obviously helpful:
         StatusDisplayer.getDefault().setStatusText("Missing class: " + message);
          */

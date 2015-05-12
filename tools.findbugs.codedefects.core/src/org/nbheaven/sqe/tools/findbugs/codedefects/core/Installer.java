@@ -18,6 +18,8 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
+import edu.umd.cs.findbugs.Plugin;
+import edu.umd.cs.findbugs.PluginException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,10 +29,12 @@ import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 class Installer {
 
-    private Installer() {}
+    private Installer() {
+    }
 
     private static FileChangeListener updater;
 
@@ -47,15 +51,13 @@ class Installer {
     }
 
     private static void updatePluginList(FileObject fo) {
-        Collection<URL> urls = new ArrayList<URL>();
         for (FileObject pluginsFileObject : fo.getChildren()) {
             Object jar = pluginsFileObject.getAttribute("jar");
-            urls.add((URL) jar);
-        }
-        try {
-            DetectorFactoryCollection.rawInstance().setPluginList(urls.toArray(new URL[urls.size()]));
-        } catch (IllegalStateException x) {
-            // SQE-41: can't do anything about it?
+            try {
+                Plugin.addCustomPlugin((URL) jar);
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 

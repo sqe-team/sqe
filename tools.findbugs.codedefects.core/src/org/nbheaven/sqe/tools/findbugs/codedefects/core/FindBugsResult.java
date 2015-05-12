@@ -65,13 +65,13 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
                 return result.getInstanceByPackage(coreBugsOnly);
             }
         },
-        CATEGORY("HINT_VIEW_BY_CATEGORY", "edu/umd/cs/findbugs/gui/bug.png") {
+        CATEGORY("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug.png") {
 
             public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByCategory(coreBugsOnly);
             }
         },
-        TYPE("HINT_VIEW_BY_CATEGORY", "edu/umd/cs/findbugs/gui/bug2.png") {
+        TYPE("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug2.png") {
 
             public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByType(coreBugsOnly);

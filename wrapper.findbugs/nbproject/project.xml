@@ -73,12 +73,13 @@
                 <package>edu.umd.cs.findbugs.ba.interproc</package>
                 <package>edu.umd.cs.findbugs.ba.jsr305</package>
                 <package>edu.umd.cs.findbugs.ba.npe</package>
-                <package>edu.umd.cs.findbugs.ba.npe2</package>
                 <package>edu.umd.cs.findbugs.ba.obl</package>
-                <package>edu.umd.cs.findbugs.ba.rta</package>
                 <package>edu.umd.cs.findbugs.ba.type</package>
                 <package>edu.umd.cs.findbugs.ba.vna</package>
                 <package>edu.umd.cs.findbugs.bcel</package>
+                <package>edu.umd.cs.findbugs.bcel.generic</package>
+                <package>edu.umd.cs.findbugs.bugReporter</package>
+                <package>edu.umd.cs.findbugs.charsets</package>
                 <package>edu.umd.cs.findbugs.classfile</package>
                 <package>edu.umd.cs.findbugs.classfile.analysis</package>
                 <package>edu.umd.cs.findbugs.classfile.engine</package>
@@ -86,7 +87,7 @@
                 <package>edu.umd.cs.findbugs.classfile.engine.bcel</package>
                 <package>edu.umd.cs.findbugs.classfile.impl</package>
                 <package>edu.umd.cs.findbugs.cloud</package>
-                <package>edu.umd.cs.findbugs.cloud.db</package>
+                <package>edu.umd.cs.findbugs.cloud.username</package>
                 <package>edu.umd.cs.findbugs.config</package>
                 <package>edu.umd.cs.findbugs.detect</package>
                 <package>edu.umd.cs.findbugs.filter</package>
@@ -97,12 +98,14 @@
                 <package>edu.umd.cs.findbugs.internalAnnotations</package>
                 <package>edu.umd.cs.findbugs.io</package>
                 <package>edu.umd.cs.findbugs.jaif</package>
+                <package>edu.umd.cs.findbugs.launchGUI</package>
                 <package>edu.umd.cs.findbugs.log</package>
-                <package>edu.umd.cs.findbugs.ml</package>
                 <package>edu.umd.cs.findbugs.model</package>
                 <package>edu.umd.cs.findbugs.plan</package>
+                <package>edu.umd.cs.findbugs.plugins</package>
                 <package>edu.umd.cs.findbugs.props</package>
                 <package>edu.umd.cs.findbugs.sourceViewer</package>
+                <package>edu.umd.cs.findbugs.updates</package>
                 <package>edu.umd.cs.findbugs.util</package>
                 <package>edu.umd.cs.findbugs.visitclass</package>
                 <package>edu.umd.cs.findbugs.workflow</package>
@@ -115,6 +118,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/annotations.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/annotations.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jcip-annotations.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jcip-annotations.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/findbugs.jar</runtime-relative-path>

@@ -23,27 +23,20 @@ import edu.umd.cs.findbugs.Plugin;
 
 import java.util.Iterator;
 
-
 /**
  *
  * @author sven
  */
 public final class FiBuUtil {
-    /** Creates a new instance of FiBuUtil */
+
+    /**
+     * Creates a new instance of FiBuUtil
+     */
     private FiBuUtil() {
     }
 
     public static boolean isBugPatternIssuedFromCore(BugPattern bugPattern) {
-        Plugin plugin = DetectorFactoryCollection.instance()
-                                                 .getPluginById("edu.umd.cs.findbugs.plugins.core");
-
-        for (Iterator<BugPattern> bugIt = plugin.bugPatternIterator();
-                bugIt.hasNext();) {
-            if (bugPattern.equals(bugIt.next())) {
-                return true;
-            }
-        }
-
-        return false;
+        Plugin plugin = DetectorFactoryCollection.instance().getPluginById("edu.umd.cs.findbugs.plugins.core");
+        return plugin.getBugPatterns().contains(bugPattern);
     }
 }

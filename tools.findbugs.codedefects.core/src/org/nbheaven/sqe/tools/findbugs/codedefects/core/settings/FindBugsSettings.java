@@ -126,9 +126,7 @@ final public class FindBugsSettings {
 
             // Disable all detectors from 3rdPartyPlugins by Default!!!!
             if (!"FindBugs project".equals(plugin.getProvider())) {
-                for (Iterator<DetectorFactory> detectorFactoryIterator = plugin.detectorFactoryIterator();
-                        detectorFactoryIterator.hasNext();) {
-                    DetectorFactory detectorFactory = detectorFactoryIterator.next();
+                for (DetectorFactory detectorFactory : plugin.getDetectorFactories()) {
                     up.enableDetector(detectorFactory, false);
                 }
             }

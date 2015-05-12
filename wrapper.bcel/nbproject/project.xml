@@ -36,8 +36,8 @@
                 <package>org.apache.bcel.verifier.structurals</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/fb-bcel.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/fb-bcel.jar</binary-origin>
+                <runtime-relative-path>ext/bcel.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/bcel.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

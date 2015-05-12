@@ -34,28 +34,8 @@
                 <package>org.objectweb.asm.xml</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/asm-xml-3.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/asm-xml-3.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-analysis-3.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/asm-analysis-3.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-3.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/asm-3.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-util-3.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/asm-util-3.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-commons-3.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/asm-commons-3.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-tree-3.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/asm-tree-3.1.jar</binary-origin>
+                <runtime-relative-path>ext/asm-debug-all.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/asm-debug-all.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
