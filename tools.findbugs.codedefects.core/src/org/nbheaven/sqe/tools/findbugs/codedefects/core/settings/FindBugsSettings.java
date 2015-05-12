@@ -36,7 +36,7 @@ import java.util.Iterator;
  *
  * @author Sven Reimers
  */
-final public class FindBugsSettings {
+final public class FindBugsSettings { 
     private static UserPreferences userPreferences;
     private static String SETTINGS_DIR = System.getProperty("netbeans.user") + File.separatorChar +
         "config" + File.separatorChar + "findbugs";

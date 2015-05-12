@@ -28,8 +28,10 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
@@ -51,7 +53,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
 //    private PMDSession session;
     private PMDResult pmdResult;
     private PMD pmd;
-    private RuleSet rules;
+    private RuleSets rules;
     private RuleContext ruleContext;
     private Report report;
     private PMDSettings settings;
@@ -90,29 +92,14 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
         if (settings == null) {
             settings = PMDSettingsImpl.globalSettings();
         }
-        rules = settings.getActiveRules();
+        rules = new RuleSets(settings.getActiveRules());
     }
 
-    private SourceType getSourceType(FileObject fo) {
+    private LanguageVersion getSourceType(FileObject fo) {
         String sourceLevel = SourceLevelQuery.getSourceLevel(fo);
-
-        if ("1.3".equals(sourceLevel)) {
-            return SourceType.JAVA_13;
-        }
-
-        if ("1.4".equals(sourceLevel)) {
-            return SourceType.JAVA_14;
-        }
-
-        if ("1.5".equals(sourceLevel)) {
-            return SourceType.JAVA_15;
-        }
-
-        if ("1.6".equals(sourceLevel)) {
-            return SourceType.JAVA_15;
-        }
-
-        return SourceType.JAVA_15;
+        LanguageVersion version = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(sourceLevel);
+        assert version != null : "PMD - No LanguageVersion found for sourceLevel=" + sourceLevel;
+        return version;
     }
 
     @Override
@@ -148,12 +135,12 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
                     reader = new BufferedReader(new InputStreamReader(
                             fo.getInputStream(), FileEncodingQuery.getEncoding(fo)));
                     ruleContext.setSourceCodeFilename(fo.getName());
-                    pmd.setJavaVersion(getSourceType(fo));
+                    pmd.getConfiguration().setDefaultLanguageVersion(getSourceType(fo));
 
                     getProgressHandle().progress(i++);
                     getProgressHandle().progress("Scanning " + fo.getName());
 
-                    pmd.processFile(reader, rules, ruleContext);
+                    pmd.getSourceCodeProcessor().processSourceCode(reader, rules, ruleContext);
 
                     getProgressHandle().progress("Looking for next file");
                 } catch (PMDException ex) {

@@ -34,7 +34,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Rule;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.Mode;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
@@ -129,14 +129,14 @@ class BugTree extends JTree {
         MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount());
         rootNode.setUserObject(session);
 
-        Map<Object, Collection<IRuleViolation>> instances = resultMode.getInstanceList(session.getResult());
+        Map<Object, Collection<RuleViolation>> instances = resultMode.getInstanceList(session.getResult());
         int typeIndex = 0;
 
-        for (Map.Entry<Object, Collection<IRuleViolation>> entry : instances.entrySet()) {
+        for (Map.Entry<Object, Collection<RuleViolation>> entry : instances.entrySet()) {
             MutableTreeNode typeNode = new BugGroupNode(entry.getKey(), entry.getValue().size());
             int index = 0;
 
-            for (IRuleViolation ruleViolation : entry.getValue()) {
+            for (RuleViolation ruleViolation : entry.getValue()) {
                 RuleViolationNode ruleViolationNode = new RuleViolationNode(ruleViolation, false);
                 typeNode.insert(ruleViolationNode, index);
                 index++;
@@ -184,8 +184,8 @@ class BugTree extends JTree {
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
         Object obj = selectedNode.getUserObject();
 
-        if (obj instanceof IRuleViolation) {
-            IRuleViolation ruleViolation = (IRuleViolation) obj;
+        if (obj instanceof RuleViolation) {
+            RuleViolation ruleViolation = (RuleViolation) obj;
             RuleViolationAnnotationProcessor.openSourceFile(ruleViolation, session.getProject());
         }
     }

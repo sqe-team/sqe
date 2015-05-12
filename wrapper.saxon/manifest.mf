@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.nbheaven.sqe.wrapper.saxon
+OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/saxon/Bundle.properties
+OpenIDE-Module-Specification-Version: 9.1.0.8
+OpenIDE-Module-Java-Dependencies: Java > 1.8

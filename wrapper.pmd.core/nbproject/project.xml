@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.nbheaven.sqe.wrapper.pmd.core</code-name-base>
+            <suite-component/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.asm</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>3.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.commons.io</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>2.4</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.jaxen</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.nbheaven.sqe.wrapper.saxon</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.1.0.8</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
+            <public-packages>
+                <package>net.sourceforge.pmd</package>
+                <package>net.sourceforge.pmd.ant</package>
+                <package>net.sourceforge.pmd.benchmark</package>
+                <package>net.sourceforge.pmd.cli</package>
+                <package>net.sourceforge.pmd.cpd</package>
+                <package>net.sourceforge.pmd.dcd</package>
+                <package>net.sourceforge.pmd.dcd.asm</package>
+                <package>net.sourceforge.pmd.dcd.graph</package>
+                <package>net.sourceforge.pmd.lang</package>
+                <package>net.sourceforge.pmd.lang.ast</package>
+                <package>net.sourceforge.pmd.lang.ast.xpath</package>
+                <package>net.sourceforge.pmd.lang.ast.xpath.saxon</package>
+                <package>net.sourceforge.pmd.lang.dfa</package>
+                <package>net.sourceforge.pmd.lang.dfa.pathfinder</package>
+                <package>net.sourceforge.pmd.lang.dfa.report</package>
+                <package>net.sourceforge.pmd.lang.rule</package>
+                <package>net.sourceforge.pmd.lang.rule.properties</package>
+                <package>net.sourceforge.pmd.lang.rule.properties.factories</package>
+                <package>net.sourceforge.pmd.lang.rule.stat</package>
+                <package>net.sourceforge.pmd.lang.rule.xpath</package>
+                <package>net.sourceforge.pmd.lang.symboltable</package>
+                <package>net.sourceforge.pmd.lang.xpath</package>
+                <package>net.sourceforge.pmd.processor</package>
+                <package>net.sourceforge.pmd.renderers</package>
+                <package>net.sourceforge.pmd.stat</package>
+                <package>net.sourceforge.pmd.util</package>
+                <package>net.sourceforge.pmd.util.database</package>
+                <package>net.sourceforge.pmd.util.datasource</package>
+                <package>net.sourceforge.pmd.util.designer</package>
+                <package>net.sourceforge.pmd.util.filter</package>
+                <package>net.sourceforge.pmd.util.log</package>
+                <package>net.sourceforge.pmd.util.viewer</package>
+                <package>net.sourceforge.pmd.util.viewer.gui</package>
+                <package>net.sourceforge.pmd.util.viewer.gui.menu</package>
+                <package>net.sourceforge.pmd.util.viewer.model</package>
+                <package>net.sourceforge.pmd.util.viewer.util</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/pmd-core.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd-core.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

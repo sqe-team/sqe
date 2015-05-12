@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.nbheaven.sqe.wrapper.commons.io</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>org.apache.commons.io</package>
+                <package>org.apache.commons.io.comparator</package>
+                <package>org.apache.commons.io.filefilter</package>
+                <package>org.apache.commons.io.input</package>
+                <package>org.apache.commons.io.monitor</package>
+                <package>org.apache.commons.io.output</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-io.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-io.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

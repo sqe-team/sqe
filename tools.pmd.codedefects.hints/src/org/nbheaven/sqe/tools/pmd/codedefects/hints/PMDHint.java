@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.text.Document;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.java.search.SearchUtilities;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
@@ -132,14 +132,14 @@ public class PMDHint {
                     if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
                         PMDResult result = session.computeResultAndWait(fileObject);
                         if (result != null) { // SQE-35
-                            Map<Object, Collection<IRuleViolation>> instanceByClass = result.getInstanceByClass();
+                            Map<Object, Collection<RuleViolation>> instanceByClass = result.getInstanceByClass();
                             Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
                             List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
                             for (String className : classes) {
                                 for (Object key : instanceByClass.keySet()) {
                                     PMDResult.ClassKey classKey = (PMDResult.ClassKey) key;
                                     if (classKey.getDisplayName().equals(className)) {
-                                        Collection<IRuleViolation> bugs = instanceByClass.get(classKey);
+                                        Collection<RuleViolation> bugs = instanceByClass.get(classKey);
                                         computedErrors.addAll(getErrors(project, bugs, fileObject, document));
                                     }
                                 }
@@ -163,9 +163,9 @@ public class PMDHint {
             }
         }
 
-        private List<ErrorDescription> getErrors(final Project project, Collection<IRuleViolation> ruleViolations, final FileObject file, final Document document) {
+        private List<ErrorDescription> getErrors(final Project project, Collection<RuleViolation> ruleViolations, final FileObject file, final Document document) {
             List<ErrorDescription> errorDescriptions = new LinkedList<ErrorDescription>();
-            for (final IRuleViolation ruleViolation : ruleViolations) {
+            for (final RuleViolation ruleViolation : ruleViolations) {
 
                 Fix fix = new Fix() {
 

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.ClassKey;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
@@ -53,14 +53,14 @@ public final class PMDTaskProvider extends PushTaskScanner {
             Project project = FileOwnerQuery.getOwner(file);
             if(null != project && null != project.getLookup().lookup(PMDSession.class) && null != JavaSource.forFileObject(file)) {
                 PMDResult result = getResult(file);
-                Map<Object, Collection<IRuleViolation>> instanceByClass = result.getInstanceByClass();
+                Map<Object, Collection<RuleViolation>> instanceByClass = result.getInstanceByClass();
                 Collection<String> classes = SearchUtilities.getFQNClassNames(file);
                 List<Task> tasks = new LinkedList<Task>();
                 for(String className: classes) {
                     for (Object key: instanceByClass.keySet()) {
                         ClassKey classKey = (ClassKey) key;
                         if (classKey.getClassName().equals(className)) {
-                            Collection<IRuleViolation> bugs = instanceByClass.get(classKey);
+                            Collection<RuleViolation> bugs = instanceByClass.get(classKey);
                             tasks.addAll(getTasks(bugs, file));
                         }
                     }
@@ -74,7 +74,7 @@ public final class PMDTaskProvider extends PushTaskScanner {
                 PMDResult result = getResult(project);
                 if (result != null) {
                     List<Task> tasks = new LinkedList<Task>();
-                    for (Map.Entry<Object, Collection<IRuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
+                    for (Map.Entry<Object, Collection<RuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
                         tasks.addAll(getTasks(classKey.getValue(), ((PMDResult.ClassKey) classKey.getKey()).getFileObject()));
                     }
                     callback.setTasks(project.getProjectDirectory(), tasks);
@@ -84,12 +84,12 @@ public final class PMDTaskProvider extends PushTaskScanner {
         
     }
 
-    private List<Task> getTasks(Collection<IRuleViolation> bugs, FileObject file) {
+    private List<Task> getTasks(Collection<RuleViolation> bugs, FileObject file) {
         if (file == null) {
             return Collections.emptyList();
         }
         List<Task> tasks = new LinkedList<Task>();
-        for(IRuleViolation ruleViolation: bugs) {
+        for(RuleViolation ruleViolation: bugs) {
             tasks.add(Task.create(file, "sqe-tasklist-pmd", ruleViolation.getDescription(), ruleViolation.getBeginLine()));                                
         }
         return tasks;

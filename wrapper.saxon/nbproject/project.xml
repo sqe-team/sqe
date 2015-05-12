@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2005,2006 Sven Reimers, Florian Vogler
+
+  This file is part of the Software Quality Environment Project.
+
+  The Software Quality Environment Project is free software:
+  you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation,
+  either version 2 of the License, or (at your option) any later version.
+
+  The Software Quality Environment Project is distributed in the hope that
+  it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.nbheaven.sqe.wrapper.saxon</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>net.sf.saxon</package>
+                <package>net.sf.saxon.charcode</package>
+                <package>net.sf.saxon.codenorm</package>
+                <package>net.sf.saxon.dom</package>
+                <package>net.sf.saxon.event</package>
+                <package>net.sf.saxon.evpull</package>
+                <package>net.sf.saxon.expr</package>
+                <package>net.sf.saxon.exslt</package>
+                <package>net.sf.saxon.functions</package>
+                <package>net.sf.saxon.instruct</package>
+                <package>net.sf.saxon.java</package>
+                <package>net.sf.saxon.number</package>
+                <package>net.sf.saxon.om</package>
+                <package>net.sf.saxon.pattern</package>
+                <package>net.sf.saxon.pull</package>
+                <package>net.sf.saxon.query</package>
+                <package>net.sf.saxon.regex</package>
+                <package>net.sf.saxon.sort</package>
+                <package>net.sf.saxon.style</package>
+                <package>net.sf.saxon.sxpath</package>
+                <package>net.sf.saxon.tinytree</package>
+                <package>net.sf.saxon.trace</package>
+                <package>net.sf.saxon.trans</package>
+                <package>net.sf.saxon.tree</package>
+                <package>net.sf.saxon.type</package>
+                <package>net.sf.saxon.value</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/saxon.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/saxon.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/saxon-dom.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/saxon-dom.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

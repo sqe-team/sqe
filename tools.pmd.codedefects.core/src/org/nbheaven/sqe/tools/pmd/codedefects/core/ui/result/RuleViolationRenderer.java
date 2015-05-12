@@ -17,8 +17,6 @@
  */
 package org.nbheaven.sqe.tools.pmd.codedefects.core.ui.result;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 
 /**
  *
@@ -29,7 +27,7 @@ import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.CategoryKey;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.ClassKey;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.PackageKey;
@@ -87,7 +85,7 @@ class RuleViolationRenderer extends DefaultTreeCellRenderer {
         // Set the icon, depending on what kind of node it is
         if (value instanceof RuleViolationNode) {
             RuleViolationNode node = (RuleViolationNode) value;
-            IRuleViolation ruleViolation = node.getRuleViolation();
+            RuleViolation ruleViolation = node.getRuleViolation();
             setIcon(bugIcon);
 
             // take care of default package
@@ -141,10 +139,12 @@ class RuleViolationRenderer extends DefaultTreeCellRenderer {
             RuleViolation ruleViolation = (RuleViolation) value;
 
             switch (ruleViolation.getRule().getPriority()) {
-                case Rule.LOWEST_PRIORITY:
+                case LOW:
                     color = LOW_PRIORITY_COLOR;
                     break;
-
+//                case HIGH:
+//                    color = HIGH_PRIORITY_COLOR;
+//                    break;
                 default:
                     color = NORMAL_PRIORITY_COLOR;
             }

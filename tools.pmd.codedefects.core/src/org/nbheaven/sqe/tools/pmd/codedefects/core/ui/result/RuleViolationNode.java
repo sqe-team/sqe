@@ -17,7 +17,7 @@
  */
 package org.nbheaven.sqe.tools.pmd.codedefects.core.ui.result;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -27,17 +27,17 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 class RuleViolationNode extends DefaultMutableTreeNode {
 
-    private IRuleViolation ruleViolation;
+    private RuleViolation ruleViolation;
 
     /**
      * Creates a new instance of RuleViolationNode
      */
-    RuleViolationNode(IRuleViolation ruleViolation, boolean allowsChildren) {
+    RuleViolationNode(RuleViolation ruleViolation, boolean allowsChildren) {
         super(ruleViolation, allowsChildren);
         this.ruleViolation = ruleViolation;
     }
 
-    IRuleViolation getRuleViolation() {
+    RuleViolation getRuleViolation() {
         return ruleViolation;
     }
 }

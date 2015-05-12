@@ -65,7 +65,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.pmd</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.wrapper.pmd.core</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>

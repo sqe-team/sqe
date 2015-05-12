@@ -18,7 +18,7 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.core.annotations;
 
 import java.util.Collection;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
@@ -60,14 +60,14 @@ public final class RuleViolationAnnotationProcessor
     private RuleViolationAnnotationProcessor() {
     }
 
-    private static void openSourceFileAndAnnotate(IRuleViolation ruleViolation,
+    private static void openSourceFileAndAnnotate(RuleViolation ruleViolation,
             Line line, Project project) {
         annotate(ruleViolation, line, project);
         line.show(Line.ShowOpenType.OPEN, Line.ShowVisibilityType.FOCUS, ruleViolation.getBeginColumn());
     }
 
     public static Line getLineForRuleViolation(FileObject fo,
-            IRuleViolation ruleViolation) {
+            RuleViolation ruleViolation) {
         try {
             DataObject dao = DataObject.find(fo);
             LineCookie cookie = dao.getCookie(LineCookie.class);
@@ -81,7 +81,7 @@ public final class RuleViolationAnnotationProcessor
         }
     }
 
-    private static void annotate(final IRuleViolation ruleViolation,
+    private static void annotate(final RuleViolation ruleViolation,
             final Line line, Project project) {
         PMDAnnotation annotation = PMDAnnotation.getNewInstance(project);
         annotation.setErrorMessage(ruleViolation.getDescription() + " [" + ruleViolation.getRule().getName() + "]");
@@ -90,7 +90,7 @@ public final class RuleViolationAnnotationProcessor
         line.addPropertyChangeListener(annotation);
     }
 
-    public static void openSourceFile(IRuleViolation ruleViolation,
+    public static void openSourceFile(RuleViolation ruleViolation,
             Project project) {
         // take care of default package
         String packagePrefix = ruleViolation.getPackageName().length() > 0 ? ruleViolation.getPackageName() + "." : "";
@@ -138,11 +138,11 @@ public final class RuleViolationAnnotationProcessor
     }
 
     private void annotateClass(String className, FileObject fileObject, Project project, PMDResult result) {
-        Map<Object, Collection<IRuleViolation>> instanceMap = result.getInstanceByClass();
+        Map<Object, Collection<RuleViolation>> instanceMap = result.getInstanceByClass();
         ClassKey classKey = new ClassKey(className);
-        Collection<IRuleViolation> ruleViolations = instanceMap.get(classKey);
+        Collection<RuleViolation> ruleViolations = instanceMap.get(classKey);
         if (null != ruleViolations) {
-            for (IRuleViolation ruleViolation : ruleViolations) {
+            for (RuleViolation ruleViolation : ruleViolations) {
                 try {
                     Line line = getLineForRuleViolation(fileObject,
                             ruleViolation);

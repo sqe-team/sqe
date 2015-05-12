@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import org.nbheaven.sqe.codedefects.core.api.CodeDefectSeverity;
@@ -47,19 +47,19 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/class.gif") {
 
-            public Map<Object, Collection<IRuleViolation>> getInstanceList(final PMDResult result) {
+            public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByClass();
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/package.gif") {
 
-            public Map<Object, Collection<IRuleViolation>> getInstanceList(final PMDResult result) {
+            public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByPackage();
             }
         },
         TYPE("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png") {
 
-            public Map<Object, Collection<IRuleViolation>> getInstanceList(final PMDResult result) {
+            public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByType();
             }
         };
@@ -79,11 +79,11 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             return icon;
         }
 
-        public abstract Map<Object, Collection<IRuleViolation>> getInstanceList(final PMDResult result);
+        public abstract Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result);
     }
-    private Map<Object, Collection<IRuleViolation>> instanceByClass;
-    private Map<Object, Collection<IRuleViolation>> instanceByPackage;
-    private Map<Object, Collection<IRuleViolation>> instanceByType;
+    private Map<Object, Collection<RuleViolation>> instanceByClass;
+    private Map<Object, Collection<RuleViolation>> instanceByPackage;
+    private Map<Object, Collection<RuleViolation>> instanceByType;
     private Report report;
 //    private PMDSession session;
     private Lookup lookup;
@@ -101,9 +101,9 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return lookup;
     }
 
-    private void removeAllRuleViolationsForRule(Rule rule, Map<? extends Object, Collection<IRuleViolation>> mapToClear) {
-        for (Map.Entry<Object, Collection<IRuleViolation>> entry : new HashMap<Object, Collection<IRuleViolation>>(mapToClear).entrySet()) {
-            for (IRuleViolation ruleViolation : new ArrayList<IRuleViolation>(entry.getValue())) {
+    private void removeAllRuleViolationsForRule(Rule rule, Map<? extends Object, Collection<RuleViolation>> mapToClear) {
+        for (Map.Entry<Object, Collection<RuleViolation>> entry : new HashMap<Object, Collection<RuleViolation>>(mapToClear).entrySet()) {
+            for (RuleViolation ruleViolation : new ArrayList<RuleViolation>(entry.getValue())) {
                 if (ruleViolation.getRule().equals(rule)) {
                     entry.getValue().remove(ruleViolation);
                 }
@@ -124,19 +124,19 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
 //        session.resultChanged(null, this);
     }
 
-    public Map<Object, Collection<IRuleViolation>> getInstanceByType() {
+    public Map<Object, Collection<RuleViolation>> getInstanceByType() {
         if (null == instanceByType) {
-            Map<Object, Collection<IRuleViolation>> tempInstanceByType = new TreeMap<Object, Collection<IRuleViolation>>();
+            Map<Object, Collection<RuleViolation>> tempInstanceByType = new TreeMap<Object, Collection<RuleViolation>>();
 
-            Iterator<IRuleViolation> ruleViolationIterator = report.iterator();
+            Iterator<RuleViolation> ruleViolationIterator = report.iterator();
 
             while (ruleViolationIterator.hasNext()) {
-                IRuleViolation ruleViolation = ruleViolationIterator.next();
+                RuleViolation ruleViolation = ruleViolationIterator.next();
                 CategoryKey categoryKey = new CategoryKey(ruleViolation);
-                Collection<IRuleViolation> ruleViolations = tempInstanceByType.get(categoryKey);
+                Collection<RuleViolation> ruleViolations = tempInstanceByType.get(categoryKey);
 
                 if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<IRuleViolation>();
+                    ruleViolations = new ArrayList<RuleViolation>();
                     tempInstanceByType.put(categoryKey, ruleViolations);
                 }
 
@@ -148,19 +148,19 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return instanceByType;
     }
 
-    public Map<Object, Collection<IRuleViolation>> getInstanceByClass() {
+    public Map<Object, Collection<RuleViolation>> getInstanceByClass() {
         if (null == instanceByClass) {
-            instanceByClass = new TreeMap<Object, Collection<IRuleViolation>>();
+            instanceByClass = new TreeMap<Object, Collection<RuleViolation>>();
 
-            Iterator<IRuleViolation> ruleViolationIterator = report.iterator();
+            Iterator<RuleViolation> ruleViolationIterator = report.iterator();
 
             while (ruleViolationIterator.hasNext()) {
-                IRuleViolation ruleViolation = ruleViolationIterator.next();
+                RuleViolation ruleViolation = ruleViolationIterator.next();
                 ClassKey classKey = new ClassKey(ruleViolation);
-                Collection<IRuleViolation> ruleViolations = instanceByClass.get(classKey);
+                Collection<RuleViolation> ruleViolations = instanceByClass.get(classKey);
 
                 if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<IRuleViolation>();
+                    ruleViolations = new ArrayList<RuleViolation>();
                     instanceByClass.put(classKey, ruleViolations);
                 }
 
@@ -171,19 +171,19 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return instanceByClass;
     }
 
-    public Map<Object, Collection<IRuleViolation>> getInstanceByPackage() {
+    public Map<Object, Collection<RuleViolation>> getInstanceByPackage() {
         if (null == instanceByPackage) {
-            instanceByPackage = new TreeMap<Object, Collection<IRuleViolation>>();
+            instanceByPackage = new TreeMap<Object, Collection<RuleViolation>>();
 
-            Iterator<IRuleViolation> ruleViolationIterator = report.iterator();
+            Iterator<RuleViolation> ruleViolationIterator = report.iterator();
 
             while (ruleViolationIterator.hasNext()) {
-                IRuleViolation ruleViolation = ruleViolationIterator.next();
+                RuleViolation ruleViolation = ruleViolationIterator.next();
                 PackageKey packageKey = new PackageKey(ruleViolation);
-                Collection<IRuleViolation> ruleViolations = instanceByPackage.get(packageKey);
+                Collection<RuleViolation> ruleViolations = instanceByPackage.get(packageKey);
 
                 if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<IRuleViolation>();
+                    ruleViolations = new ArrayList<RuleViolation>();
                     instanceByPackage.put(packageKey, ruleViolations);
                 }
 
@@ -243,7 +243,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         private final String className;
         private final FileObject fileObject;
 
-        public ClassKey(final IRuleViolation ruleViolation) {
+        public ClassKey(final RuleViolation ruleViolation) {
             this.className = (0 == ruleViolation.getPackageName().length() ? "" : (ruleViolation.getPackageName() + ".")) +
                     ((null == ruleViolation.getClassName() || ruleViolation.getClassName().length() == 0)
                     ? ruleViolation.getFilename() : ruleViolation.getClassName());
@@ -272,7 +272,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
 
         private final String packageName;
 
-        public PackageKey(final IRuleViolation ruleViolation) {
+        public PackageKey(final RuleViolation ruleViolation) {
             this.packageName = 0 == ruleViolation.getPackageName().length() ? "<Default Package>" : ruleViolation.getPackageName();
         }
 
@@ -283,9 +283,9 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
 
     public static class CategoryKey extends DisplayableKey {
 
-        private final IRuleViolation bugPattern;
+        private final RuleViolation bugPattern;
 
-        public CategoryKey(final IRuleViolation bugPattern) {
+        public CategoryKey(final RuleViolation bugPattern) {
             this.bugPattern = bugPattern;
         }
 

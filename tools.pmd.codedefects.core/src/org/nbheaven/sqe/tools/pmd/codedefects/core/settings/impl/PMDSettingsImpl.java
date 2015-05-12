@@ -32,6 +32,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -74,6 +75,7 @@ public final class PMDSettingsImpl implements PMDSettings {
         RuleSet activeRuleSet = new RuleSet();
         RuleSet ruleSet = new RuleSet();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.setClassLoader(Lookup.getDefault().lookup(ClassLoader.class));
         try {
             Iterator<RuleSet> iterator = ruleSetFactory.getRegisteredRuleSets();
             while (iterator.hasNext()) {

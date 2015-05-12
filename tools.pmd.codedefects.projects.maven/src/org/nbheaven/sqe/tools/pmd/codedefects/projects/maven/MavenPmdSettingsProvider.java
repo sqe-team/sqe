@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.nbheaven.sqe.tools.pmd.codedefects.projects.maven;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetReferenceId;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
 import org.nbheaven.sqe.core.maven.utils.FileUtilities;
 import org.nbheaven.sqe.core.maven.utils.MavenUtilities;
@@ -37,6 +40,7 @@ import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -57,6 +61,7 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
         final MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-pmd-plugin");
         if (pluginConfiguration.isDefinedInProject()) {
             RuleSetFactory rsf = new RuleSetFactory();
+            rsf.setClassLoader(Lookup.getDefault().lookup(ClassLoader.class));
             final RuleSet toRet = new RuleSet();
             String[] ruleSets = pluginConfiguration.getStringListValue("rulesets", "ruleset");
             if (ruleSets == null) {
@@ -64,7 +69,7 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
             }
             List<File> deps = MavenUtilities.findDependencyArtifacts(p, "org.apache.maven.plugins", "maven-pmd-plugin", true);
             for (String setString : ruleSets) {
-                 String nonLeadingSlash = setString.startsWith("/") ? setString.substring(1) : setString;
+                String nonLeadingSlash = setString.startsWith("/") ? setString.substring(1) : setString;
                 //check is file is physically present in the project
                 File file = FileUtilities.resolveFilePath(FileUtil.toFile(p.getProjectDirectory()), setString);
                 FileObject fo = null;
@@ -90,17 +95,18 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
                 }
                 if (fo != null) {
                     try {
-                        toRet.addRuleSet(rsf.createRuleSet(fo.getInputStream()));
-                    } catch (FileNotFoundException ex) {
+                        RuleSetReferenceId id = new RuleSetReferenceId(fo.toURL().toString());
+                        toRet.addRuleSet(rsf.createRuleSet(id));
+                    } catch (RuleSetNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
                     }
                 } else if (!setString.startsWith("/")) {
                     try {
-                        URL url = new URL(setString);
-                        toRet.addRuleSet(rsf.createRuleSet(url.openStream()));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-//                            Exceptions.printStackTrace(ex);
+                        RuleSetReferenceId id = new RuleSetReferenceId(setString);
+                        toRet.addRuleSet(rsf.createRuleSet(id));
+                    } catch (RuleSetNotFoundException ex) {
+//                        ex.printStackTrace();
+                        Exceptions.printStackTrace(ex);
                     }
                 }
             }
@@ -117,25 +123,26 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
                 }
 
                 public RuleSet getActiveRules() {
-                        RuleSet activeRuleSet = new RuleSet();
-                        //the default as defined in maven pmd plugin
-                        int minimumPriority = MavenDefaults.DEFAULT_RULE_PRIORITY;
-                        String priorityLevelString = pluginConfiguration.getValue("minimumPriority");
-                        if (priorityLevelString != null) {
-                            try {
-                                minimumPriority = Integer.parseInt(priorityLevelString);
-                            } catch (NumberFormatException e) {
-                                //just swallow..
-                            }
+                    RuleSet activeRuleSet = new RuleSet();
+                    //the default as defined in maven pmd plugin
+                    int minimumPriority = MavenDefaults.DEFAULT_RULE_PRIORITY;
+                    String priorityLevelString = pluginConfiguration.getValue("minimumPriority");
+                    if (priorityLevelString != null) {
+                        try {
+                            minimumPriority = Integer.parseInt(priorityLevelString);
+                        } catch (NumberFormatException e) {
+                            //just swallow..
                         }
+                    }
 
-                        for (Rule rule : toRet.getRules()) {
-                            if (rule.getPriority() <= minimumPriority) {
-                                activeRuleSet.addRule(rule);
-                            }
+                    for (Rule rule : toRet.getRules()) {
+                        if (rule.getPriority().compareTo(RulePriority.valueOf(minimumPriority)) <= 0) {
+                            activeRuleSet.addRule(rule);
+                        } else {
                         }
+                    }
 
-                        return activeRuleSet;
+                    return activeRuleSet;
 
                 }
             };
