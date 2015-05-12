@@ -96,12 +96,8 @@ public final class CompileOnSaveHelper {
 
     public static CompileOnSaveHelper forSourceRoot(FileObject root) {
         Parameters.notNull("root", root);
-        try {
-            URL[] binaryRoots = BinaryForSourceQuery.findBinaryRoots(root.getURL()).getRoots();
-            return new CompileOnSaveHelper(root, binaryRoots.length > 0 ? binaryRoots[0] : null);
-        } catch (FileStateInvalidException x) {
-            throw new IllegalArgumentException(x);
-        }
+        URL[] binaryRoots = BinaryForSourceQuery.findBinaryRoots(root.toURL()).getRoots();
+        return new CompileOnSaveHelper(root, binaryRoots.length > 0 ? binaryRoots[0] : null);
     }
 
     public static CompileOnSaveHelper forClassPathEntry(URL entry) {
@@ -154,7 +150,7 @@ public final class CompileOnSaveHelper {
         if (getClassFolder == null) {
             return publicBinaries;
         }
-        URL sourcesURL = sources.getURL();
+        URL sourcesURL = sources.toURL();
         File sigDir;
         try {
             sigDir = (File) getClassFolder.invoke(null, sourcesURL, true);

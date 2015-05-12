@@ -55,9 +55,9 @@ public class ConfigureDetectorsPanel extends JPanel {
     private static final int SPEED_COLUMN = 1;
     private static final int ENABLED_COLUMN = 2;
 
-    private DefaultComboBoxModel pluginSelector;
+    private DefaultComboBoxModel<Plugin> pluginSelector;
 
-    private ListCellRenderer pluginRenderer;
+    private ListCellRenderer<Object> pluginRenderer;
 
     private UserPreferences userPreferences = null;
 
@@ -84,10 +84,10 @@ public class ConfigureDetectorsPanel extends JPanel {
             Plugin plugin = pluginIterator.next();
             plugins.add(plugin);
         }
-        pluginSelector = new DefaultComboBoxModel(plugins);
+        pluginSelector = new DefaultComboBoxModel<Plugin>(plugins);
 
         pluginRenderer = new DefaultListCellRenderer() {
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Object o = value;
                 if (null != value) {
                     Plugin plugin = (Plugin) value;
@@ -115,7 +115,7 @@ public class ConfigureDetectorsPanel extends JPanel {
         detectorTable = new javax.swing.JTable();
         detectorDescriptionScrollPane = new javax.swing.JScrollPane();
         detectorDescription = new javax.swing.JEditorPane();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBox1 = new javax.swing.JComboBox<Plugin>();
         restoreDefaultsButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         restoreDefaultsButton1 = new javax.swing.JButton();
@@ -130,14 +130,14 @@ public class ConfigureDetectorsPanel extends JPanel {
                 "Bug Detector", "Speed", "Enabled"
             }
         ) {
-            Class[] types = new Class [] {
+            Class<?>[] types = new Class<?> [] {
                 java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, true
             };
 
-            public Class getColumnClass(int columnIndex) {
+            public Class<?> getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
 
@@ -158,6 +158,8 @@ public class ConfigureDetectorsPanel extends JPanel {
                     L10N.getLocalString("dlg.enabled_lbl", "Enabled"),
                 });
 
+                //DefaultSortedTableModel sortedModel = new DefaultSortedTableModel(m, detectorTable.getTableHeader());
+                //detectorTable.setModel(sortedModel);
             }
             detectorTableScrollPane.setViewportView(detectorTable);
 
@@ -195,40 +197,40 @@ public class ConfigureDetectorsPanel extends JPanel {
                 }
             });
 
-            org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
             this.setLayout(layout);
             layout.setHorizontalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, detectorDescriptionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, detectorTableScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                            .add(jLabel1)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(jComboBox1, 0, 492, Short.MAX_VALUE))
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                            .add(restoreDefaultsButton)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(restoreDefaultsButton1)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(detectorDescriptionScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                        .addComponent(detectorTableScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jComboBox1, 0, 492, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(restoreDefaultsButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(restoreDefaultsButton1)))
                     .addContainerGap())
             );
             layout.setVerticalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jLabel1))
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(detectorTableScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 228, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(detectorDescriptionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(restoreDefaultsButton)
-                        .add(restoreDefaultsButton1))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(detectorTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(detectorDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(restoreDefaultsButton)
+                        .addComponent(restoreDefaultsButton1))
                     .addContainerGap())
             );
         }// </editor-fold>//GEN-END:initComponents
@@ -331,14 +333,14 @@ public class ConfigureDetectorsPanel extends JPanel {
                 new Object[][]{},
                 new String[]{"Bug Detector", "Speed", "Enabled"}
         ) {
-            Class[] types = new Class[]{
+            Class<?>[] types = new Class<?>[]{
                 java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean[]{
                 false, false, true
             };
 
-            public Class getColumnClass(int columnIndex) {
+            public Class<?> getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 
@@ -384,8 +386,7 @@ public class ConfigureDetectorsPanel extends JPanel {
         for (int i = 0; i < num; ++i) {
             DetectorFactory factory = factoryList.get(i);
             Boolean enabled = (Boolean) model.getValueAt(i, ENABLED_COLUMN);
-            userPreferences.enableDetector(
-                    factory, enabled.booleanValue());
+            userPreferences.enableDetector(factory, enabled);
         }
     }
 
@@ -408,7 +409,7 @@ public class ConfigureDetectorsPanel extends JPanel {
     private javax.swing.JScrollPane detectorDescriptionScrollPane;
     private javax.swing.JTable detectorTable;
     private javax.swing.JScrollPane detectorTableScrollPane;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox<Plugin> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton restoreDefaultsButton;
     private javax.swing.JButton restoreDefaultsButton1;

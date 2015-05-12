@@ -21,7 +21,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.ClassAnnotation;
 import edu.umd.cs.findbugs.Priorities;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.utils.FiBuUtil;
 import java.util.AbstractCollection;
@@ -48,7 +48,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Sven Reimers
  */
-@SuppressWarnings("IS2_INCONSISTENT_SYNC")
+@SuppressFBWarnings("IS2_INCONSISTENT_SYNC")
 public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     public enum Mode {
@@ -301,11 +301,12 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         return 0;
     }
 
-    public abstract static class DisplayableKey<T extends DisplayableKey> implements Comparable<T> {
+    public abstract static class DisplayableKey<T extends DisplayableKey<?>> implements Comparable<T> {
 
         public abstract String getDisplayName();
 
-        public @Override final boolean equals(Object object) {
+        @Override
+        public  final boolean equals(Object object) {
             if (object instanceof DisplayableKey) {
                 return ((DisplayableKey) object).getDisplayName().equals(getDisplayName());
             }
@@ -387,7 +388,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             this.originalCollection = originalCollection;
         }
 
-        @SuppressWarnings("DLS_DEAD_LOCAL_STORE")
+        @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
         public int size() {
             int i = 0;
             for (BugInstance instance : this) {

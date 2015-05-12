@@ -51,8 +51,8 @@ import org.openide.filesystems.FileUtil;
  */
 public class Projects extends JPanel {
 
-    private JComboBox openProjectsComboBox;
-    private DefaultComboBoxModel projectModel;
+    private JComboBox<Project> openProjectsComboBox;
+    private DefaultComboBoxModel<Project> projectModel;
     private final SelectedProjectListener selectedProjectListener;
     private final SQEManagerListener sqeManagerListener;
     private final OpenProjectsListner openProjectsListner;
@@ -69,8 +69,8 @@ public class Projects extends JPanel {
     }
 
     private void initComponents() {
-        projectModel = new DefaultComboBoxModel(getOpenedProjectsSorted().toArray());
-        openProjectsComboBox = new JComboBox(projectModel);
+        projectModel = new DefaultComboBoxModel<Project>(getOpenedProjectsSorted().toArray(new Project[0]));
+        openProjectsComboBox = new JComboBox<Project>(projectModel);
         openProjectsComboBox.setRenderer(new OpenProjectsListCellRenderer());
 
         this.setLayout(new BorderLayout());
@@ -141,9 +141,9 @@ public class Projects extends JPanel {
 
     private static class SelectedProjectListener implements ItemListener, ActionListener {
 
-        private final JComboBox comboBox;
+        private final JComboBox<Project> comboBox;
 
-        public SelectedProjectListener(JComboBox comboBox) {
+        public SelectedProjectListener(JComboBox<Project> comboBox) {
             this.comboBox = comboBox;
         }
 
@@ -202,7 +202,7 @@ public class Projects extends JPanel {
         }
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (c instanceof JLabel && null != value) {
                 Project project = (Project) value;

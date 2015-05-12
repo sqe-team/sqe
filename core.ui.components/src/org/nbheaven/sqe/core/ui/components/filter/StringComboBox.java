@@ -29,7 +29,7 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.text.JTextComponent;
 
 
-final class StringComboBox extends JComboBox {
+final class StringComboBox extends JComboBox<String> {
     public JTextComponent comboEditor;
 
     public boolean comboPopupActionFlag = false;
@@ -64,7 +64,7 @@ final class StringComboBox extends JComboBox {
         }
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index,
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
             boolean isSelected, boolean cellHasFocus) {
             JComponent renderer = (JComponent) super.getListCellRendererComponent(list, value,
                     index, isSelected, cellHasFocus);

@@ -29,14 +29,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.Box;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.GroupLayout.ParallelGroup;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
-import javax.swing.text.GapContent;
-import org.jdesktop.layout.GroupLayout.SequentialGroup;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -111,18 +110,18 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
         selectorPanel.setLayout(layout);
 
         // Turn on automatically adding gaps between components
-        layout.setAutocreateGaps(true);
+        layout.setAutoCreateGaps(true);
 
         // Turn on automatically creating gaps between components that touch
         // the edge of the container and the container.
-        layout.setAutocreateContainerGaps(true);
+        layout.setAutoCreateContainerGaps(true);
         
-        ParallelGroup horizontalParallelGroup = layout.createParallelGroup(GroupLayout.LEADING);
+        ParallelGroup horizontalParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         SequentialGroup verticalSequentialGroup = layout.createSequentialGroup();
 
         layout.setHorizontalGroup(
            layout.createSequentialGroup()
-              .add(horizontalParallelGroup)
+              .addGroup(horizontalParallelGroup)
         );
         
         layout.setVerticalGroup(verticalSequentialGroup);
@@ -133,8 +132,8 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
         clearHistoryButton.setOpaque(false);
         clearHistoryButton.setFocusPainted(false);
         clearHistoryButton.setToolTipText(NbBundle.getBundle("org/nbheaven/sqe/codedefects/history/controlcenter/panels/Bundle").getString("HINT_clear_button"));
-        horizontalParallelGroup.add(clearHistoryButton);
-        verticalSequentialGroup.add(clearHistoryButton);
+        horizontalParallelGroup.addComponent(clearHistoryButton);
+        verticalSequentialGroup.addComponent(clearHistoryButton);
         clearHistoryButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -147,16 +146,16 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
 
         Component createVerticalStrut = Box.createVerticalStrut(10);
 
-        horizontalParallelGroup.add(createVerticalStrut);
-        verticalSequentialGroup.add(createVerticalStrut);
+        horizontalParallelGroup.addComponent(createVerticalStrut);
+        verticalSequentialGroup.addComponent(createVerticalStrut);
 
         for (final QualityProvider provider : SQEUtilities.getProviders()) {
             final JToggleButton providerButton = new JToggleButton();
             providerButton.setIcon(provider.getIcon());
             providerButton.setOpaque(false);
             providerButton.setFocusPainted(false);
-            horizontalParallelGroup.add(providerButton);
-            verticalSequentialGroup.add(providerButton);
+            horizontalParallelGroup.addComponent(providerButton);
+            verticalSequentialGroup.addComponent(providerButton);
             ActionListener listener = new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -288,33 +287,32 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        historyView.setBorder(null);
         historyView.setOpaque(false);
 
-        org.jdesktop.layout.GroupLayout historyViewLayout = new org.jdesktop.layout.GroupLayout(historyView);
+        javax.swing.GroupLayout historyViewLayout = new javax.swing.GroupLayout(historyView);
         historyView.setLayout(historyViewLayout);
         historyViewLayout.setHorizontalGroup(
-            historyViewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 305, Short.MAX_VALUE)
+            historyViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 305, Short.MAX_VALUE)
         );
         historyViewLayout.setVerticalGroup(
-            historyViewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 108, Short.MAX_VALUE)
+            historyViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 108, Short.MAX_VALUE)
         );
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(historyView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(historyView, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(historyView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(historyView, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

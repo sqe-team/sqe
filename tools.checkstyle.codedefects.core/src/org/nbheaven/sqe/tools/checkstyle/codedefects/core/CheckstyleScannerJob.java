@@ -168,19 +168,13 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             Reader reader = null;
 
             try {
-                try {
-                    getProgressHandle().progress(i++);
-                    getProgressHandle().progress("Scanning " + fo.getName());
+                getProgressHandle().progress(i++);
+                getProgressHandle().progress("Scanning " + fo.getName());
 
-                    files.add(new File(fo.getURL().toURI()));
-                    checker.process(files);
-                    files.clear();
-                    getProgressHandle().progress("Looking for next file");
-                } catch (URISyntaxException use) {
-                    use.printStackTrace();
-                } catch (FileStateInvalidException fsie) {
-                    fsie.printStackTrace();
-                }
+                files.add(new File(fo.toURI()));
+                checker.process(files);
+                files.clear();
+                getProgressHandle().progress("Looking for next file");
             } finally {
                 if (null != reader) {
                     try {

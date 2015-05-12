@@ -48,7 +48,7 @@ public class ProjectStatistics extends javax.swing.JPanel implements PropertyCha
         noSourceFilesLabel = new javax.swing.JLabel();
         classpathLabel = new javax.swing.JLabel();
         classPathScrollPane = new javax.swing.JScrollPane();
-        classPathList = new javax.swing.JList();
+        classPathList = new javax.swing.JList<String>();
         name = new javax.swing.JLabel();
         sourceFiles = new javax.swing.JLabel();
 
@@ -60,10 +60,10 @@ public class ProjectStatistics extends javax.swing.JPanel implements PropertyCha
 
         classpathLabel.setText(org.openide.util.NbBundle.getMessage(ProjectStatistics.class, "ProjectStatistics.classpathLabel.text")); // NOI18N
 
-        classPathList.setModel(new javax.swing.AbstractListModel() {
+        classPathList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            public String getElementAt(int i) { return strings[i]; }
         });
         classPathScrollPane.setViewportView(classPathList);
 
@@ -71,42 +71,41 @@ public class ProjectStatistics extends javax.swing.JPanel implements PropertyCha
 
         sourceFiles.setText(org.openide.util.NbBundle.getMessage(ProjectStatistics.class, "ProjectStatistics.sourceFiles.text")); // NOI18N
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(classpathLabel)
-                    .add(nameLabel)
-                    .add(noSourceFilesLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(name, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(90, 90, 90))
-                    .add(layout.createSequentialGroup()
-                        .add(sourceFiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(90, 90, 90))
-                    .add(classPathScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(classpathLabel)
+                    .addComponent(nameLabel)
+                    .addComponent(noSourceFilesLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(classPathScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(name, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                            .addComponent(sourceFiles, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(90, 90, 90)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(nameLabel)
-                    .add(name))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(noSourceFilesLabel)
-                    .add(sourceFiles))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(classpathLabel)
-                    .add(classPathScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLabel)
+                    .addComponent(name))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(noSourceFilesLabel)
+                    .addComponent(sourceFiles))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(classpathLabel)
+                    .addComponent(classPathScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -140,7 +139,7 @@ public class ProjectStatistics extends javax.swing.JPanel implements PropertyCha
     }    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList classPathList;
+    private javax.swing.JList<String> classPathList;
     private javax.swing.JScrollPane classPathScrollPane;
     private javax.swing.JLabel classpathLabel;
     private javax.swing.JLabel name;

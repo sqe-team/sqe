@@ -113,7 +113,7 @@ public final class History implements Iterable<History.Entry> {
             stream.writeObject(entries);
             stream.close();
             Preferences historyPrefs = NbPreferences.forModule(History.class);
-            historyPrefs.putByteArray(project.getProjectDirectory().getURL().toString(), os.toByteArray());
+            historyPrefs.putByteArray(project.getProjectDirectory().toURL().toString(), os.toByteArray());
         } catch (FileAlreadyLockedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
@@ -156,13 +156,7 @@ public final class History implements Iterable<History.Entry> {
             }
         }
         Preferences historyPrefs = NbPreferences.forModule(History.class);
-        byte[] historyData;
-        try {
-            historyData = historyPrefs.getByteArray(project.getProjectDirectory().getURL().toString(), new byte[] {});
-        } catch (FileStateInvalidException ex) {
-            Exceptions.printStackTrace(ex);
-            historyData = null;
-        }
+        byte[] historyData = historyPrefs.getByteArray(project.getProjectDirectory().toURL().toString(), new byte[] {});
         History history = new History(project, read(historyData));
         historyCache.put(project, new WeakReference<History>(history));
         return history;

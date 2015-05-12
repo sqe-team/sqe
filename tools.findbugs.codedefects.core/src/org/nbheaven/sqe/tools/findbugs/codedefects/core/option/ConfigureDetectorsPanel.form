@@ -7,7 +7,7 @@
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
@@ -72,12 +72,8 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="detectorTable">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor" postCode="populateTable();&#xa;detectorTable.getColumnModel().getColumn(ENABLED_COLUMN).setMaxWidth(60);&#xa;detectorTable.getColumnModel().getColumn(SPEED_COLUMN).setMaxWidth(60);&#xa;detectorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);">
-              <Table columnCount="3" rowCount="0">
-                <Column editable="false" title="Bug Detector" type="java.lang.String"/>
-                <Column editable="false" title="Speed" type="java.lang.String"/>
-                <Column editable="true" title="Enabled" type="java.lang.Boolean"/>
-              </Table>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="populateTable();&#xa;detectorTable.getColumnModel().getColumn(ENABLED_COLUMN).setMaxWidth(60);&#xa;detectorTable.getColumnModel().getColumn(SPEED_COLUMN).setMaxWidth(60);&#xa;detectorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);">
+              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;&#xa;    },&#xa;    new String [] {&#xa;        &quot;Bug Detector&quot;, &quot;Speed&quot;, &quot;Enabled&quot;&#xa;    }&#xa;) {&#xa;    Class&lt;?&gt;[] types = new Class&lt;?&gt; [] {&#xa;        java.lang.String.class, java.lang.String.class, java.lang.Boolean.class&#xa;    };&#xa;    boolean[] canEdit = new boolean [] {&#xa;        false, false, true&#xa;    };&#xa;&#xa;    public Class&lt;?&gt; getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;&#xa;    public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;        return canEdit [columnIndex];&#xa;    }&#xa;}" type="code"/>
             </Property>
           </Properties>
           <AuxValues>
@@ -121,6 +117,9 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Plugin&gt;"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="restoreDefaultsButton">
       <Properties>

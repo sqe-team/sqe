@@ -44,7 +44,7 @@ public abstract class SQEMenuItem extends NodeAction implements Presenter.Popup 
 
     @Override
     public final HelpCtx getHelpCtx() {
-        return new HelpCtx(SQEMenuItem.class);
+        return new HelpCtx("org.nbheaven.sqe.core.ui.actions.SQEMenuItem");
     }
 
     @Override

@@ -33,7 +33,7 @@ import org.openide.util.Lookup;
  * @author Sven Reimers
  */
 @ActionID(category="Quality", id="org.nbheaven.sqe.tools.findbugs.codedefects.core.annotations.FindBugsAnnotationToggleAction")
-@ActionRegistration(displayName="Toggle FindBugs Errors", iconBase=FindBugsAnnotationToggleAction.ICON)
+@ActionRegistration(displayName="Toggle FindBugs Errors", lazy = true)
 @ActionReference(path="Editors/text/x-java/Toolbars/Default", position=25200, separatorBefore=25100)
 public class FindBugsAnnotationToggleAction extends AbstractShowAnnotationsAction {
 

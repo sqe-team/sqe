@@ -213,7 +213,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
         return tableModel.getColumnName(column);
     }
 
-    public Class getColumnClass(int column) {
+    public Class<?> getColumnClass(int column) {
         return tableModel.getColumnClass(column);
     }
 
@@ -230,7 +230,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
     }
 
     // Helper classes
-    private class Row implements Comparable {
+    private class Row implements Comparable<Row> {
 
         private int modelIndex;
 
@@ -238,12 +238,12 @@ public class SortedRuleTableModel extends AbstractTableModel {
             this.modelIndex = index;
         }
 
-        public int compareTo(Object o) {
+        public int compareTo(Row o) {
             int row1 = modelIndex;
-            int row2 = ((Row) o).modelIndex;
+            int row2 = o.modelIndex;
 
-            for (Iterator it = sortingColumns.iterator(); it.hasNext();) {
-                Directive directive = (Directive) it.next();
+            for (Iterator<Directive> it = sortingColumns.iterator(); it.hasNext();) {
+                Directive directive = it.next();
                 int column = directive.column;
                 Rule o1 = (Rule) tableModel.getValueAt(row1, column);
                 Rule o2 = (Rule) tableModel.getValueAt(row2, column);

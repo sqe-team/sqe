@@ -216,7 +216,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return 0;
     }
 
-    public abstract static class DisplayableKey implements Comparable {
+    public abstract static class DisplayableKey implements Comparable<DisplayableKey> {
 
         public abstract String getDisplayName();
 
@@ -233,11 +233,8 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             return this.getDisplayName().hashCode();
         }
 
-        public final int compareTo(Object object) {
-            if (object instanceof DisplayableKey) {
-                return this.getDisplayName().compareTo(((DisplayableKey) object).getDisplayName());
-            }
-            throw new IllegalArgumentException("Can't be compared to " + object.getClass());
+        public final int compareTo(DisplayableKey object) {
+            return this.getDisplayName().compareTo(object.getDisplayName());
         }
     }
 

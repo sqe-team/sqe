@@ -67,15 +67,11 @@ public final class ProjectUtilities {
 
         ArrayList<String> binaries = new ArrayList<String>();
         for (SourceGroup sg : getJavaSourceGroups(project)) {
-            try {
-                for (URL url : BinaryForSourceQuery.findBinaryRoots(sg.getRootFolder().getURL()).getRoots()) {
-                    File checkFile = FileUtil.archiveOrDirForURL(url);
-                    if (checkFile != null && checkFile.exists()) {
-                        binaries.add(checkFile.getAbsolutePath());
-                    }
+            for (URL url : BinaryForSourceQuery.findBinaryRoots(sg.getRootFolder().toURL()).getRoots()) {
+                File checkFile = FileUtil.archiveOrDirForURL(url);
+                if (checkFile != null && checkFile.exists()) {
+                    binaries.add(checkFile.getAbsolutePath());
                 }
-            } catch (FileStateInvalidException x) {
-                Logger.getLogger(ProjectUtilities.class.getName()).log(Level.INFO, null, x);
             }
         }
         binaries.trimToSize();

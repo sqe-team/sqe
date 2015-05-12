@@ -48,7 +48,7 @@ import org.openide.util.Utilities;
  * @author Florian Vogler
  */
 @ActionID(id = "org.nbheaven.sqe.tools.findbugs.codedefects.core.actions.RunFindBugsAction", category = "Quality")
-@ActionRegistration(displayName = "#LBL_RunFindBugsAction")
+@ActionRegistration(displayName = "#LBL_RunFindBugsAction", lazy = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Quality/CodeDefects", name = "RunFindBugsAction", position = 200),
     @ActionReference(path = "SQE/Projects/Actions/CodeDefects", name = "RunFindBugsAction", position = 200)
