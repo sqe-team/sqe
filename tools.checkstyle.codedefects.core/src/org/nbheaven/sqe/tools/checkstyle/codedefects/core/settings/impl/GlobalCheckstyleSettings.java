@@ -44,15 +44,15 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
     public static final GlobalCheckstyleSettings INSTANCE = new GlobalCheckstyleSettings();
 
     private final Preferences modulePreferences;
-    
+
     private FileObject checkstyleConfigFile;
     private FileObject propertiesFile;
 
     private GlobalCheckstyleSettings() {
         modulePreferences = NbPreferences.forModule(QualityProvider.class).parent().node("checkstyle");
         String configFile = modulePreferences.get("default_checkstyle_config_file", null);
-        String absolutePath = System.getProperty("netbeans.user") + File.separatorChar + "config" +
-                File.separatorChar + "Preferences" + File.separatorChar + modulePreferences.parent().absolutePath();
+        String absolutePath = System.getProperty("netbeans.user") + File.separatorChar + "config"
+                + File.separatorChar + "Preferences" + File.separatorChar + modulePreferences.parent().absolutePath();
         if (null == configFile || null == FileUtil.toFileObject(new File(configFile))) {
             modulePreferences.put("default_checkstyle_config_file", absolutePath + File.separatorChar + "checkstyle.xml");
             try {
@@ -61,12 +61,12 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
                 Exceptions.printStackTrace(ex);
             }
             File targetDirAsFile = new File(absolutePath);
-            if (!targetDirAsFile.exists()){
-                targetDirAsFile.mkdir();                
+            if (!targetDirAsFile.exists()) {
+                targetDirAsFile.mkdir();
             }
             FileObject targetDir = FileUtil.toFileObject(targetDirAsFile);
             FileObject possibleCheckstyleConfigFile = targetDir.getFileObject("checkstyle.xml");
-            if (null == possibleCheckstyleConfigFile  || !possibleCheckstyleConfigFile.isValid()) {
+            if (null == possibleCheckstyleConfigFile || !possibleCheckstyleConfigFile.isValid()) {
                 try {
                     OutputStream os = new FileOutputStream(new File(FileUtil.toFile(targetDir), "checkstyle.xml"));
                     URL checkstyleDefaultURL = CheckstyleSettingsProvider.class.getResource("/org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/sun_checks.xml");
@@ -75,7 +75,7 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
                     checkstyleConfigFile = targetDir.getFileObject("checkstyle.xml");
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
-                } 
+                }
             } else {
                 checkstyleConfigFile = possibleCheckstyleConfigFile;
             }
@@ -157,16 +157,18 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
         } else {
             modulePreferences.put("default_checkstyle_properties_file", "");
         }
-        String absolutePath = System.getProperty("netbeans.user") + File.separatorChar + "config" +
-                File.separatorChar + "Preferences" + File.separatorChar + modulePreferences.parent().absolutePath();
+        String absolutePath = System.getProperty("netbeans.user") + File.separatorChar + "config"
+                + File.separatorChar + "Preferences" + File.separatorChar + modulePreferences.parent().absolutePath();
         String customPropertiesFilePath = absolutePath + File.separatorChar + "custom-checkstyle.properties";
         File file = new File(customPropertiesFilePath);
         try {
             if (!file.exists()) {
-                    file.createNewFile();
+                file.createNewFile();
             }
             FileObject fo = FileUtil.toFileObject(file);
-            getCustomProperties().store(fo.getOutputStream(), "Custom Checkstyle Properties created via SQE");
+            try (OutputStream out = fo.getOutputStream()) {
+                getCustomProperties().store(out, "Custom Checkstyle Properties created via SQE");
+            }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
