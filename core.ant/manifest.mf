@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.core.ant
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/core/ant/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
-OpenIDE-Module-Java-Dependencies: Java > 1.7
+OpenIDE-Module-Java-Dependencies: Java > 1.8

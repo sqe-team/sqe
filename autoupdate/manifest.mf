@@ -4,4 +4,4 @@ OpenIDE-Module: org.nbheaven.sqe.autoupdate
 OpenIDE-Module-Layer: org/nbheaven/sqe/autoupdate/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/autoupdate/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.1
-OpenIDE-Module-Java-Dependencies: Java > 1.7
+OpenIDE-Module-Java-Dependencies: Java > 1.8

@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.wrapper.google.collections
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/google/collections/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
-OpenIDE-Module-Java-Dependencies: Java > 1.7
+OpenIDE-Module-Java-Dependencies: Java > 1.8

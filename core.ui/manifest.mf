@@ -4,4 +4,4 @@ OpenIDE-Module: org.nbheaven.sqe.core.ui
 OpenIDE-Module-Layer: org/nbheaven/sqe/core/ui/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/core/ui/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.5
-OpenIDE-Module-Java-Dependencies: Java > 1.7
+OpenIDE-Module-Java-Dependencies: Java > 1.8

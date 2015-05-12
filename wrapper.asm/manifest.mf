@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.wrapper.asm
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/asm/Bundle.properties
 OpenIDE-Module-Specification-Version: 3.1
-OpenIDE-Module-Java-Dependencies: Java > 1.7
+OpenIDE-Module-Java-Dependencies: Java > 1.8
