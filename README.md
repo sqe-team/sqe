@@ -1,0 +1,1 @@
+nb80 : [![Build Status](https://drone.io/bitbucket.org/fvogler/sqe/status.png)](https://drone.io/bitbucket.org/fvogler/sqe/latest)
