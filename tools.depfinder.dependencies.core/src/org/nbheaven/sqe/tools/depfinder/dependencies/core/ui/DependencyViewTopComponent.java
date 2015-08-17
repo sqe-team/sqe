@@ -1,4 +1,4 @@
-/* Copyright 2005,2006 Sven Reimers, Florian Vogler
+/* Copyright 2005,2006,2015 Sven Reimers, Florian Vogler
  *
  * This file is part of the Software Quality Environment Project.
  *
@@ -32,7 +32,6 @@ import static org.nbheaven.sqe.tools.depfinder.dependencies.core.ui.visual.Depen
 import org.nbheaven.sqe.core.ui.components.filter.FilterChangedListener;
 import org.nbheaven.sqe.core.ui.components.filter.FilterType;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -121,7 +120,7 @@ public final class DependencyViewTopComponent extends TopComponent implements Pr
                 if (refreshModel) {
                     scene.getModel().update();
                 }
-                ProgressHandle progressHandle  = ProgressHandleFactory.createHandle("DependencyFinder - " + ProjectUtils.getInformation(project).getDisplayName());                
+                ProgressHandle progressHandle  = ProgressHandle.createHandle("DependencyFinder - " + ProjectUtils.getInformation(project).getDisplayName());                
                 progressHandle.start(scene.getModel().getPackages().size());
                 int count = 0;
                 for (String packageName : scene.getModel().getPackages()) {
