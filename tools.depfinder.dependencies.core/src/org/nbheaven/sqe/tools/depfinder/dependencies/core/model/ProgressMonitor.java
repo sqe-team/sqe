@@ -1,4 +1,4 @@
-/* Copyright 2005,2006 Sven Reimers, Florian Vogler
+/* Copyright 2005,2006,2015 Sven Reimers, Florian Vogler
  *
  * This file is part of the Software Quality Environment Project.
  *
@@ -23,7 +23,6 @@ import com.jeantessier.dependencyfinder.VerboseListenerBase;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 
 /**
  *
@@ -64,7 +63,7 @@ public class ProgressMonitor extends VerboseListenerBase {
     }
 
     private ProgressHandle createProgressHandle() {
-        return ProgressHandleFactory.createHandle("DependencyFinder - " + projectName);
+        return ProgressHandle.createHandle("DependencyFinder - " + projectName);
     }
 
     public ProgressHandle getProgressHandle() {

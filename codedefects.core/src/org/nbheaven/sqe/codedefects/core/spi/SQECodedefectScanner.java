@@ -1,4 +1,4 @@
-/* Copyright 2005,2006 Sven Reimers, Florian Vogler
+/* Copyright 2005,2006,2015 Sven Reimers, Florian Vogler
  *
  * This file is part of the Software Quality Environment Project.
  *
@@ -18,7 +18,6 @@
 package org.nbheaven.sqe.codedefects.core.spi;
 
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -44,7 +43,7 @@ public final class SQECodedefectScanner {
 
         protected final ProgressHandle getProgressHandle() {
             if (null == progressHandle) {
-                progressHandle = ProgressHandleFactory.createHandle(getDisplayName());
+                progressHandle = ProgressHandle.createHandle(getDisplayName());
             }
             return progressHandle;
         }
