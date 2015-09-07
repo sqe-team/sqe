@@ -26,53 +26,65 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * An annotation implementation marking the line where a FindBug was detected.
- * This class tracks all constructed instances of this annotation type, and can remove
- * any of them. It listens to property-change events from the lines at which the
- * annotations are attached, and removes the annotations when the lines change or are
- * removed.
+ * This class tracks all constructed instances of this annotation type, and can
+ * remove any of them. It listens to property-change events from the lines at
+ * which the annotations are attached, and removes the annotations when the
+ * lines change or are removed.
  */
-public class FindBugsAnnotation extends Annotation
-    implements PropertyChangeListener {
-    /** The annotations currently existing. */
-    private static Map<Project, List<Annotation>> annotationMap = new HashMap<Project, List<Annotation>>();
-    
-    /** The error message shown on mouseover on the findbugs icon */
+public class FindBugsAnnotation extends Annotation implements PropertyChangeListener {
+
+    /**
+     * The annotations currently existing.
+     */
+    private static final Map<Project, List<FindBugsAnnotation>> annotationMap = new ConcurrentHashMap<>();
+    private static final ReentrantLock secureGetCreateLock = new ReentrantLock();
+
+    /**
+     * The error message shown on mouseover on the findbugs icon
+     */
     private String errormessage = null;
-    
-    private FindBugsAnnotation() {        
+
+    private FindBugsAnnotation() {
     }
 
-    public static synchronized final FindBugsAnnotation createNewInstance(
-        final Project project) {
-        FindBugsAnnotation findBugs = new FindBugsAnnotation();
-        List<Annotation> annotations = annotationMap.get(project);
+    public static final FindBugsAnnotation getNewInstance(Project project) {
+        List<FindBugsAnnotation> annotations;
 
-        if (null == annotations) {
-            annotations = new ArrayList<Annotation>();
-            annotationMap.put(project, annotations);
+        secureGetCreateLock.lock();
+        try {
+            annotations = annotationMap.get(project);
+
+            if (null == annotations) {
+                annotations = new ArrayList<>();
+                annotationMap.put(project, annotations);
+            }
+        } finally {
+            secureGetCreateLock.unlock();
+        }
+        FindBugsAnnotation pmd = new FindBugsAnnotation();
+
+        synchronized (annotations) {
+            annotations.add(pmd);
         }
 
-        annotations.add(findBugs);
-
-        return findBugs;
+        return pmd;
     }
 
     public static final void clearAll(Project project) {
-        List<Annotation> annotations = annotationMap.get(project);
+        List<FindBugsAnnotation> annotations = annotationMap.get(project);
 
         if (null != annotations) {
-            for (Annotation annotation : annotations) {
-                annotation.detach();
+            synchronized (annotations) {
+                annotations.stream().forEach(annotation -> annotation.detach());
+                annotations.clear();
             }
-
-            annotations.clear();
         }
     }
 
@@ -81,6 +93,7 @@ public class FindBugsAnnotation extends Annotation
      *
      * @return the string "findbugs-annotation"
      */
+    @Override
     public String getAnnotationType() {
         return "findbugs-annotation";
     }
@@ -99,20 +112,22 @@ public class FindBugsAnnotation extends Annotation
      *
      * @return the short description
      */
+    @Override
     public String getShortDescription() {
         return errormessage;
     }
 
     /**
-     * Invoked when the user change the content on the line where the annotation is
-     * attached
+     * Invoked when the user change the content on the line where the annotation
+     * is attached
      *
      * @param propertyChangeEvent the event fired
      */
+    @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getPropertyName().equals("annotationCount")) {
             return;
-        }        
+        }
         Line line = (Line) propertyChangeEvent.getSource();
         line.removePropertyChangeListener(this);
         detach();

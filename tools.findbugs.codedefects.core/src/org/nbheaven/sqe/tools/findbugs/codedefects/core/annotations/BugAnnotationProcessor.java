@@ -74,7 +74,7 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
         if (javaElement == null) {
             return;
         }
-        FindBugsAnnotation annotation = FindBugsAnnotation.createNewInstance(project);
+        FindBugsAnnotation annotation = FindBugsAnnotation.getNewInstance(project);
         annotation.setErrorMessage(bugInstance.getMessage());
         Line line = javaElement.getLine();
         Part linePart = line.createPart(javaElement.getBeginColumn(), javaElement.getEndColumn());
@@ -83,7 +83,7 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
     }
 
     private static void annotate(final BugInstance bugInstance, final Line line, Project project) {
-        FindBugsAnnotation annotation = FindBugsAnnotation.createNewInstance(project);
+        FindBugsAnnotation annotation = FindBugsAnnotation.getNewInstance(project);
         annotation.setErrorMessage(bugInstance.getMessage());
         annotation.attach(line);
         line.addPropertyChangeListener(annotation);
@@ -184,6 +184,7 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
         return javaSourceProvider.getFileObject();
     }
 
+    @Override
     public void annotateSourceFile(final JavaSource javaSource, final Project project, QualityResult qualityResult) {
         if (null == qualityResult) {
             return;
@@ -194,11 +195,10 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
 
         FileObject fileObject = javaSource.getFileObjects().iterator().next();
         Collection<String> fqnClassNames = SearchUtilities.getFQNClassNames(fileObject);
-        for (String fqnClassName : fqnClassNames) {
-            annotateClass(fqnClassName, fileObject, project, result);
-        }
+        fqnClassNames.stream().forEach((fqnClassName) -> annotateClass(fqnClassName, fileObject, project, result));
     }
 
+    @Override
     public void clearAllAnnotations(Project project) {
         FindBugsAnnotation.clearAll(project);
     }
@@ -223,7 +223,6 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
                     if ((null != sourceLineAnnotation) && (-1 != sourceLineAnnotation.getStartLine())) {
                         Line line = getLineForSourceAnnotation(DataObject.find(fileObject), sourceLineAnnotation);
                         annotate(bug, line, project);
-
                         continue;
                     }
                     FieldAnnotation fieldAnnotation = bug.getPrimaryField();

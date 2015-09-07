@@ -26,59 +26,74 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * An annotation implementation marking the line where a FindBug was detected.
- * This class tracks all constructed instances of this annotation type, and can remove
- * any of them. It listens to property-change events from the lines at which the
- * annotations are attached, and removes the annotations when the lines change or are
- * removed.
+ * This class tracks all constructed instances of this annotation type, and can
+ * remove any of them. It listens to property-change events from the lines at
+ * which the annotations are attached, and removes the annotations when the
+ * lines change or are removed.
  */
 public class PMDAnnotation extends Annotation implements PropertyChangeListener {
-    /** The annotations currently existing. */
-    private static Map<Project, List<Annotation>> annotationMap = new HashMap<Project, List<Annotation>>();
 
-    /** The error message shown on mouseover on the pmd icon */
+    /**
+     * The annotations currently existing.
+     */
+    private static final Map<Project, List<PMDAnnotation>> annotationMap = new ConcurrentHashMap<>();
+    private static final ReentrantLock secureGetCreateLock = new ReentrantLock();
+
+    /**
+     * The error message shown on mouseover on the pmd icon
+     */
     private String errormessage = null;
 
     private PMDAnnotation() {
     }
 
     public static final PMDAnnotation getNewInstance(Project project) {
-        PMDAnnotation pmd = new PMDAnnotation();
-        List<Annotation> annotations = annotationMap.get(project);
+        List<PMDAnnotation> annotations;
 
-        if (null == annotations) {
-            annotations = new ArrayList<Annotation>();
-            annotationMap.put(project, annotations);
+        secureGetCreateLock.lock();
+        try {
+            annotations = annotationMap.get(project);
+
+            if (null == annotations) {
+                annotations = new ArrayList<>();
+                annotationMap.put(project, annotations);
+            }
+        } finally {
+            secureGetCreateLock.unlock();
         }
+        PMDAnnotation pmd = new PMDAnnotation();
 
-        annotations.add(pmd);
+        synchronized (annotations) {
+            annotations.add(pmd);
+        }
 
         return pmd;
     }
 
     public static final void clearAll(Project project) {
-        List<Annotation> annotations = annotationMap.get(project);
+        List<PMDAnnotation> annotations = annotationMap.get(project);
 
         if (null != annotations) {
-            for (Annotation annotation : annotations) {
-                annotation.detach();
+            synchronized (annotations) {
+                annotations.stream().forEach(annotation -> annotation.detach());
+                annotations.clear();
             }
-
-            annotations.clear();
         }
     }
 
     /**
      * The annotation type.
      *
-     * @return the string "findbugs-annotation"
+     * @return the string "pmd-annotation"
      */
+    @Override
     public String getAnnotationType() {
         return "pmd-annotation";
     }
@@ -97,16 +112,18 @@ public class PMDAnnotation extends Annotation implements PropertyChangeListener 
      *
      * @return the short description
      */
+    @Override
     public String getShortDescription() {
         return errormessage;
     }
 
     /**
-     * Invoked when the user change the content on the line where the annotation is
-     * attached
+     * Invoked when the user change the content on the line where the annotation
+     * is attached
      *
      * @param propertyChangeEvent the event fired
      */
+    @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getPropertyName().equals("annotationCount")) {
             return;
