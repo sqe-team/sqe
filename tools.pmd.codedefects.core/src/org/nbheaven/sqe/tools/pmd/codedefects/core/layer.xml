@@ -23,15 +23,6 @@
         <folder name="Quality">
             <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-actions-RunPMDAction.instance"/>
         </folder>
-        <folder name="Window">
-            <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-ui-PMDAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.nbheaven.sqe.tools.pmd.codedefects.core.ui.Bundle"/>
-                <attr name="component" methodvalue="org.nbheaven.sqe.tools.pmd.codedefects.core.ui.PMDTopComponent.findInstance"/>
-                <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.pmd.codedefects.core.ui.Bundle#CTL_PMDAction"/>
-                <attr name="iconBase" stringvalue="org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png"/>
-                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
-            </file>
-        </folder>
     </folder>
     <folder name="Editors">
         <folder name="AnnotationTypes">
@@ -73,16 +64,8 @@
                 </file>
             </folder>
         </folder>
-        <folder name="Window">
-            <folder name="Quality">
-                <file name="PMDAction.shadow">
-                    <attr name="originalFile" stringvalue="Actions/Window/org-nbheaven-sqe-tools-pmd-codedefects-core-ui-PMDAction.instance"/>
-                    <attr name="position" intvalue="300"/>
-                </file>
-            </folder>
-        </folder>
     </folder>
-    
+
     <!-- SQE Integration -->
     <folder name="SQE">
         <folder name="Providers">
@@ -103,18 +86,8 @@
             </folder>
         </folder>
     </folder>
-    
+
     <folder name="Windows2">
-        <folder name="Components">
-            <file name="PMDTopComponent.settings" url="ui/PMDTopComponentSettings.xml"/>
-        </folder>
-        <folder name="Modes">
-            <folder name="output">
-                <file name="PMDTopComponent.wstcref" url="ui/PMDTopComponentWstcref.xml">
-                    <attr name="position" intvalue="3214"/>
-                </file>
-            </folder>
-        </folder>
         <folder name="Groups">
             <folder name="SQEControlCenter">
                 <file name="PMDTopComponent.wstcgrp" url="ui/PMDTopComponentWstcgrp.xml"/>

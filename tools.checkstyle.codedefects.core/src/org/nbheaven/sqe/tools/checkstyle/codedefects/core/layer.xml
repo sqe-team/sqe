@@ -23,15 +23,6 @@
         <folder name="Quality">
             <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
         </folder>
-        <folder name="Window">
-            <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-ui-CheckstyleAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.Bundle"/>
-                <attr name="component" methodvalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.CheckstyleTopComponent.findInstance"/>
-                <attr name="displayName" bundlevalue="org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.Bundle#CTL_CheckstyleAction"/>
-                <attr name="iconBase" stringvalue="org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png"/>
-                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
-            </file>
-        </folder>
     </folder>
     <folder name="Editors">
         <folder name="AnnotationTypes">
@@ -73,14 +64,6 @@
                 </file>
             </folder>
         </folder>
-        <folder name="Window">
-            <folder name="Quality">
-                <file name="CheckstyleAction.shadow">
-                    <attr name="originalFile" stringvalue="Actions/Window/org-nbheaven-sqe-tools-checkstyle-codedefects-core-ui-CheckstyleAction.instance"/>
-                    <attr name="position" intvalue="400"/>
-                </file>
-            </folder>
-        </folder>
     </folder>
 
     <!-- SQE Integration -->
@@ -105,16 +88,6 @@
     </folder>
 
     <folder name="Windows2">
-        <folder name="Components">
-            <file name="CheckstyleTopComponent.settings" url="ui/CheckstyleTopComponentSettings.xml"/>
-        </folder>
-        <folder name="Modes">
-            <folder name="output">
-                <file name="CheckstyleTopComponent.wstcref" url="ui/CheckstyleTopComponentWstcref.xml">
-                    <attr name="position" intvalue="3216"/>
-                </file>
-            </folder>
-        </folder>
         <folder name="Groups">
             <folder name="SQEControlCenter">
                 <file name="CheckstyleTopComponent.wstcgrp" url="ui/CheckstyleTopComponentWstcgrp.xml"/>
