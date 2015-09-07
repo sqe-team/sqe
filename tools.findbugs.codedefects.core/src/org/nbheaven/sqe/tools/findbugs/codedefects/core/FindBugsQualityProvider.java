@@ -27,67 +27,67 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.FindBugsTopComponent;
 import org.openide.util.ImageUtilities;
-import org.nbheaven.sqe.codedefects. ui.UIHandle;
+import org.nbheaven.sqe.codedefects.ui.UIHandle;
 
 /**
  *
  * @author sven
  */
-public class FindBugsQualityProvider extends AbstractQualityProvider {
+public final class FindBugsQualityProvider extends AbstractQualityProvider {
 
-    private static FindBugsQualityProvider findBugsSessionManager;
-    private Lookup lkp = null;
+    private static interface Singleton {
+
+        FindBugsQualityProvider INSTANCE = new FindBugsQualityProvider();
+    }
+
+    private final Lookup lookup;
 
     /**
      * Creates a new instance of FindBugsQualityProvider
      */
-    public FindBugsQualityProvider() {
-        findBugsSessionManager = this;
+    private FindBugsQualityProvider() {
+        lookup = Lookups.fixed(new Object[]{UIHandleImpl.INSTANCE, BugAnnotationProcessor.INSTANCE});
     }
 
     public static FindBugsQualityProvider getDefault() {
-        if (null == findBugsSessionManager) {
-            findBugsSessionManager = new FindBugsQualityProvider();
-        }
-
-        return findBugsSessionManager;
+        return Singleton.INSTANCE;
     }
 
+    @Override
     public FindBugsSession createQualitySession(Project project) {
         return new FindBugsSession(project);
     }
 
+    @Override
     public String getDisplayName() {
         return "Find Bugs";
     }
 
+    @Override
     public String getId() {
         return "FindBugs";
     }
 
+    @Override
     public Icon getIcon() {
         return new ImageIcon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug.png"));
     }
 
+    @Override
     public Class<? extends QualitySession> getQualitySessionClass() {
         return FindBugsSession.class;
     }
 
+    @Override
     public Lookup getLookup() {
-        if (null == lkp) {
-            lkp = Lookups.fixed(new Object[]{
-                        UIHandleImpl.INSTANCE,
-                        BugAnnotationProcessor.INSTANCE
-                    });
-        }
-
-        return lkp;
+        return lookup;
     }
 
     private static class UIHandleImpl implements UIHandle {
 
         private static final UIHandle INSTANCE = new UIHandleImpl();
 
+        @Override
         public void open() {
             FindBugsTopComponent tc = FindBugsTopComponent.findInstance();
             tc.open();

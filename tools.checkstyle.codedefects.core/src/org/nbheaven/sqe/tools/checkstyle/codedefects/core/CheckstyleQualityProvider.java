@@ -33,53 +33,52 @@ import org.nbheaven.sqe.codedefects.ui.UIHandle;
  *
  * @author sven
  */
-public class CheckstyleQualityProvider extends AbstractQualityProvider {
+public final class CheckstyleQualityProvider extends AbstractQualityProvider {
 
-    private static CheckstyleQualityProvider pmdSessionManager;
-    private Lookup lkp = null;
+    private static interface Singleton {
+
+        CheckstyleQualityProvider INSTANCE = new CheckstyleQualityProvider();
+    }
+
+    private final Lookup lookup;
 
     /**
      * Creates a new instance of CheckstyleQualityProvider
      */
-    public CheckstyleQualityProvider() {
-        pmdSessionManager = this;
+    private CheckstyleQualityProvider() {
+        lookup = Lookups.fixed(new Object[]{UIHandleImpl.INSTANCE, AuditEventAnnotationProcessor.INSTANCE});
     }
 
     public static CheckstyleQualityProvider getDefault() {
-        if (null == pmdSessionManager) {
-            pmdSessionManager = new CheckstyleQualityProvider();
-        }
-
-        return pmdSessionManager;
+        return Singleton.INSTANCE;
     }
 
+    @Override
     public CheckstyleSession createQualitySession(Project project) {
         return new CheckstyleSession(project);
     }
 
+    @Override
     public String getDisplayName() {
         return "Checkstyle";
     }
 
+    @Override
     public String getId() {
         return "Checkstyle";
     }
 
+    @Override
     public Class<? extends QualitySession> getQualitySessionClass() {
         return CheckstyleSession.class;
     }
 
+    @Override
     public Lookup getLookup() {
-        if (null == lkp) {
-            lkp = Lookups.fixed(new Object[]{
-                        UIHandleImpl.INSTANCE,
-                        AuditEventAnnotationProcessor.INSTANCE
-                    });
-        }
-
-        return lkp;
+        return lookup;
     }
 
+    @Override
     public Icon getIcon() {
         return new ImageIcon(ImageUtilities.loadImage(
                 "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png"));
@@ -89,6 +88,7 @@ public class CheckstyleQualityProvider extends AbstractQualityProvider {
 
         private static final UIHandle INSTANCE = new UIHandleImpl();
 
+        @Override
         public void open() {
             CheckstyleTopComponent tc = CheckstyleTopComponent.findInstance();
             tc.open();
