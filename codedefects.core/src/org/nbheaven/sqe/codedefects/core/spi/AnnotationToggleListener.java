@@ -36,45 +36,53 @@ import org.openide.windows.TopComponent;
  */
 class AnnotationToggleListener implements PropertyChangeListener {
 
-    private QualityProvider qualityProvider;
-    private Project project;
+    private final QualityProvider qualityProvider;
+    private final Project project;
 
     AnnotationToggleListener(QualityProvider qualityProvider, Project project) {
         this.qualityProvider = qualityProvider;
         this.project = project;
     }
-        
+
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        if (propertyName != null && !propertyName.equals(SQECodedefectProperties.getPropertyNameAnnotateActive(qualityProvider)) && !propertyName.equals(QualitySession.RESULT)) {
-            // #188604: cannot use addPropertyChangeListener(String,PropertyChangeListener) in conjunction with WeakListeners
-            return;
-        }
-        if (!SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualityProvider)) {
-            SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
-            processor.clearAllAnnotations(project);
-        }  else {
-            final SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
-            if (propertyName.equals(QualitySession.RESULT)) {
-                // reset annotations
-                processor.clearAllAnnotations(project);
-            }
-            final QualitySession session = project.getLookup().lookup(qualityProvider.getQualitySessionClass());
-            for (TopComponent topComponent: TopComponent.getRegistry().getOpened()) {
-                DataObject dao = topComponent.getLookup().lookup(DataObject.class);
-                if (null != dao) {
-                    FileObject fo = dao.getPrimaryFile();
-                    final JavaSource javaSource = JavaSource.forFileObject(fo);
-                    if (null != javaSource) {
-                        RequestProcessor.getDefault().post(new Runnable() {
-                            public void run() {
-                                processor.annotateSourceFile(javaSource, project, session.getResult());
-                            }
-                        });
-                    }
-                }
 
+        if (SQECodedefectProperties.getPropertyNameAnnotateActive(qualityProvider).equals(propertyName)) {
+            if (SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualityProvider)) {
+                annotateAllSourceFiles();
+            } else {
+                clearAllAnnotations();
             }
+
+        } else if (QualitySession.RESULT.equals(propertyName)) {
+            // Reset annotations
+            clearAllAnnotations();
+            annotateAllSourceFiles();
+        }
+    }
+
+    private void clearAllAnnotations() {
+        SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
+        processor.clearAllAnnotations(project);
+    }
+
+    private void annotateAllSourceFiles() {
+        final QualitySession session = project.getLookup().lookup(qualityProvider.getQualitySessionClass());
+        final SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
+
+        for (TopComponent topComponent : TopComponent.getRegistry().getOpened()) {
+            DataObject dao = topComponent.getLookup().lookup(DataObject.class);
+            if (null != dao) {
+                FileObject fo = dao.getPrimaryFile();
+                final JavaSource javaSource = JavaSource.forFileObject(fo);
+                if (null != javaSource) {
+                    RequestProcessor.getDefault().execute(() -> {
+                        processor.annotateSourceFile(javaSource, project, session.getResult());
+                    });
+                }
+            }
+
         }
     }
 }

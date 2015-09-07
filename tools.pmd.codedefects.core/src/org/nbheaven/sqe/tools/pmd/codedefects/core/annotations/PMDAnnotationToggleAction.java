@@ -40,10 +40,12 @@ public class PMDAnnotationToggleAction extends AbstractShowAnnotationsAction {
         putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage( "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png")));
     }
     
+    @Override
     public Action createContextAwareInstance(Lookup lookup) {
         return new PMDAnnotationToggleAction(lookup);
     }
     
+    @Override
     protected QualityProvider getQualityProvider() {
         return PMDQualityProvider.getDefault();
     }

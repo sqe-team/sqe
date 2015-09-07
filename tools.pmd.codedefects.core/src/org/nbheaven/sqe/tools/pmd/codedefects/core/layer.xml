@@ -22,6 +22,7 @@
     <folder name="Actions">
         <folder name="Quality">
             <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-actions-RunPMDAction.instance"/>
+            <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-annotations-PMDAnnotationToggleAction.instance"/>
         </folder>
     </folder>
     <folder name="Editors">
@@ -29,24 +30,15 @@
             <file name="pmd-annotation.xml" url="annotations/annotation.xml"/>
         </folder>
         <folder name="text">
-            <folder name="x-jsp"/>
             <folder name="x-java">
-                <folder name="Popup">
-                    <!--file name="SeparatorAfterPaste.instance">
-			<attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                        <attr name="position" intvalue="4100"/>
-                    </file>                    
-                    <file name="generate-fold-popup">
-                        <attr name="position" intvalue="4200"/>
-                    </file-->
-                </folder>
                 <folder name="Toolbars">
                     <folder name="Default">
                         <file name="Separator-before-sqe.instance">
                             <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
                             <attr name="position" intvalue="25100"/>
                         </file>
-                        <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-annotations-PMDAnnotationToggleAction.instance">
+                        <file name="PMDAnnotationToggleAction.shadow">
+                            <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-pmd-codedefects-core-annotations-PMDAnnotationToggleAction.instance"/>
                             <attr name="position" intvalue="25300"/>
                         </file>
                     </folder>
