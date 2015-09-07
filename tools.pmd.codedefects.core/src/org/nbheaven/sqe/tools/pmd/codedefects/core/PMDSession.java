@@ -38,7 +38,8 @@ import org.openide.filesystems.FileObject;
     "org-netbeans-modules-apisupport-project",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project",
-    "org-netbeans-modules-maven"
+    "org-netbeans-modules-maven",
+    "org.netbeans.gradle.project"
 })
 public class PMDSession extends AbstractQualitySession {
 

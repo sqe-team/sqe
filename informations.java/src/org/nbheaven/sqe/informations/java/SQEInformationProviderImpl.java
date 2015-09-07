@@ -34,7 +34,8 @@ import org.netbeans.spi.project.ProjectServiceProvider;
     "org-netbeans-modules-autoproject",
     "org-netbeans-modules-java-j2seproject",
     "org-netbeans-modules-web-project",
-    "org-netbeans-modules-maven"
+    "org-netbeans-modules-maven",
+    "org.netbeans.gradle.project"
 }, projectTypes=@ProjectType(id="org-netbeans-modules-ant-freeform", position=0))
 public class SQEInformationProviderImpl implements SQEInformationProvider {
     
