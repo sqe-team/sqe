@@ -25,6 +25,7 @@ import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.LookupProvider.Registration.ProjectType;
 import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 
@@ -32,23 +33,29 @@ import org.openide.filesystems.FileObject;
  *
  * @author Sven Reimers
  */
-@ProjectServiceProvider(service={PMDSession.class, QualitySession.class}, projectType={
-    "org-netbeans-modules-ant-freeform",
-    "org-netbeans-modules-autoproject",
-    "org-netbeans-modules-apisupport-project",
-    "org-netbeans-modules-java-j2seproject",
-    "org-netbeans-modules-web-project",
-    "org-netbeans-modules-maven",
-    "org.netbeans.gradle.project"
-})
+@ProjectServiceProvider(service = {PMDSession.class, QualitySession.class},
+        projectTypes = {
+            @ProjectType(position = 20, id = "org-netbeans-modules-ant-freeform"),
+            @ProjectType(position = 20, id = "org-netbeans-modules-autoproject"),
+            @ProjectType(position = 20, id = "org-netbeans-modules-apisupport-project"),
+            @ProjectType(position = 20, id = "org-netbeans-modules-java-j2seproject"),
+            @ProjectType(position = 20, id = "org-netbeans-modules-web-project"),
+            @ProjectType(position = 20, id = "org-netbeans-modules-maven"),
+			@ProjectType(position = 20, id = "org.netbeans.gradle.project")
+        }
+)
 public class PMDSession extends AbstractQualitySession {
 
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private PMDResult pmdResult;
-    private AtomicBoolean isRunning;
 
+    /**
+     * Creates a new instance of FindBugsSession
+     *
+     * @param project the project this QualitySession belongs to.
+     */
     public PMDSession(Project project) {
         super(PMDQualityProvider.getDefault(), project);
-        isRunning = new AtomicBoolean(false);
     }
 
     @Override
@@ -56,40 +63,58 @@ public class PMDSession extends AbstractQualitySession {
         return (PMDQualityProvider) super.getProvider();
     }
 
+    @Override
     public PMDResult getResult() {
         return pmdResult;
     }
-    private Lock waitResultLock = new ReentrantLock();
-    private Condition waitForResult = waitResultLock.newCondition();
 
-    public PMDResult computeResultAndWait(FileObject... fileObjects) {
-        PMDScannerJob job = new PMDFileScannerJob(getProject(), fileObjects);
+    private final Lock waitResultLock = new ReentrantLock();
+    private final Condition waitForResult = waitResultLock.newCondition();
+
+    /**
+     * Analyze a single file. Call within a Java source task at
+     * {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
+     *
+     * @param sourceFile The file to analyze
+     * @return the result of the analyzation
+     */
+    public PMDResult computeResultAndWait(FileObject sourceFile) {
+        PMDScannerJob job = new PMDFileScannerJob(getProject(), sourceFile);
         SQECodedefectScanner.postAndWait(job);
         return job.getPMDResult();
     }
 
     public PMDResult computeResultAndWait() {
         waitResultLock.lock();
-        computeResult();
-        waitForResult.awaitUninterruptibly();
-        waitResultLock.unlock();
-        return this.pmdResult;
+        try {
+            computeResult();
+            while (isRunning.get()) {
+                waitForResult.awaitUninterruptibly();
+            }
+            return this.pmdResult;
+        } finally {
+            waitResultLock.unlock();
+        }
     }
 
+    @Override
     public void computeResult() {
         if (!isRunning.getAndSet(true)) {
             PMDScannerJob job = new PMDProjectScannerJob(this);
             SQECodedefectScanner.post(job);
         } else {
-//            System.out.println("Skip PMD...");
+//            System.out.println("PMD is already running - Skip call to computeResult()");
         }
     }
 
     void scanningDone() {
         waitResultLock.lock();
-        isRunning.set(false);
-        waitForResult.signalAll();
-        waitResultLock.unlock();
+        try {
+            isRunning.set(false);
+            waitForResult.signalAll();
+        } finally {
+            waitResultLock.unlock();
+        }
     }
 
     void setResult(PMDResult pmdResult) {
