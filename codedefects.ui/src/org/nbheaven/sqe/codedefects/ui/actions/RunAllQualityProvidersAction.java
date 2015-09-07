@@ -31,7 +31,9 @@ import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.ui.UIHandle;
 import org.nbheaven.sqe.codedefects.ui.utils.UiUtils;
+import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
+import org.openide.nodes.Node;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -49,7 +51,7 @@ import org.openide.util.Utilities;
 public class RunAllQualityProvidersAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
 
     private Lookup context;
-    private Lookup.Result<Project> lkpInfo;
+    private Lookup.Result<Node> lkpInfo;
 
     public RunAllQualityProvidersAction() {
         this(Utilities.actionsGlobalContext());
@@ -62,6 +64,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
         this.context = context;
     }
 
+    @Override
     public Action createContextAwareInstance(Lookup context) {
         return new RunAllQualityProvidersAction(context);
     }
@@ -82,37 +85,34 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
 
         //The thing we want to listen for the presence or absence of
         //on the global selection
-        Lookup.Template<Project> tpl = new Lookup.Template<Project>(Project.class);
+        Lookup.Template<Node> tpl = new Lookup.Template<>(Node.class);
         lkpInfo = context.lookup(tpl);
         lkpInfo.addLookupListener(this);
         resultChanged(null);
     }
 
+    @Override
     public void resultChanged(LookupEvent ev) {
         updateEnableState();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         updateEnableState();
     }
 
     private void updateEnableState() {
         if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    updateEnableState();
-                }
-            });
-            return;
+            EventQueue.invokeLater(this::updateEnableState);
+        } else {
+            setEnabled(areQualityProvidersActive(getActiveProject()));
         }
-        setEnabled(areQualityProvidersActive(getActiveProject()));
     }
 
     private Project getActiveProject() {
-        Collection<? extends Project> projects = lkpInfo.allInstances();
-        if (projects.size() == 1) {
-            Project project = projects.iterator().next();
+        Collection<? extends Node> nodes = lkpInfo.allInstances();
+        if (nodes.size() == 1) {
+            Project project = SQEProjectSupport.findProject(nodes.iterator().next());
             return project;
         }
         return null;
@@ -120,24 +120,24 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
 
     private static boolean areQualityProvidersActive(Project project) {
         if (null != project) {
-            for (QualityProvider provider : SQEUtilities.getProviders()) {
-                if (provider.isValidFor(project) && SQECodedefectProperties.isQualityProviderActive(project, provider)) {
-                    return true;
-                }
+            if (SQEUtilities.getProviders().stream()
+                    .anyMatch((provider) -> (provider.isValidFor(project)
+                            && SQECodedefectProperties.isQualityProviderActive(project, provider)))) {
+                return true;
             }
         }
         return false;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         Project project = getActiveProject();
         if (null != project) {
-            for (QualityProvider provider : SQEUtilities.getProviders()) {
-                if (provider.isValidFor(project) && SQECodedefectProperties.isQualityProviderActive(project, provider)) {
-                    ComputeResultTask computeResultTask = new ComputeResultTask(project, provider);
-                    RequestProcessor.getDefault().post(computeResultTask);
-                }
-            }
+            SQEUtilities.getProviders().stream()
+                    .filter((provider) -> (provider.isValidFor(project)
+                            && SQECodedefectProperties.isQualityProviderActive(project, provider)))
+                    .map((provider) -> new ComputeResultTask(project, provider))
+                    .forEach((computeResultTask) -> RequestProcessor.getDefault().post(computeResultTask));
         }
     }
 
@@ -166,6 +166,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
             this.qualityProvider = qualityProvider;
         }
 
+        @Override
         public final void run() {
             UIHandle uiHandle = UiUtils.getUIHandle(qualityProvider);
             if (null != uiHandle) {

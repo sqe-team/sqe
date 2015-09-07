@@ -63,7 +63,7 @@
         <folder name="Providers">
             <folder name="CodeDefects">
                 <file name="org-nbheaven-sqe-tools-checkstyle-codedefects-core-CheckstyleQualityProvider.instance">
-                    <attr name="position" intvalue="300"/>
+                    <attr name="position" intvalue="400"/>
                 </file>
             </folder>
         </folder>

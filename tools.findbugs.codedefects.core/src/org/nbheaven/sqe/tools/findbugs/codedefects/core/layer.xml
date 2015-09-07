@@ -21,6 +21,7 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Quality">
+            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
             <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-annotations-FindBugsAnnotationToggleAction.instance"/>
         </folder>
     </folder>
@@ -46,12 +47,34 @@
         </folder>
     </folder>
 
+    <folder name="Menu">
+        <folder name="Quality">
+            <folder name="CodeDefects">
+                <file name="RunFindBugsAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
+                    <attr name="position" intvalue="200"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+
+    <!-- SQE Integration -->
     <folder name="SQE">
         <folder name="Providers">
             <folder name="CodeDefects">
                 <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-FindBugsQualityProvider.instance">
-                    <attr name="position" intvalue="100"/>
+                    <attr name="position" intvalue="200"/>
                 </file>
+            </folder>
+        </folder>
+        <folder name="Projects">
+            <folder name="Actions">
+                <folder name="CodeDefects">
+                    <file name="RunFindBugsAction.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
+                        <attr name="position" intvalue="200"/>
+                    </file>
+                </folder>
             </folder>
         </folder>
     </folder>

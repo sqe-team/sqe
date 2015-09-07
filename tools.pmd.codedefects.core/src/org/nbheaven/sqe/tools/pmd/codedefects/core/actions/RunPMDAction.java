@@ -30,7 +30,9 @@ import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.ui.PMDTopComponent;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.core.api.SQEManager;
+import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
+import org.openide.nodes.Node;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -40,13 +42,14 @@ import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
- * Action to trigger findbugs run on actual project
+ * Action to trigger pmd run on actual project
+ *
  * @author Florian Vogler
  */
 public class RunPMDAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
 
     private Lookup context;
-    private Lookup.Result<Project> lkpInfo;
+    private Lookup.Result<Node> lkpInfo;
 
     public RunPMDAction() {
         this(Utilities.actionsGlobalContext());
@@ -59,6 +62,7 @@ public class RunPMDAction extends AbstractAction implements LookupListener, Cont
         this.context = context;
     }
 
+    @Override
     public Action createContextAwareInstance(Lookup context) {
         return new RunPMDAction(context);
     }
@@ -77,19 +81,20 @@ public class RunPMDAction extends AbstractAction implements LookupListener, Cont
         }
         SQECodedefectProperties.addPropertyChangeListener(SQECodedefectProperties.getPropertyNameActive(PMDQualityProvider.getDefault()), this);//TODO Make weak !!!
 
-
         //The thing we want to listen for the presence or absence of
         //on the global selection
-        Lookup.Template<Project> tpl = new Lookup.Template<Project>(Project.class);
+        Lookup.Template<Node> tpl = new Lookup.Template<>(Node.class);
         lkpInfo = context.lookup(tpl);
         lkpInfo.addLookupListener(this);
         resultChanged(null);
     }
 
+    @Override
     public void resultChanged(LookupEvent ev) {
         updateEnableState();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(SQECodedefectProperties.getPropertyNameActive(PMDQualityProvider.getDefault()))) {
             updateEnableState();
@@ -98,26 +103,22 @@ public class RunPMDAction extends AbstractAction implements LookupListener, Cont
 
     private void updateEnableState() {
         if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    updateEnableState();
-                }
-            });
-            return;
+            EventQueue.invokeLater(this::updateEnableState);
+        } else {
+            setEnabled(isEnabled(getActiveProject()));
         }
-        setEnabled(isEnabled(getActiveProject()));
     }
 
     private Project getActiveProject() {
-        Collection<? extends Project> projects = lkpInfo.allInstances();
-        if (projects.size() == 1) {
-            Project project = projects.iterator().next();
+        Collection<? extends Node> nodes = lkpInfo.allInstances();
+        if (nodes.size() == 1) {
+            Project project = SQEProjectSupport.findProject(nodes.iterator().next());
             return project;
         }
         return null;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         Project project = getActiveProject();
         if (null != project) {

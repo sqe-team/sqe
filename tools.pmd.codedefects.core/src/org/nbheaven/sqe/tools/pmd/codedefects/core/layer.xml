@@ -63,7 +63,7 @@
         <folder name="Providers">
             <folder name="CodeDefects">
                 <file name="org-nbheaven-sqe-tools-pmd-codedefects-core-PMDQualityProvider.instance">
-                    <attr name="position" intvalue="200"/>
+                    <attr name="position" intvalue="300"/>
                 </file>
             </folder>
         </folder>
