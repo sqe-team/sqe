@@ -50,6 +50,7 @@ import org.openide.util.Utilities;
  */
 public class RunAllQualityProvidersAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
 
+    private static final RequestProcessor REQUEST_PROCESSOR = new RequestProcessor(RunAllQualityProvidersAction.class);
     private Lookup context;
     private Lookup.Result<Node> lkpInfo;
 
@@ -137,7 +138,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
                     .filter((provider) -> (provider.isValidFor(project)
                             && SQECodedefectProperties.isQualityProviderActive(project, provider)))
                     .map((provider) -> new ComputeResultTask(project, provider))
-                    .forEach((computeResultTask) -> RequestProcessor.getDefault().post(computeResultTask));
+                    .forEach((computeResultTask) -> REQUEST_PROCESSOR.post(computeResultTask));
         }
     }
 
