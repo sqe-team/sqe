@@ -73,14 +73,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.bcel</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>5.2</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.nbheaven.sqe.wrapper.findbugs</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>

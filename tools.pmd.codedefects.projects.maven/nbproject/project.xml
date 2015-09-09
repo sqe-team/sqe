@@ -65,11 +65,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.pmd.core</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.wrapper.pmd</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>4.2.5</specification-version>
+                        <specification-version>5.3.3</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

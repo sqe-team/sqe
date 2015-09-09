@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.wrapper.findbugs.contrib
 OpenIDE-Module-Layer: org/nbheaven/sqe/wrapper/findbugs/contrib/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/findbugs/contrib/Bundle.properties
-OpenIDE-Module-Specification-Version: 6.0.0
+OpenIDE-Module-Specification-Version: 6.2.3
 OpenIDE-Module-Java-Dependencies: Java > 1.8

@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.nbheaven.sqe.wrapper.findbugs
 OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/findbugs/Bundle.properties
-OpenIDE-Module-Specification-Version: 3.0.0
+OpenIDE-Module-Specification-Version: 3.0.1
 OpenIDE-Module-Java-Dependencies: Java > 1.8

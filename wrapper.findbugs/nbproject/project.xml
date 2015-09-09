@@ -23,40 +23,7 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>org.nbheaven.sqe.wrapper.findbugs</code-name-base>
             <suite-component/>
-            <module-dependencies>
-                <dependency>
-                    <code-name-base>org.apache.commons.lang</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>2.4.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.asm</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>3.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.bcel</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>5.2</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.dom4j</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-            </module-dependencies>
+            <module-dependencies/>
             <public-packages>
                 <package>edu.umd.cs.findbugs</package>
                 <package>edu.umd.cs.findbugs.annotations</package>
@@ -114,30 +81,63 @@
                 <package>javax.annotation.concurrent</package>
                 <package>javax.annotation.meta</package>
                 <package>net.jcip.annotations</package>
+                <package>org.apache.bcel.classfile</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/annotations.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/annotations.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/findbugs.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/findbugs.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jcip-annotations.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jcip-annotations.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/findbugs-ant.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/findbugs-ant.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/findbugs.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/findbugs.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/annotations.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/annotations.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/findbugs-ant.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/findbugs-ant.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/jcip-annotations.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/jcip-annotations.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jsr305.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jsr305.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/jsr305.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/jsr305.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jFormatString.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jFormatString.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/jFormatString.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/jFormatString.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/ant.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/ant.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/asm-debug-all-5.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/asm-debug-all-5.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/bcel-6.0-SNAPSHOT.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/bcel-6.0-SNAPSHOT.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/commons-lang-2.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/commons-lang-2.6.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/dom4j-1.6.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/dom4j-1.6.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/jaxen-1.1.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/jaxen-1.1.6.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/jdepend-2.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/jdepend-2.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/findbugs/yjp-controller-api-redist.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/yjp-controller-api-redist.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

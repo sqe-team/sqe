@@ -22,7 +22,7 @@
     <folder name="FindBugs">
         <folder name="Plugins">
             <file name="FindBugs-Contrib-Plugin">
-                <attr name="jar" urlvalue="nbinst:///modules/ext/plugin/fb-contrib.jar"/>
+                <attr name="jar" urlvalue="nbinst:///modules/ext/findbugs/plugin/fb-contrib-6.2.3.jar"/>
             </file>
         </folder>
     </folder>    
