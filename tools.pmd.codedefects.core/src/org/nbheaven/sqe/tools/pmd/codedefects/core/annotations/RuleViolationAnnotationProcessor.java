@@ -66,8 +66,7 @@ public final class RuleViolationAnnotationProcessor
         line.show(Line.ShowOpenType.OPEN, Line.ShowVisibilityType.FOCUS, ruleViolation.getBeginColumn());
     }
 
-    public static Line getLineForRuleViolation(FileObject fo,
-            RuleViolation ruleViolation) {
+    public static Line getLineForRuleViolation(FileObject fo, RuleViolation ruleViolation) {
         try {
             DataObject dao = DataObject.find(fo);
             LineCookie cookie = dao.getCookie(LineCookie.class);
@@ -144,8 +143,7 @@ public final class RuleViolationAnnotationProcessor
         if (null != ruleViolations) {
             for (RuleViolation ruleViolation : ruleViolations) {
                 try {
-                    Line line = getLineForRuleViolation(fileObject,
-                            ruleViolation);
+                    Line line = getLineForRuleViolation(fileObject, ruleViolation);
                     annotate(ruleViolation, line, project);
                 } catch (RuntimeException rex) {
                     ErrorManager.getDefault().notify(rex);

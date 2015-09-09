@@ -30,17 +30,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.util.Iterator;
-
+import org.openide.modules.Places;
 
 /**
  *
  * @author Sven Reimers
  */
-final public class FindBugsSettings { 
+final public class FindBugsSettings {
+
     private static UserPreferences userPreferences;
-    private static String SETTINGS_DIR = System.getProperty("netbeans.user") + File.separatorChar +
-        "config" + File.separatorChar + "findbugs";
-    private static String SETTINGS_FILE = "UserPreferences.findbugs";
+    private static final File SETTINGS_DIR = new File(Places.getUserDirectory(), "config" + File.separatorChar + "findbugs");
+    private static final String SETTINGS_FILE = "UserPreferences.findbugs";
 
     static public UserPreferences getUserPreferences() {
         if (null == userPreferences) {
@@ -52,11 +52,11 @@ final public class FindBugsSettings {
 
     private static UserPreferences createUserPreferences() {
         UserPreferences up = UserPreferences.createDefaultUserPreferences();
-        File settingsDir = new File(SETTINGS_DIR);
-        File settingsFile = new File(SETTINGS_DIR + File.separator + SETTINGS_FILE);
 
-        if (!settingsDir.exists()) {
-            settingsDir.mkdirs();
+        File settingsFile = new File(SETTINGS_DIR, SETTINGS_FILE);
+
+        if (!SETTINGS_DIR.exists()) {
+            SETTINGS_DIR.mkdirs();
         }
 
         try {

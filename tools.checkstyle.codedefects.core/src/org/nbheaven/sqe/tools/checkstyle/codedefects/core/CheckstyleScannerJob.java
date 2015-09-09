@@ -40,7 +40,9 @@ import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
+import org.openide.modules.Places;
 import org.openide.util.Exceptions;
+import org.openide.util.Utilities;
 import org.xml.sax.InputSource;
 
 /**
@@ -104,7 +106,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
             // compensate for bad configuration
             if (!properties.containsKey("checkstyle.cache.file")) {
                 properties.put("checkstyle.cache.file",
-                        System.getProperty("netbeans.user") + File.separatorChar +
+                        Places.getUserDirectory().getAbsolutePath() + File.separatorChar +
                         "cache" + File.separatorChar + "checkstyle");
             }
             if (!properties.containsKey("checkstyle.header.file")) {
@@ -129,9 +131,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
                 checker.setModuleClassLoader(Checker.class.getClassLoader());
                 checker.configure(config);
             }
-        } catch (CheckstyleException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        } catch (CheckstyleException | IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
             if (null != istream) {
@@ -171,10 +171,13 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
                 getProgressHandle().progress(i++);
                 getProgressHandle().progress("Scanning " + fo.getName());
 
-                files.add(new File(fo.toURI()));
+                files.add(Utilities.toFile(fo.toURI()));
                 checker.process(files);
                 files.clear();
                 getProgressHandle().progress("Looking for next file");
+            } catch (CheckstyleException ex) {
+                //TODO Add better execption handling
+                Exceptions.printStackTrace(ex);
             } finally {
                 if (null != reader) {
                     try {
