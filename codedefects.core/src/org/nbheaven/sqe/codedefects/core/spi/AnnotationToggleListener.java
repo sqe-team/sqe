@@ -19,13 +19,14 @@ package org.nbheaven.sqe.codedefects.core.spi;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
-import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.TopComponent;
@@ -71,18 +72,18 @@ class AnnotationToggleListener implements PropertyChangeListener {
         final QualitySession session = project.getLookup().lookup(qualityProvider.getQualitySessionClass());
         final SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
 
-        for (TopComponent topComponent : TopComponent.getRegistry().getOpened()) {
-            DataObject dao = topComponent.getLookup().lookup(DataObject.class);
-            if (null != dao) {
-                FileObject fo = dao.getPrimaryFile();
-                final JavaSource javaSource = JavaSource.forFileObject(fo);
-                if (null != javaSource) {
-                    RequestProcessor.getDefault().execute(() -> {
-                        processor.annotateSourceFile(javaSource, project, session.getResult());
-                    });
-                }
-            }
+        Set<JavaSource> javaSources = TopComponent.getRegistry().getOpened().stream()
+                .map(topComponent -> topComponent.getLookup().lookup(DataObject.class))
+                .filter(dao -> null != dao)
+                .map(dao -> JavaSource.forFileObject(dao.getPrimaryFile()))
+                .filter(javaSource -> null != javaSource)
+                .collect(Collectors.toSet());
 
-        }
+        javaSources.forEach((javaSource) -> {
+            RequestProcessor.getDefault().execute(() -> {
+                System.out.println("annotateSourceFile - processor: " + processor.getClass().getName() + " - " + javaSource);
+                processor.annotateSourceFile(javaSource, project, session.getResult());
+            });
+        });
     }
 }
