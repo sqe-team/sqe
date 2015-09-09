@@ -30,25 +30,32 @@ import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.filesystems.FileObject;
 
 /**
- * 
+ *
  * @author Sven Reimers
  */
-@ProjectServiceProvider(service={FindBugsSession.class, QualitySession.class}, projectType={
-    "org-netbeans-modules-autoproject",
-    "org-netbeans-modules-apisupport-project",
-    "org-netbeans-modules-java-j2seproject",
-    "org-netbeans-modules-web-project",
-    "org-netbeans-modules-maven",
-    "org.netbeans.gradle.project"
-}, projectTypes=@ProjectType(id="org-netbeans-modules-ant-freeform", position=0))
+@ProjectServiceProvider(service = {FindBugsSession.class, QualitySession.class},
+        projectTypes = {
+            @ProjectType(position = 10, id = "org-netbeans-modules-ant-freeform"),
+            @ProjectType(position = 10, id = "org-netbeans-modules-autoproject"),
+            @ProjectType(position = 10, id = "org-netbeans-modules-apisupport-project"),
+            @ProjectType(position = 10, id = "org-netbeans-modules-java-j2seproject"),
+            @ProjectType(position = 10, id = "org-netbeans-modules-web-project"),
+            @ProjectType(position = 10, id = "org-netbeans-modules-maven"),
+			@ProjectType(position = 10, id = "org.netbeans.gradle.project")
+        }
+)
 public class FindBugsSession extends AbstractQualitySession {
 
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private FindBugsResult findBugsResult;
-    private AtomicBoolean isRunning;
 
+    /**
+     * Creates a new instance of FindBugsSession
+     *
+     * @param project the project this QualitySession belongs to.
+     */
     public FindBugsSession(Project project) {
         super(FindBugsQualityProvider.getDefault(), project);
-        isRunning = new AtomicBoolean(false);
     }
 
     @Override
@@ -56,16 +63,20 @@ public class FindBugsSession extends AbstractQualitySession {
         return (FindBugsQualityProvider) super.getProvider();
     }
 
+    @Override
     public FindBugsResult getResult() {
         return findBugsResult;
     }
 
-    private Lock waitResultLock = new ReentrantLock();
-    private Condition waitForResult = waitResultLock.newCondition();
+    private final Lock waitResultLock = new ReentrantLock();
+    private final Condition waitForResult = waitResultLock.newCondition();
 
     /**
-     * Analyze a single file.
-     * Call within a Java source task at {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
+     * Analyze a single file. Call within a Java source task at
+     * {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
+     *
+     * @param sourceFile The file to analyze
+     * @return the result of the analyzation
      */
     public FindBugsResult computeResultAndWait(FileObject sourceFile) {
         FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), sourceFile);
@@ -86,13 +97,14 @@ public class FindBugsSession extends AbstractQualitySession {
         }
     }
 
+    @Override
     public void computeResult() {
         if (!isRunning.getAndSet(true)) {
             FindBugsScannerJob job = new FindBugsProjectScannerJob(this.getProject());
             SQECodedefectScanner.post(job);
         } else {
-            //            System.out.println("Skip FindBugs...");
-            }
+//            System.out.println("FindBugs is already running - Skip call to computeResult()");
+        }
     }
 
     void scanningDone() {

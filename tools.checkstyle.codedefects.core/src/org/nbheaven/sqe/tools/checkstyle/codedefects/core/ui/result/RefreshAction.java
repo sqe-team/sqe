@@ -24,7 +24,6 @@ import javax.swing.ImageIcon;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.RequestProcessor;
 
 class RefreshAction extends AbstractAction {
 
@@ -43,13 +42,9 @@ class RefreshAction extends AbstractAction {
         return null != session && super.isEnabled();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         final CheckstyleSession session = bugTreePanel.getSession();
-        RequestProcessor.getDefault().post(new Runnable() {
-
-            public void run() {
-                session.computeResult();
-            }
-        });
+        session.computeResult();
     }
 }

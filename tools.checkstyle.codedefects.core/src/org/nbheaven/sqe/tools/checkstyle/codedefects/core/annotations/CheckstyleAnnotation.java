@@ -26,60 +26,74 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * An annotation implementation marking the line where a Checkstyle Audit was detected.
- * This class tracks all constructed instances of this annotation type, and can remove
- * any of them. It listens to property-change events from the lines at which the
- * annotations are attached, and removes the annotations when the lines change or are
- * removed.
+ * An annotation implementation marking the line where a Checkstyle Audit was
+ * detected. This class tracks all constructed instances of this annotation
+ * type, and can remove any of them. It listens to property-change events from
+ * the lines at which the annotations are attached, and removes the annotations
+ * when the lines change or are removed.
  */
-public class CheckstyleAnnotation extends Annotation
-    implements PropertyChangeListener {
-    /** The annotations currently existing. */
-    private static Map<Project, List<Annotation>> annotationMap = new HashMap<Project, List<Annotation>>();
+public class CheckstyleAnnotation extends Annotation implements PropertyChangeListener {
 
-    /** The error message shown on mouseover on the checkstyle icon */
+    /**
+     * The annotations currently existing.
+     */
+    private static final Map<Project, List<CheckstyleAnnotation>> annotationMap = new ConcurrentHashMap<>();
+    private static final ReentrantLock secureGetCreateLock = new ReentrantLock();
+
+    /**
+     * The error message shown on mouseover on the checkstyle icon
+     */
     private String errormessage = null;
 
     private CheckstyleAnnotation() {
     }
 
     public static final CheckstyleAnnotation getNewInstance(Project project) {
-        CheckstyleAnnotation pmd = new CheckstyleAnnotation();
-        List<Annotation> annotations = annotationMap.get(project);
+        List<CheckstyleAnnotation> annotations;
 
-        if (null == annotations) {
-            annotations = new ArrayList<Annotation>();
-            annotationMap.put(project, annotations);
+        secureGetCreateLock.lock();
+        try {
+            annotations = annotationMap.get(project);
+
+            if (null == annotations) {
+                annotations = new ArrayList<>();
+                annotationMap.put(project, annotations);
+            }
+        } finally {
+            secureGetCreateLock.unlock();
         }
+        CheckstyleAnnotation pmd = new CheckstyleAnnotation();
 
-        annotations.add(pmd);
+        synchronized (annotations) {
+            annotations.add(pmd);
+        }
 
         return pmd;
     }
 
     public static final void clearAll(Project project) {
-        List<Annotation> annotations = annotationMap.get(project);
+        List<CheckstyleAnnotation> annotations = annotationMap.get(project);
 
         if (null != annotations) {
-            for (Annotation annotation : annotations) {
-                annotation.detach();
+            synchronized (annotations) {
+                annotations.stream().forEach(annotation -> annotation.detach());
+                annotations.clear();
             }
-
-            annotations.clear();
         }
     }
 
     /**
      * The annotation type.
      *
-     * @return the string "findbugs-annotation"
+     * @return the string "checkstyle-annotation"
      */
+    @Override
     public String getAnnotationType() {
         return "checkstyle-annotation";
     }
@@ -98,20 +112,22 @@ public class CheckstyleAnnotation extends Annotation
      *
      * @return the short description
      */
+    @Override
     public String getShortDescription() {
         return errormessage;
     }
 
     /**
-     * Invoked when the user change the content on the line where the annotation is
-     * attached
+     * Invoked when the user change the content on the line where the annotation
+     * is attached
      *
      * @param propertyChangeEvent the event fired
      */
+    @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getPropertyName().equals("annotationCount")) {
             return;
-        }        
+        }
         Line line = (Line) propertyChangeEvent.getSource();
         line.removePropertyChangeListener(this);
         detach();

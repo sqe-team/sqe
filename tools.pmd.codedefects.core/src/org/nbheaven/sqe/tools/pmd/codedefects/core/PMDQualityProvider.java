@@ -33,54 +33,53 @@ import org.nbheaven.sqe.codedefects.ui.UIHandle;
  *
  * @author sven
  */
-public class PMDQualityProvider extends AbstractQualityProvider {
+public final class PMDQualityProvider extends AbstractQualityProvider {
 
-    private static PMDQualityProvider pmdSessionManager;
-    private Lookup lkp = null;
+    private static interface Singleton {
+
+        PMDQualityProvider INSTANCE = new PMDQualityProvider();
+    }
+
+    private final Lookup lookup;
 
     /**
      * Creates a new instance of PMDQualityProvider
      */
-    public PMDQualityProvider() {
-        pmdSessionManager = this;
+    private PMDQualityProvider() {
+        lookup = Lookups.fixed(new Object[]{UIHandleImpl.INSTANCE, RuleViolationAnnotationProcessor.INSTANCE});
     }
 
     public static PMDQualityProvider getDefault() {
-        if (null == pmdSessionManager) {
-            pmdSessionManager = new PMDQualityProvider();
-        }
-
-        return pmdSessionManager;
+        return Singleton.INSTANCE;
     }
 
+    @Override
     public PMDSession createQualitySession(Project project) {
         return new PMDSession(project);
     }
 
+    @Override
     public String getDisplayName() {
         return "PMD";
     }
 
+    @Override
     public String getId() {
         return "PMD";
     }
 
+    @Override
     public Lookup getLookup() {
-        if (null == lkp) {
-            lkp = Lookups.fixed(new Object[]{
-                        UIHandleImpl.INSTANCE,
-                        RuleViolationAnnotationProcessor.INSTANCE
-                    });
-        }
-
-        return lkp;
+        return lookup;
     }
 
+    @Override
     public Icon getIcon() {
         return new ImageIcon(ImageUtilities.loadImage(
                 "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png"));
     }
 
+    @Override
     public Class<? extends QualitySession> getQualitySessionClass() {
         return PMDSession.class;
     }
@@ -89,6 +88,7 @@ public class PMDQualityProvider extends AbstractQualityProvider {
 
         private static final UIHandle INSTANCE = new UIHandleImpl();
 
+        @Override
         public void open() {
             PMDTopComponent tc = PMDTopComponent.findInstance();
             tc.open();

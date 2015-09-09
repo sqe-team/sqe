@@ -32,6 +32,7 @@ import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSet
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.modules.Places;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
@@ -51,7 +52,7 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
     private GlobalCheckstyleSettings() {
         modulePreferences = NbPreferences.forModule(QualityProvider.class).parent().node("checkstyle");
         String configFile = modulePreferences.get("default_checkstyle_config_file", null);
-        String absolutePath = System.getProperty("netbeans.user") + File.separatorChar + "config"
+        String absolutePath = Places.getUserDirectory().getAbsolutePath() + File.separatorChar + "config"
                 + File.separatorChar + "Preferences" + File.separatorChar + modulePreferences.parent().absolutePath();
         if (null == configFile || null == FileUtil.toFileObject(new File(configFile))) {
             modulePreferences.put("default_checkstyle_config_file", absolutePath + File.separatorChar + "checkstyle.xml");

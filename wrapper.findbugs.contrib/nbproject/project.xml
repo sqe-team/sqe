@@ -29,15 +29,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>1.3.4</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.bcel</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>5.2</specification-version>
+                        <specification-version>3.0.1</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
@@ -48,8 +40,8 @@
                 <package>com.mebigfatguy.fbcontrib.utils</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/plugin/fb-contrib.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/plugin/fb-contrib.jar</binary-origin>
+                <runtime-relative-path>ext/findbugs/plugin/fb-contrib-6.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/findbugs/plugin/fb-contrib-6.2.3.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

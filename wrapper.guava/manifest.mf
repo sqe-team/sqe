@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.nbheaven.sqe.wrapper.guava
-OpenIDE-Module-Localizing-Bundle: org/nbheaven/sqe/wrapper/guava/Bundle.properties
-OpenIDE-Module-Specification-Version: 18.0
-OpenIDE-Module-Java-Dependencies: Java > 1.8

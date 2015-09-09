@@ -31,6 +31,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
+import org.openide.modules.Places;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -40,11 +41,11 @@ import org.openide.util.Lookup;
  */
 public final class PMDSettingsImpl implements PMDSettings {
 
-    private static String SETTINGS_DIR = System.getProperty("netbeans.user") + File.separatorChar +
-            "config" + File.separatorChar + "pmd";
-    private static String SETTINGS_FILE = "pmd.settings";
+    private static final File SETTINGS_DIR = new File(Places.getUserDirectory(), "config" + File.separatorChar + "pmd");
+    private static final String SETTINGS_FILE = "pmd.settings";
+
     public static PMDSettings globalSettings() {
-        return new PMDSettingsImpl(new File(SETTINGS_DIR + File.separatorChar + SETTINGS_FILE));
+        return new PMDSettingsImpl(new File(SETTINGS_DIR, SETTINGS_FILE));
     }
 
     private Map<String, Boolean> ruleMap;

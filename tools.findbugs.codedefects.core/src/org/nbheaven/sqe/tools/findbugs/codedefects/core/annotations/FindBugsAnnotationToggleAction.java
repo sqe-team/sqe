@@ -22,9 +22,6 @@ import javax.swing.ImageIcon;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsQualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.ui.actions.AbstractShowAnnotationsAction;
-import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionRegistration;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
@@ -32,28 +29,25 @@ import org.openide.util.Lookup;
  *
  * @author Sven Reimers
  */
-@ActionID(category="Quality", id="org.nbheaven.sqe.tools.findbugs.codedefects.core.annotations.FindBugsAnnotationToggleAction")
-@ActionRegistration(displayName="Toggle FindBugs Errors", lazy = true)
-@ActionReference(path="Editors/text/x-java/Toolbars/Default", position=25200, separatorBefore=25100)
 public class FindBugsAnnotationToggleAction extends AbstractShowAnnotationsAction {
 
-    static final String ICON = "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png";
-    
     public FindBugsAnnotationToggleAction() {
         this(Lookup.EMPTY);
     }
 
     private FindBugsAnnotationToggleAction(Lookup lookup) {
         super(lookup);
-        putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage(ICON)));
+        putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png")));
     }
-    
+
+    @Override
     public Action createContextAwareInstance(Lookup lookup) {
         return new FindBugsAnnotationToggleAction(lookup);
     }
-    
+
+    @Override
     protected QualityProvider getQualityProvider() {
         return FindBugsQualityProvider.getDefault();
     }
-    
+
 }

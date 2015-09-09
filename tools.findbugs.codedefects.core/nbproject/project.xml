@@ -65,11 +65,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.nbheaven.sqe.wrapper.bcel</code-name-base>
+                    <code-name-base>org.nbheaven.sqe.core.utilities</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>5.2</specification-version>
+                        <specification-version>1.0</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -146,7 +146,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.60.1</specification-version>
+                        <specification-version>7.64.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -163,6 +163,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.62.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.modules</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.46.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

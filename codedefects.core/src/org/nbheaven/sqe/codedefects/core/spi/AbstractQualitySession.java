@@ -49,18 +49,22 @@ public abstract class AbstractQualitySession implements QualitySession {
         this.addPropertyChangeListener(QualitySession.RESULT, listener);        
     }
 
+    @Override
     public QualityProvider getProvider() {
         return provider;
     }
 
+    @Override
     public Project getProject() {
         return this.project;
     }
 
+    @Override
     public String getName() {
         return ProjectUtils.getInformation(project).getDisplayName();
     }
 
+    @Override
     public String getDisplayName() {
         return ProjectUtils.getInformation(project).getName();
     }
@@ -69,21 +73,25 @@ public abstract class AbstractQualitySession implements QualitySession {
         return propSupport;
     }
 
+    @Override
     public final void addPropertyChangeListener(PropertyChangeListener listener) {
         getPropertyChangeSupport().addPropertyChangeListener(listener);
     }
 
+    @Override
     public final void addPropertyChangeListener(String propertyName,
         PropertyChangeListener listener) {
         getPropertyChangeSupport()
             .addPropertyChangeListener(propertyName, listener);
     }
 
+    @Override
     public final void removePropertyChangeListener(
         PropertyChangeListener listener) {
         getPropertyChangeSupport().removePropertyChangeListener(listener);
     }
 
+    @Override
     public final void removePropertyChangeListener(String propertyName,
         PropertyChangeListener listener) {
         getPropertyChangeSupport()
