@@ -4,3 +4,4 @@
 **/*.rej
 **/build/**
 **/nbproject/private/**
+/build/
