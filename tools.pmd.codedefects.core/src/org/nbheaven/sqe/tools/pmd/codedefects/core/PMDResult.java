@@ -114,7 +114,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         }
     }
 
-    public void removeAllRuleViolationsForRule(Rule rule) {
+    public synchronized void removeAllRuleViolationsForRule(Rule rule) {
         if (null != instanceByType) {
             removeAllRuleViolationsForRule(rule, instanceByType);
         }
@@ -124,7 +124,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
 //        session.resultChanged(null, this);
     }
 
-    public Map<Object, Collection<RuleViolation>> getInstanceByType() {
+    public synchronized Map<Object, Collection<RuleViolation>> getInstanceByType() {
         if (null == instanceByType) {
             Map<Object, Collection<RuleViolation>> tempInstanceByType = new TreeMap<Object, Collection<RuleViolation>>();
 
@@ -148,7 +148,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return instanceByType;
     }
 
-    public Map<Object, Collection<RuleViolation>> getInstanceByClass() {
+    public synchronized Map<Object, Collection<RuleViolation>> getInstanceByClass() {
         if (null == instanceByClass) {
             instanceByClass = new TreeMap<Object, Collection<RuleViolation>>();
 
@@ -171,7 +171,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return instanceByClass;
     }
 
-    public Map<Object, Collection<RuleViolation>> getInstanceByPackage() {
+    public synchronized Map<Object, Collection<RuleViolation>> getInstanceByPackage() {
         if (null == instanceByPackage) {
             instanceByPackage = new TreeMap<Object, Collection<RuleViolation>>();
 
