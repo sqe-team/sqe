@@ -62,6 +62,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
         this.project = project;
     }
 
+    @Override
     protected final String getDisplayName() {
         return "PMD scanning " + ProjectUtils.getInformation(getProject()).getName();
     }

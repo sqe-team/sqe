@@ -54,6 +54,7 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
         super( "Checkstyle", "Checkstyle found Errors", null);
     }    
     
+    @Override
     public synchronized void setScope(TaskScanningScope taskScanningScope, Callback callback) {        
         if (taskScanningScope == null || callback == null)
             return ;
@@ -126,6 +127,7 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
         try {
             final Collection<String> result = new ArrayList<String>();
             js.runUserActionTask(new CancellableTask<CompilationController>() {
+                @Override
                 public void run(final CompilationController control) throws Exception {
                     if (control.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED).compareTo(JavaSource.Phase.ELEMENTS_RESOLVED) >= 0) {                        
                         new TreePathScanner<Void, Void>() {
@@ -151,6 +153,7 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
                     }
                 }
                                 
+                @Override
                 public void cancel() {}
                 
             }, true);

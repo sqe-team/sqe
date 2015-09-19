@@ -112,6 +112,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
         }
     }
 
+    @Override
     public void annotateSourceFile(JavaSource javaSource,
             final Project project, QualityResult qualityResult) {
         if (null == qualityResult) {
@@ -140,6 +141,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
         }
     }
 
+    @Override
     public void clearAllAnnotations(Project project) {
         CheckstyleAnnotation.clearAll(project);
     }

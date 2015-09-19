@@ -38,18 +38,22 @@ public final class MethodElementDescriptorImpl implements MethodElementDescripto
         this.methodAnnotation = methodAnnotation;
     }
 
+    @Override
     public ClassElementDescriptor getClassElementDescriptor() {
         return this.classElementDescriptor;
     }
 
+    @Override
     public JavaSourceProvider getSourceProvider() {
         return this.classElementDescriptor.getSourceProvider();
     }
     
+    @Override
     public String getName() {
         return methodAnnotation.getMethodName();
     }
 
+    @Override
     public String getSignature() {
         return methodAnnotation.getMethodSignature();
     }

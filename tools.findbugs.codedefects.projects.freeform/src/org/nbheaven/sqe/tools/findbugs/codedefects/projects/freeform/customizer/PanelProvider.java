@@ -50,10 +50,12 @@ public class PanelProvider implements CompositeCategoryProvider {
 
     private static final RequestProcessor RP = new RequestProcessor(PanelProvider.class.getName());
 
+    @Override
     public Category createCategory(Lookup context) {
         return Category.create("FindBugs", "FindBugs", null);
     }
 
+    @Override
     public JComponent createComponent(final Category category, Lookup context) {
         Project p = context.lookup(Project.class);
         final FindBugsSettingsProvider fibuSettingsProvider = p.getLookup().lookup(FindBugsSettingsProvider.class);
@@ -61,9 +63,11 @@ public class PanelProvider implements CompositeCategoryProvider {
         panel.setLayout(new BorderLayout());
         panel.add(new JLabel("Loading..."), BorderLayout.CENTER); // SQE-42
         RP.post(new Runnable() {
+            @Override
             public void run() {
                 final UserPreferences findBugsSettings = fibuSettingsProvider.getFindBugsSettings();
                 EventQueue.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         JTabbedPane jTabbedPane = new JTabbedPane();
                         final ConfigureDetectorsPanel detectorsPanel = new ConfigureDetectorsPanel(findBugsSettings);
@@ -73,6 +77,7 @@ public class PanelProvider implements CompositeCategoryProvider {
                         jTabbedPane.addTab("Configure Features", featuresPanel);
                         panel.add(jTabbedPane, BorderLayout.CENTER);
                         category.setOkButtonListener(new ActionListener() {
+                            @Override
                             public void actionPerformed(ActionEvent actionEvent) {
                                 detectorsPanel.applyDetectorChangesToUserPreferences(findBugsSettings);
                                 fibuSettingsProvider.setFindBugsSettings(findBugsSettings);

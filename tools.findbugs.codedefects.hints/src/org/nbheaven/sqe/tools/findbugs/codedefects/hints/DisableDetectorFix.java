@@ -30,10 +30,12 @@ final class DisableDetectorFix implements Fix {
         this.project = project;
     }
 
+    @Override
     public String getText() {
         return "Disable detector for \"" + bugInstance.getBugPattern().getShortDescription() + "\"";
     }
 
+    @Override
     public ChangeInfo implement() throws Exception {
         FindBugsSettingsProvider settingsProvider = project.getLookup().lookup(FindBugsSettingsProvider.class);
         if (settingsProvider != null) {

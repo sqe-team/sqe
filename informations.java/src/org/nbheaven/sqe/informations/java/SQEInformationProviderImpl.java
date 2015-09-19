@@ -46,6 +46,7 @@ public class SQEInformationProviderImpl implements SQEInformationProvider {
         this.project = project;
     }
 
+    @Override
     public synchronized SQEInformationComponent getInformationComponent() {
         SQEInformationComponent info = null;
         if (null == component) {

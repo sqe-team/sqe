@@ -57,6 +57,7 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
         includes = new MavenPMDIncludes(p);
     }
 
+    @Override
     public PMDSettings getPMDSettings() {
         final MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-pmd-plugin");
         if (pluginConfiguration.isDefinedInProject()) {
@@ -112,16 +113,20 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
             }
             return new PMDSettings() {
 
+                @Override
                 public void activateRule(Rule rule) {
                 }
 
+                @Override
                 public void deactivateRule(Rule rule) {
                 }
 
+                @Override
                 public boolean isRuleActive(Rule rule) {
                     return true;
                 }
 
+                @Override
                 public RuleSet getActiveRules() {
                     RuleSet activeRuleSet = new RuleSet();
                     //the default as defined in maven pmd plugin
@@ -150,6 +155,7 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
         return null;
     }
 
+    @Override
     public PMDIncludes getPMDIncludes() {
         return includes;
     }

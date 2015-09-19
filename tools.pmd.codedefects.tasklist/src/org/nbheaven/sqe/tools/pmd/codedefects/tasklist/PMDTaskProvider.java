@@ -45,6 +45,7 @@ public final class PMDTaskProvider extends PushTaskScanner {
         super( "PMD", "PMD found Errors", null);
     }    
     
+    @Override
     public synchronized void setScope(TaskScanningScope taskScanningScope, Callback callback) {
         if (taskScanningScope == null || callback == null)
             return ;

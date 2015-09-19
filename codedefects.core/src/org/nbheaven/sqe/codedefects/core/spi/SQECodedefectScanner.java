@@ -48,6 +48,7 @@ public final class SQECodedefectScanner {
             return progressHandle;
         }
 
+        @Override
         public final void run() {
             try {
                 scan();

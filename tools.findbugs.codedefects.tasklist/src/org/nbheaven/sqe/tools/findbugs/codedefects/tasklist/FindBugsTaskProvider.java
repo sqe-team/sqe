@@ -50,6 +50,7 @@ public class FindBugsTaskProvider extends PushTaskScanner {
 
     private final Map<QualitySession,PropertyChangeListener> listeners = new WeakHashMap<QualitySession,PropertyChangeListener>();
 
+    @Override
     public synchronized void setScope(TaskScanningScope taskScanningScope, final Callback callback) {
         if (taskScanningScope == null) {
             synchronized (listeners) {
@@ -100,6 +101,7 @@ public class FindBugsTaskProvider extends PushTaskScanner {
                     qualitySession.removePropertyChangeListener(QualitySession.RESULT, listener);
                 }
                 listener = new PropertyChangeListener() {
+                    @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         pushTasks((FindBugsResult) evt.getNewValue(), callback, project);
                     }

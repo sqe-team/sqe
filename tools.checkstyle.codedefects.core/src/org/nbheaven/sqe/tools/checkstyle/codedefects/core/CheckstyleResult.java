@@ -46,18 +46,21 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/class.gif") {
 
+            @Override
             public Map<ClassKey, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
                 return result.getInstanceByClass();
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/package.gif") {
 
+            @Override
             public Map<PackageKey, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
                 return result.getInstanceByPackage();
             }
         },
         TYPE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png") {
 
+            @Override
             public Map<CategoryKey, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
                 return result.getInstanceByType();
             }
@@ -99,6 +102,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         this.project = project;
     }
 
+    @Override
     public Lookup getLookup() {
         return lookup;
     }
@@ -192,26 +196,32 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 //        aThrowable.printStackTrace();
     }
 
+    @Override
     public void auditFinished(AuditEvent aEvt) {
 //        System.out.println("audit finished" + aEvt);
     }
 
+    @Override
     public void auditStarted(AuditEvent aEvt) {
 //        System.out.println("audit started" + aEvt);
     }
 
+    @Override
     public void fileFinished(AuditEvent aEvt) {
 //        System.out.println("file finished" + aEvt);
     }
 
+    @Override
     public void fileStarted(AuditEvent aEvt) {
 //        System.out.println("file started" + aEvt);
     }
 
+    @Override
     public long getCodeDefectCountSum() {
         return getBugCount();
     }
 
+    @Override
     public long getCodeDefectCount(CodeDefectSeverity severity) {
         if (CodeDefectSeverity.INFO == severity) {
             return getBugCount();
@@ -243,6 +253,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             return this.getDisplayName().hashCode();
         }
 
+        @Override
         public final int compareTo(DisplayableKey object) {
             return this.getDisplayName().compareTo(object.getDisplayName());
         }
@@ -256,6 +267,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             this.auditEvent = auditEvent;
         }
 
+        @Override
         public String getDisplayName() {
             return this.auditEvent.getFileName();
         }
@@ -272,6 +284,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             className = fileObject.getPath();
         }
 
+        @Override
         public String getDisplayName() {
             return className;
         }
@@ -291,6 +304,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             this.displayName = this.auditEvent.getSourceName().substring(this.auditEvent.getSourceName().lastIndexOf('.') + 1);
         }
 
+        @Override
         public String getDisplayName() {
             return this.displayName;
         }

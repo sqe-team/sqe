@@ -36,6 +36,7 @@ final class PMDFileScannerJob extends PMDScannerJob {
         this.fileObjects = new ArrayList<FileObject>(Arrays.asList(fileObjects));
     }
 
+    @Override
     protected void executePMD() {
         executePMD(fileObjects);
     }

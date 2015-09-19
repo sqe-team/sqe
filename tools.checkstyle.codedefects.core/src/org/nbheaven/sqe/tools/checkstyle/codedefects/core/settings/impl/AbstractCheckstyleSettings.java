@@ -32,6 +32,7 @@ public abstract class AbstractCheckstyleSettings implements CheckstyleSettings {
 
     private Properties customProperties = new Properties();
 
+    @Override
     public final String getPropertiesAsString() {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {

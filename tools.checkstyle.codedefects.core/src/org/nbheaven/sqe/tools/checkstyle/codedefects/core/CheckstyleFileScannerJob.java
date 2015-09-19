@@ -36,6 +36,7 @@ final class CheckstyleFileScannerJob extends CheckstyleScannerJob {
         this.fileObjects = new ArrayList<FileObject>(Arrays.asList(fileObjects));
     }
 
+    @Override
     protected void executeCheckstyle() {
         executeCheckstyle(fileObjects);
     }

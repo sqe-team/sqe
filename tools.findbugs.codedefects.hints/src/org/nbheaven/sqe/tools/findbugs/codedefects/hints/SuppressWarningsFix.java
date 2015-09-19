@@ -55,12 +55,15 @@ final class SuppressWarningsFix implements Fix {
         this.file = file;
     }
 
+    @Override
     public String getText() {
         return "Suppress warning";
     }
 
+    @Override
     public ChangeInfo implement() throws Exception {
         JavaSource.forFileObject(file).runModificationTask(new org.netbeans.api.java.source.Task<WorkingCopy>() {
+            @Override
             public void run(WorkingCopy wc) throws Exception {
                 wc.toPhase(JavaSource.Phase.RESOLVED);
                 TypeElement sw = null;

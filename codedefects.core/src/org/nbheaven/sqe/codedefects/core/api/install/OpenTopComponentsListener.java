@@ -42,6 +42,7 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
 
     private static final RequestProcessor RP = new RequestProcessor(OpenTopComponentsListener.class.getName());
 
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
 
         // The list of open projects has changed
@@ -58,6 +59,7 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
 
                 if (null != dao) {
                     RP.post(new Runnable() {
+                        @Override
                         public void run() {
                     for (final Project project : OpenProjects.getDefault().getOpenProjects()) {
                             SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);

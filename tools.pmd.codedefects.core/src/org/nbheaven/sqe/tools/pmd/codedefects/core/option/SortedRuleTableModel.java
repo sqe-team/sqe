@@ -201,30 +201,37 @@ public class SortedRuleTableModel extends AbstractTableModel {
     }
 
     // TableModel interface methods 
+    @Override
     public int getRowCount() {
         return (tableModel == null) ? 0 : tableModel.getRowCount();
     }
 
+    @Override
     public int getColumnCount() {
         return (tableModel == null) ? 0 : tableModel.getColumnCount();
     }
 
+    @Override
     public String getColumnName(int column) {
         return tableModel.getColumnName(column);
     }
 
+    @Override
     public Class<?> getColumnClass(int column) {
         return tableModel.getColumnClass(column);
     }
 
+    @Override
     public boolean isCellEditable(int row, int column) {
         return tableModel.isCellEditable(modelIndex(row), column);
     }
 
+    @Override
     public Object getValueAt(int row, int column) {
         return tableModel.getValueAt(modelIndex(row), column);
     }
 
+    @Override
     public void setValueAt(Object aValue, int row, int column) {
         tableModel.setValueAt(aValue, modelIndex(row), column);
     }
@@ -238,6 +245,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
             this.modelIndex = index;
         }
 
+        @Override
         public int compareTo(Row o) {
             int row1 = modelIndex;
             int row2 = o.modelIndex;
@@ -269,6 +277,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
 
     private class TableModelHandler implements TableModelListener {
 
+        @Override
         public void tableChanged(TableModelEvent e) {
             // If we're not sorting by anything, just pass the event along.             
             if (!isSorting()) {
@@ -322,6 +331,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
 
     private class MouseHandler extends MouseAdapter {
 
+        @Override
         public void mouseClicked(MouseEvent e) {
             JTableHeader h = (JTableHeader) e.getSource();
             TableColumnModel columnModel = h.getColumnModel();
@@ -353,6 +363,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
             this.priority = priority;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Color color = c == null ? Color.GRAY : c.getBackground();
             // In a compound sort, make each succesive triangle 20% 
@@ -386,10 +397,12 @@ public class SortedRuleTableModel extends AbstractTableModel {
             g.translate(-x, -y);
         }
 
+        @Override
         public int getIconWidth() {
             return size;
         }
 
+        @Override
         public int getIconHeight() {
             return size;
         }
@@ -403,6 +416,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
             this.tableCellRenderer = tableCellRenderer;
         }
 
+        @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value,
                 boolean isSelected,
@@ -434,6 +448,7 @@ public class SortedRuleTableModel extends AbstractTableModel {
 
     private static class RuleComparator implements Comparator<Rule> {
 
+        @Override
         public int compare(Rule rule1, Rule rule2) {
             return rule1.getName().compareToIgnoreCase(rule2.getName());
         }

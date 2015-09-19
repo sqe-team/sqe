@@ -82,15 +82,18 @@ final class StringComboBox extends JComboBox<String> {
             this.box = box;
         }
         
+        @Override
         public void popupMenuCanceled(PopupMenuEvent e) {
             box.comboPopupActionFlag = false;
         }
 
+        @Override
         public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
             box.comboPopupActionFlag = false;
             box.clearSelection();
         }
 
+        @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             box.comboPopupActionFlag = true;
         }

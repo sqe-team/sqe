@@ -46,6 +46,7 @@ public class SQEInformationAction extends NodeAction {
         setEnabled(false);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SQEInformationAction.class, "LBL_Action");
     }

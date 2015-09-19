@@ -45,10 +45,12 @@ import org.openide.util.Lookup;
 })
 public class PanelProvider implements CompositeCategoryProvider {
 
+    @Override
     public Category createCategory(Lookup lookup) {
         return Category.create("CheckStyle", "CheckStyle", null);
     }
 
+    @Override
     public JComponent createComponent(Category category, Lookup context) {
         Project p = context.lookup(Project.class);
         CheckstyleSettingsProvider checkstyleSettingsProvider = p.getLookup().lookup(CheckstyleSettingsProvider.class);
@@ -75,6 +77,7 @@ public class PanelProvider implements CompositeCategoryProvider {
         checkstyleConfiguration.setProperties(checkstyleSettings.getPropertiesAsString());
 
         category.setOkButtonListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (checkstyleSettings instanceof CheckstyleSettingsProviderImpl.Settings) {
                     CheckstyleSettingsProviderImpl.Settings checkstyleSettingsImpl = (CheckstyleSettingsProviderImpl.Settings) checkstyleSettings;

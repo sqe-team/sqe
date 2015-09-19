@@ -38,18 +38,22 @@ public final class VariableElementDescriptorImpl implements VariableElementDescr
         this.fieldAnnotation = fieldAnnotation;
     }
 
+    @Override
     public ClassElementDescriptor getClassElementDescriptor() {
         return this.classElementDescriptor;
     }
 
+    @Override
     public JavaSourceProvider getSourceProvider() {
         return this.classElementDescriptor.getSourceProvider();
     }
     
+    @Override
     public String getName() {
         return fieldAnnotation.getFieldName();
     }
 
+    @Override
     public String getSignature() {
         return fieldAnnotation.getFieldSignature();
     }

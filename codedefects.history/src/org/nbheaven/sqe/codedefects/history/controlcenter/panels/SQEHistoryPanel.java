@@ -136,6 +136,7 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
         verticalSequentialGroup.addComponent(clearHistoryButton);
         clearHistoryButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (null != activeHistory) {
                     activeHistory.clear();
@@ -158,6 +159,7 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
             verticalSequentialGroup.addComponent(providerButton);
             ActionListener listener = new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     if (providerButton.isSelected()) {
                         addSelectedProvider(provider);
@@ -202,6 +204,7 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     updateView();
                 }
@@ -252,6 +255,7 @@ public class SQEHistoryPanel extends javax.swing.JPanel implements PropertyChang
         }
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (SQEManager.PROP_ACTIVE_PROJECT.equals(evt.getPropertyName())) {
             setActiveProject((Project) evt.getNewValue());

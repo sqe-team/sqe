@@ -42,10 +42,12 @@ class CoreFilterToggleAction extends AbstractAction implements PropertyChangeLis
 
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         bugTreePanel.setCoreFilterEnabled(!bugTreePanel.isCoreFilterEnabled());
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         updateState();
     }

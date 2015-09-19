@@ -36,6 +36,7 @@ final class CheckstyleProjectScannerJob extends CheckstyleScannerJob {
         this.session = session;
     }
 
+    @Override
     protected void executeCheckstyle() {
         SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(getProject());
         for (SourceGroup g : groups) {

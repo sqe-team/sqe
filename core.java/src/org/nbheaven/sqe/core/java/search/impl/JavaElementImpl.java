@@ -62,9 +62,11 @@ public final class JavaElementImpl implements JavaElement {
         this.elementHandle = elementHandle;
     }
 
+    @Override
     public void open() {
         if (null != fileObject && null != elementHandle) {
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     ElementOpen.open(fileObject, elementHandle);
                 }
@@ -75,14 +77,17 @@ public final class JavaElementImpl implements JavaElement {
     private int beginColumn = -1;
     private int endColumn = -1;
 
+    @Override
     public int getBeginColumn() {
         return beginColumn;
     }
 
+    @Override
     public int getEndColumn() {
         return endColumn;
     }
 
+    @Override
     public Line getLine() {
         try {
             DataObject dao = DataObject.find(fileObject);
@@ -128,6 +133,7 @@ public final class JavaElementImpl implements JavaElement {
         JavaSource js = JavaSource.forFileObject(fileObject);
         if (js != null) {
             js.runUserActionTask(new Task<CompilationController>() {
+                @Override
                 public void run(CompilationController info) {
                     try {
                         info.toPhase(JavaSource.Phase.RESOLVED);
@@ -156,6 +162,7 @@ public final class JavaElementImpl implements JavaElement {
         return result;
     }
 
+    @Override
     public ElementHandle<?> getHandle() {
         return elementHandle;
     }

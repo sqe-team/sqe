@@ -38,6 +38,7 @@ class FilterBugPattern extends AbstractAction {
         putValue(Action.NAME, "Filter Bug Pattern");
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
     }
 }

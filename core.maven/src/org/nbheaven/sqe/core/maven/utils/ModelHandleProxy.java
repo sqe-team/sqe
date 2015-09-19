@@ -51,12 +51,15 @@ public class ModelHandleProxy {
             } // else impossible in NB 7.0
         }
         return new MavenPluginConfiguration() {
+            @Override
             public boolean isDefinedInProject() {
                 return false;
             }
+            @Override
             public String getValue(String path) {
                 return null;
             }
+            @Override
             public String[] getStringListValue(String listParent, String listChild) {
                 return new String[0];
             }

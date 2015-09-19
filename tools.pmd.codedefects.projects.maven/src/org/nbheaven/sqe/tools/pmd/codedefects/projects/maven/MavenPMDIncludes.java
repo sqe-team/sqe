@@ -42,6 +42,7 @@ class MavenPMDIncludes implements PMDIncludes {
         project = p;
     }
 
+    @Override
     public Collection<FileObject> getProjectIncludes() {
         MavenPluginConfiguration mpc = MavenUtilities.getReportPluginConfiguration(project, "org.apache.maven.plugins", "maven-pmd-plugin");
         String val = mpc.getValue("includeTests");

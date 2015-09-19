@@ -39,6 +39,7 @@ class CollapseAllAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(RefreshAction.class, "HINT_COLLAPSE_ALL"));
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         bugTreePanel.collapseAll();
     }

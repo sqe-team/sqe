@@ -57,21 +57,25 @@ public final class PMDSettingsImpl implements PMDSettings {
         readFile();
     }
 
+    @Override
     public void activateRule(Rule rule) {
         ruleMap.remove(rule.getName());
         updateFile();
     }
 
+    @Override
     public void deactivateRule(Rule rule) {
         ruleMap.put(rule.getName(), Boolean.FALSE);
         updateFile();
     }
 
+    @Override
     public boolean isRuleActive(Rule rule) {
         Boolean b = ruleMap.get(rule.getName());
         return null == b ? true : b.booleanValue();
     }
 
+    @Override
     public RuleSet getActiveRules() {
         RuleSet activeRuleSet = new RuleSet();
         RuleSet ruleSet = new RuleSet();

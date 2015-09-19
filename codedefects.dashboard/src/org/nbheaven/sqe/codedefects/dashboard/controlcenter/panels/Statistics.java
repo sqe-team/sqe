@@ -109,6 +109,7 @@ public class Statistics extends JPanel implements PropertyChangeListener {
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     updateView();
                 }
@@ -161,6 +162,7 @@ public class Statistics extends JPanel implements PropertyChangeListener {
         activeProject = project;
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (SQEManager.PROP_ACTIVE_PROJECT.equals(evt.getPropertyName())) {
             setActiveProject((Project) evt.getNewValue());

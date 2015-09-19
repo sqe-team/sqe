@@ -40,6 +40,7 @@ class ExpandAllAction extends AbstractAction {
         this.bugTreePanel = bugTreePanel;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         bugTreePanel.expandAll();
     }

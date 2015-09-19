@@ -37,40 +37,51 @@ public class AbstractQualitySessionTest extends NbTestCase {
     
     public void testSQE49Leak() throws Exception {
         Project p = new Project() {
+            @Override
             public FileObject getProjectDirectory() {
                 return null;
             }
+            @Override
             public Lookup getLookup() {
                 return null;
             }
         };
         QualityProvider qp = new QualityProvider() {
+            @Override
             public Class<? extends QualitySession> getQualitySessionClass() {
                 return QualitySession.class;
             }
+            @Override
             public QualitySession createQualitySession(Project project) {
                 return null;
             }
+            @Override
             public String getDisplayName() {
                 return "Test";
             }
+            @Override
             public String getId() {
                 return "test";
             }
+            @Override
             public Icon getIcon() {
                 return null;
             }
+            @Override
             public boolean isValidFor(Project project) {
                 return true;
             }
+            @Override
             public Lookup getLookup() {
                 return Lookup.EMPTY;
             }
         };
         new AbstractQualitySession(qp, p) {
+            @Override
             public QualityResult getResult() {
                 return null;
             }
+            @Override
             public void computeResult() {}
         };
         qp = null;

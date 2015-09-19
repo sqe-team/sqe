@@ -58,6 +58,7 @@ class FindBugsProjectScannerJob extends FindBugsScannerJob {
         findBugsSession.scanningDone();
     }
 
+    @Override
     protected edu.umd.cs.findbugs.Project createFindBugsProject() {
         final edu.umd.cs.findbugs.Project fibuProject = new edu.umd.cs.findbugs.Project();
 
@@ -73,6 +74,7 @@ class FindBugsProjectScannerJob extends FindBugsScannerJob {
             }
 
             final Callable<Void> r = new Callable<Void>() {
+                @Override
                 public Void call() throws Exception {
                 URL url = CompileOnSaveHelper.forSourceRoot(fo).binaryRoot(false);
                 if (url != null) {
@@ -117,6 +119,7 @@ class FindBugsProjectScannerJob extends FindBugsScannerJob {
             try {
                 if (cp != null && bcp != null) {
                     JavaSource.create(ClasspathInfo.create(bcp, cp, ClassPath.getClassPath(fo, ClassPath.SOURCE))).runWhenScanFinished(new Task<CompilationController>() {
+                        @Override
                         public void run(CompilationController parameter) throws Exception {
                             r.call();
                         }

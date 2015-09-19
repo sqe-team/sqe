@@ -33,6 +33,7 @@ public abstract class AbstractQualityProvider implements QualityProvider {
     protected AbstractQualityProvider() {
     }
 
+    @Override
     public boolean isValidFor(Project project) {
         if (null == project) {
             return false;

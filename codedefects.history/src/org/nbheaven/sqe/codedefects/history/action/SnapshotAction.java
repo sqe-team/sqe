@@ -60,10 +60,12 @@ public class SnapshotAction extends AbstractAction implements LookupListener, Co
         resultChanged(null);
     }
 
+    @Override
     public Action createContextAwareInstance(Lookup context) {
         return new SnapshotAction(context);
     }
 
+    @Override
     public void resultChanged(LookupEvent ev) {
         updateEnableState();
     }
@@ -85,6 +87,7 @@ public class SnapshotAction extends AbstractAction implements LookupListener, Co
         if (!EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     updateEnableState();
                 }

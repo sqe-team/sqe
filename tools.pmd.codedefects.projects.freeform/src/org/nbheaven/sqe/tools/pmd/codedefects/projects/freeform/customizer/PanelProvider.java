@@ -43,10 +43,12 @@ import org.openide.util.Lookup;
 })
 public class PanelProvider implements CompositeCategoryProvider {
 
+    @Override
     public Category createCategory(Lookup lookup) {
         return Category.create("PMD", "PMD", null);
     }
 
+    @Override
     public JComponent createComponent(Category category, Lookup context) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -61,6 +63,7 @@ public class PanelProvider implements CompositeCategoryProvider {
 
         category.setOkButtonListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 rulesPanel.saveSettingsToPreferences();
             }

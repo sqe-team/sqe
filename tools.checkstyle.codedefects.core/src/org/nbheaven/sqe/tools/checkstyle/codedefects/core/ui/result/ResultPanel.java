@@ -164,6 +164,7 @@ public final class ResultPanel extends JPanel {
             this.resultPanel = resultPanel;
         }
 
+        @Override
         public void valueChanged(TreeSelectionEvent e) {
             resultPanel.updateDescription();
         }

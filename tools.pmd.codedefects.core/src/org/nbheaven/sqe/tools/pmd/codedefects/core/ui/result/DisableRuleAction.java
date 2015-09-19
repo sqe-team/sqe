@@ -42,6 +42,7 @@ class DisableRuleAction extends AbstractAction {
         putValue(Action.NAME, "Disable rule");
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         PMDSettingsProvider settingsProvider = project.getLookup().lookup(PMDSettingsProvider.class);
         if (null != settingsProvider) {

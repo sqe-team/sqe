@@ -110,6 +110,7 @@ public class InformationTopComponent extends TopComponent implements PropertyCha
         return getClass().getName() + project.hashCode();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         // The list of open projects has changed
         if (OpenProjects.PROPERTY_OPEN_PROJECTS.equals(event.getPropertyName())) {

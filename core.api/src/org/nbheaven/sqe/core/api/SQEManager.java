@@ -69,6 +69,7 @@ public final class SQEManager implements Lookup.Provider {
         return sqeManager;
     }
 
+    @Override
     public Lookup getLookup() {
         return lookup;
     }
@@ -108,6 +109,7 @@ public final class SQEManager implements Lookup.Provider {
             }
         }
 
+        @Override
         public void resultChanged(LookupEvent arg0) {
             Project project = null;
 
@@ -183,6 +185,7 @@ public final class SQEManager implements Lookup.Provider {
         if (EventQueue.isDispatchThread()) {
             RequestProcessor.getDefault().post(new Runnable() {
 
+                @Override
                 public void run() {
                     firePropertyChange(propertyName, oldValue, newValue);
                 }

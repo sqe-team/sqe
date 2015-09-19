@@ -41,10 +41,12 @@ public class CheckstyleAnnotationToggleAction extends AbstractShowAnnotationsAct
         putValue(Action.SMALL_ICON, new ImageIcon(ImageUtilities.loadImage( "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png")));
     }
     
+    @Override
     public Action createContextAwareInstance(Lookup lookup) {
         return new CheckstyleAnnotationToggleAction(lookup);
     }
     
+    @Override
     protected QualityProvider getQualityProvider() {
         return CheckstyleQualityProvider.getDefault();
     }

@@ -48,6 +48,7 @@ public class SQENodeFactory implements NodeFactory {
     public SQENodeFactory() {
     }
 
+    @Override
     public NodeList<?> createNodes(Project project) {
         return NodeFactorySupport.fixedNodeList(new SQENode(Lookups.singleton(project)));
     }

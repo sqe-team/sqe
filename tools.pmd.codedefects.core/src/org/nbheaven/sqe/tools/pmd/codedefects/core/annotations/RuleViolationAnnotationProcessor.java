@@ -116,6 +116,7 @@ public final class RuleViolationAnnotationProcessor
         return GlobalPathRegistry.getDefault().findResource(javaFileName);
     }
 
+    @Override
     public void annotateSourceFile(final JavaSource javaSource,
             final Project project, final QualityResult qualityResult) {
         if (null == qualityResult) {
@@ -132,6 +133,7 @@ public final class RuleViolationAnnotationProcessor
         }
     }
 
+    @Override
     public void clearAllAnnotations(Project project) {
         PMDAnnotation.clearAll(project);
     }

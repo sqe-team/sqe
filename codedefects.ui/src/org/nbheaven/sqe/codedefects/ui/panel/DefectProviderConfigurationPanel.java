@@ -64,10 +64,12 @@ public class DefectProviderConfigurationPanel extends JPanel {
             this.setBackground(Color.WHITE);
         }
         
+        @Override
         public void actionPerformed(ActionEvent e) {
             SQECodedefectProperties.setQualityProviderActive(project, provider, this.isSelected());
         }
         
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             setProject(SQEManager.getDefault().getActiveProject());
         }

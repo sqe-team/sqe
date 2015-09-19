@@ -53,6 +53,7 @@ public class JCollapserPanel extends JPanel implements MouseListener, KeyListene
             setOpaque(true);
         }
 
+        @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.setColor(lineColor);
@@ -109,11 +110,13 @@ public class JCollapserPanel extends JPanel implements MouseListener, KeyListene
             }
         }
 
+        @Override
         public void installUI(JComponent c) {
             Font f = UIManager.getFont("Label.font"); //NOI18N
             c.setFont(f.deriveFont(Font.BOLD));
         }
 
+        @Override
         public void paint(Graphics g, JComponent c) {
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -181,6 +184,7 @@ public class JCollapserPanel extends JPanel implements MouseListener, KeyListene
         this.setOpaque(true);
         setLayout(new BorderLayout());
         title = new Title(snippetName) {
+                @Override
                 public AccessibleContext getAccessibleContext() {
                     return JCollapserPanel.this.getAccessibleContext();
                 }
@@ -267,47 +271,58 @@ public class JCollapserPanel extends JPanel implements MouseListener, KeyListene
         return snippetName;
     }
 
+    @Override
     public void focusGained(FocusEvent e) {
         title.repaint();
     }
 
+    @Override
     public void focusLost(FocusEvent e) {
         title.repaint();
     }
 
+    @Override
     public void keyPressed(final KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             setCollapsed(!isCollapsed());
         }
     }
 
+    @Override
     public void keyReleased(final KeyEvent evt) {
     } // not used
 
+    @Override
     public void keyTyped(final KeyEvent evt) {
     } // not used
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     } // not used
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         title.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         title.setRollOver(true);
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         title.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         title.setRollOver(false);
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         setCollapsed(!collapsed);
         requestFocus();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     } // not used
 
+    @Override
     public void requestFocus() {
         if (title != null) {
             title.requestFocus();

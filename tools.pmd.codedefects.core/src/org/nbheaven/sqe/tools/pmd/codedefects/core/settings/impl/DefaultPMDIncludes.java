@@ -38,6 +38,7 @@ public class DefaultPMDIncludes implements PMDIncludes {
         project = prj;
     }
 
+    @Override
     public Collection<FileObject> getProjectIncludes() {
         SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(project);
         Collection<FileObject> toRet = new HashSet<FileObject>();

@@ -95,14 +95,17 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
         }
     }
 
+    @Override
     public FileObject getCheckstyleConfigurationFile() {
         return checkstyleConfigFile;
     }
 
+    @Override
     public URL getCheckstyleConfigurationURL() {
         return null;
     }
 
+    @Override
     public FileObject getPropertiesFile() {
         return propertiesFile;
     }
@@ -119,6 +122,7 @@ public class GlobalCheckstyleSettings extends AbstractCheckstyleSettings {
         }
     }
 
+    @Override
     public Properties getProperties() {
         Properties properties = new Properties();
         if (null != propertiesFile) {
