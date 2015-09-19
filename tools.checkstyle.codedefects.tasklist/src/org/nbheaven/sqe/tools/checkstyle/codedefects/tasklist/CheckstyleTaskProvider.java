@@ -31,6 +31,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.ClassKey;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationController;
@@ -64,7 +65,7 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
                 if (result == null) {
                     continue;
                 }
-                Map<Object, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
+                Map<ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
                 CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(file);
                 Collection<AuditEvent> auditEvents = instanceByClass.get(key);
                 if (auditEvents != null) { // SQE-57
@@ -80,8 +81,8 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
                     continue;
                 }
                 List<Task> tasks = new LinkedList<Task>();
-                for (Map.Entry<Object, Collection<AuditEvent>> classEntry: result.getInstanceByClass().entrySet()) {
-                    CheckstyleResult.ClassKey key = (CheckstyleResult.ClassKey) classEntry.getKey();
+                for (Map.Entry<ClassKey, Collection<AuditEvent>> classEntry: result.getInstanceByClass().entrySet()) {
+                    CheckstyleResult.ClassKey key = classEntry.getKey();
                     tasks.addAll(getTasks(classEntry.getValue(), key.getFileObject()));
                 }            
                 callback.setTasks(project.getProjectDirectory(), tasks);

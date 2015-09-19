@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.ClassKey;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationInfo;
@@ -129,9 +130,8 @@ public class CheckstyleHint {
                         List<ErrorDescription> computedErrors = new LinkedList<ErrorDescription>();
                         CheckstyleResult result = session.computeResultAndWait(fileObject);
                         if (result != null) {
-                            Map<Object, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
-                            for (Object key : instanceByClass.keySet()) {
-                                CheckstyleResult.ClassKey classKey = (CheckstyleResult.ClassKey) key;
+                            Map<ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
+                            for (ClassKey classKey : instanceByClass.keySet()) {
                                 // XXX see comment in ClassKey constructor
                                 if (classKey.getDisplayName().equals(fileObject.getPath())) {
                                     Collection<AuditEvent> bugs = instanceByClass.get(classKey);

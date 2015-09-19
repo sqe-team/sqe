@@ -126,11 +126,11 @@ class BugTree extends JTree {
 
         MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount()); // NOI18N
 
-        Map<Object, Collection<AuditEvent>> instances = resultMode.getInstanceList(session.getResult());
+        Map<? extends Object, Collection<AuditEvent>> instances = resultMode.getInstanceList(session.getResult());
 
         Map<String, MutableTreeNode> groupNodes = new HashMap<String, MutableTreeNode>();
         int typeIndex = 0;
-        for (Map.Entry<Object, Collection<AuditEvent>> entry : instances.entrySet()) {
+        for (Map.Entry<? extends Object, Collection<AuditEvent>> entry : instances.entrySet()) {
             // Do not display nodes with empty children list
             if (entry.getValue().isEmpty()) {
                 continue;

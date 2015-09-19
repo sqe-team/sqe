@@ -122,7 +122,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
         final CheckstyleResult result = (CheckstyleResult) qualityResult;
 
         for (FileObject fo : javaSource.getFileObjects()) {
-            Map<Object, Collection<AuditEvent>> instanceMap = result.getInstanceByClass();
+            Map<? extends Object, Collection<AuditEvent>> instanceMap = result.getInstanceByClass();
             ClassKey classKey = new ClassKey(fo);
             Collection<AuditEvent> auditEvents = instanceMap.get(classKey);
 
