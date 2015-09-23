@@ -69,6 +69,7 @@ public class PanelProvider implements CompositeCategoryProvider {
                         final ConfigureDetectorsPanel detectorsPanel = new ConfigureDetectorsPanel(findBugsSettings);
                         jTabbedPane.addTab("Configure Detectors", detectorsPanel);
                         JPanel featuresPanel = new ConfigureFeaturesPanel();
+                        panel.removeAll();
                         jTabbedPane.addTab("Configure Features", featuresPanel);
                         panel.add(jTabbedPane, BorderLayout.CENTER);
                         category.setOkButtonListener(new ActionListener() {
@@ -77,6 +78,7 @@ public class PanelProvider implements CompositeCategoryProvider {
                                 fibuSettingsProvider.setFindBugsSettings(findBugsSettings);
                             }
                         });
+                        panel.revalidate();
                     }
                 });
             }
