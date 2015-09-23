@@ -38,7 +38,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Provider, QualityResultStatistic {
 

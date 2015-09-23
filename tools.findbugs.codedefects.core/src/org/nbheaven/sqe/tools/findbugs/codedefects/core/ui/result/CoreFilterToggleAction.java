@@ -28,7 +28,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class CoreFilterToggleAction extends AbstractAction implements PropertyChangeListener {
 

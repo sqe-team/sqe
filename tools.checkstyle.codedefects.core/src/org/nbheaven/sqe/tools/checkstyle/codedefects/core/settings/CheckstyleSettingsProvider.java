@@ -19,7 +19,7 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public interface CheckstyleSettingsProvider {
 

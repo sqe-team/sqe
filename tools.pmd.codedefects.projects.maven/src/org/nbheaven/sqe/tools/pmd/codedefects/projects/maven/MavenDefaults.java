@@ -20,7 +20,7 @@ package org.nbheaven.sqe.tools.pmd.codedefects.projects.maven;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 public class MavenDefaults {
 

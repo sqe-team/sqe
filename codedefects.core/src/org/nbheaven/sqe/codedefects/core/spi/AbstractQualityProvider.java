@@ -25,7 +25,7 @@ import org.netbeans.api.project.SourceGroup;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public abstract class AbstractQualityProvider implements QualityProvider {
 

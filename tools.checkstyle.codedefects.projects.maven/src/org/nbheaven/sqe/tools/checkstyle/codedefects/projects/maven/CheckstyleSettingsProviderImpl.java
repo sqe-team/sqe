@@ -36,7 +36,7 @@ import org.openide.filesystems.FileUtil;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 @ProjectServiceProvider(service=CheckstyleSettingsProvider.class, projectType="org-netbeans-modules-maven")
 public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvider {

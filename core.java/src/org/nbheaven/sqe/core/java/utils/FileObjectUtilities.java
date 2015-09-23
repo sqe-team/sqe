@@ -24,7 +24,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 final public class FileObjectUtilities {
     

@@ -47,7 +47,7 @@ import org.openide.filesystems.FileUtil;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class Projects extends JPanel {
 

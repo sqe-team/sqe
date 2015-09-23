@@ -25,7 +25,7 @@ import org.openide.filesystems.FileUtil;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class AuditEventNode extends DefaultMutableTreeNode {
 

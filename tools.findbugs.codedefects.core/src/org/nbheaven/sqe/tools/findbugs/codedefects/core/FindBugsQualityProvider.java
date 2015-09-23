@@ -31,7 +31,7 @@ import org.nbheaven.sqe.codedefects.ui.UIHandle;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public final class FindBugsQualityProvider extends AbstractQualityProvider {
 

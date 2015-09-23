@@ -27,7 +27,7 @@ import org.openide.util.Lookup;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-maven", category=Constants.CUSTOMIZER_CATEGORY_ID)
 public class PmdPanelProvider implements CompositeCategoryProvider {

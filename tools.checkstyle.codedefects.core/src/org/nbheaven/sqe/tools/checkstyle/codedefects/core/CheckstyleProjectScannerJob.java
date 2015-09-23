@@ -25,7 +25,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 final class CheckstyleProjectScannerJob extends CheckstyleScannerJob {
 

@@ -38,7 +38,7 @@ import org.openide.util.RequestProcessor;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 @CompositeCategoryProvider.Registrations({
     @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-ant-freeform", category=Constants.CUSTOMIZER_CATEGORY_ID),

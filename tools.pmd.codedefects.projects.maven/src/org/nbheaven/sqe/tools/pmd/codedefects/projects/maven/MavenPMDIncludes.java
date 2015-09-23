@@ -30,7 +30,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 class MavenPMDIncludes implements PMDIncludes {
     private final Project project;

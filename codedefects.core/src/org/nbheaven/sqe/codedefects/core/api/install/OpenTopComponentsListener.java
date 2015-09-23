@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 final class OpenTopComponentsListener implements PropertyChangeListener {
 

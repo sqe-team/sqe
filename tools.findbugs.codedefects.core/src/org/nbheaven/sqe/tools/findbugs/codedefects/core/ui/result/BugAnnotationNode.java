@@ -22,7 +22,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class BugAnnotationNode extends DefaultMutableTreeNode {
 

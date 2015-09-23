@@ -19,7 +19,7 @@ package org.nbheaven.sqe.codedefects.core.api;
 
 /**
  
- @author sven
+ @author Sven Reimers
  */
 public interface QualityResultDesciptor {
 

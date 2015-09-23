@@ -28,7 +28,7 @@ import org.netbeans.api.java.source.TreePathHandle;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class SearchVariableVisitor extends SearchClassVisitor {
     

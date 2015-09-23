@@ -19,7 +19,7 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.result;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import java.awt.Color;

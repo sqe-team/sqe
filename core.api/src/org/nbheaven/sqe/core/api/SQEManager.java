@@ -39,7 +39,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public final class SQEManager implements Lookup.Provider {
 

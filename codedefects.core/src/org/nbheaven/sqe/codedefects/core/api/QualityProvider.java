@@ -25,7 +25,7 @@ import javax.swing.Icon;
 
 /**
  *
- * @author sreimers
+ * @author Sven Reimers
  */
 public interface QualityProvider extends Lookup.Provider {
 

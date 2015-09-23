@@ -27,7 +27,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class ExpandAllAction extends AbstractAction {
 

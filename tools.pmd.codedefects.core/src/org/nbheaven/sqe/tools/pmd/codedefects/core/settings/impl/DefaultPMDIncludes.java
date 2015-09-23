@@ -29,7 +29,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 public class DefaultPMDIncludes implements PMDIncludes {
     private final Project project;

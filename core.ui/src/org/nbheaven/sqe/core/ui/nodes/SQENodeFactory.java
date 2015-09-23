@@ -32,7 +32,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 /* SQE-28: disable until contains something useful
 @NodeFactory.Registration(projectType={

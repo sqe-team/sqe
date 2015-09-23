@@ -26,7 +26,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 class CollapseAllAction extends AbstractAction {
 

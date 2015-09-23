@@ -22,7 +22,7 @@ import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 class SessionNode extends DefaultMutableTreeNode {
 

@@ -50,7 +50,7 @@ import javax.swing.text.JTextComponent;
  * A universal filtering component heavily inspired by NetBeans
  * profiler UI
  *
- * @author  Sven Reimers
+ * @author Sven Reimers
  */
 public class JFilter extends JPanel {
     // -----

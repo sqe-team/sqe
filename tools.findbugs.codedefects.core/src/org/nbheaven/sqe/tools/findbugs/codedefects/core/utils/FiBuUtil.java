@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public final class FiBuUtil {
 

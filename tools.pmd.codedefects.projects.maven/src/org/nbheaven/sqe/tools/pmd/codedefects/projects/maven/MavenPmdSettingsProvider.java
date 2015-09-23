@@ -44,7 +44,7 @@ import org.openide.util.Lookup;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 @ProjectServiceProvider(service = PMDSettingsProvider.class, projectType = "org-netbeans-modules-maven")
 public class MavenPmdSettingsProvider implements PMDSettingsProvider {

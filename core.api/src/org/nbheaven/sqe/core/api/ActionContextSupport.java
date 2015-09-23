@@ -28,7 +28,7 @@ import org.openide.util.Utilities;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 public final class ActionContextSupport {
 

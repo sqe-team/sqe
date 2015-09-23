@@ -22,7 +22,7 @@ import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 class SessionNode extends DefaultMutableTreeNode {
 

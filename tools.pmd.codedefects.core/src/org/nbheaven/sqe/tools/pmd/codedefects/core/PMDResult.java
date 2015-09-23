@@ -39,7 +39,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class PMDResult implements QualityResult, Lookup.Provider, QualityResultStatistic {
 

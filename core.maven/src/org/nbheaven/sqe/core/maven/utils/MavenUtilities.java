@@ -45,7 +45,7 @@ import org.openide.util.Exceptions;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public final class MavenUtilities {
 

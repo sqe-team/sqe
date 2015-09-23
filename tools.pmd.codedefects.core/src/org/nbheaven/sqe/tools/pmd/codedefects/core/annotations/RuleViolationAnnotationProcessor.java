@@ -47,7 +47,7 @@ import org.openide.cookies.LineCookie;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public final class RuleViolationAnnotationProcessor
         implements SQEAnnotationProcessor {

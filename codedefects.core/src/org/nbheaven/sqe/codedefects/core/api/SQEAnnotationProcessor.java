@@ -22,7 +22,7 @@ import org.netbeans.api.project.Project;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public interface SQEAnnotationProcessor {
     public void annotateSourceFile(JavaSource javaSource,
