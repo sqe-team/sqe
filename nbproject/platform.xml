@@ -30,5 +30,10 @@
             <modules includes="${module.includes}.*" clusters="${download.clusters}"/>
             <modules includes="org[.]netbeans[.]modules[.]apisupport[.]harness" clusters="harness"/>
         </autoupdate>
+        
+        <autoupdate toDir="${nbplatform.active.dir}/extra" updatecenter="${plugins.catalog.url}">
+            <modules includes="org[.]netbeans[.]gradle[.]project"/>
+        </autoupdate>
+        
     </target>
 </project>
