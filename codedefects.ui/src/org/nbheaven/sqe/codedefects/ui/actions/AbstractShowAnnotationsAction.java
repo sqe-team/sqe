@@ -58,6 +58,7 @@ public abstract class AbstractShowAnnotationsAction extends AbstractAction imple
         assert this.lookup != null;
     }
     
+    @Override
     public final void actionPerformed(ActionEvent actionEvent) {
         DataObject dataObject = lookup.lookup(DataObject.class);
         Project project = SQEProjectSupport.findProject(dataObject);
@@ -65,8 +66,10 @@ public abstract class AbstractShowAnnotationsAction extends AbstractAction imple
         SQECodedefectProperties.setQualityProviderAnnotateActive(project, getQualityProvider(), !old);   
     }
 
+    @Override
     public abstract Action createContextAwareInstance(Lookup lookup);
 
+    @Override
     public final Component getToolbarPresenter() {
         if (null == button) {
             button = new MyToolbarToggleButton();
@@ -99,6 +102,7 @@ public abstract class AbstractShowAnnotationsAction extends AbstractAction imple
             }
         }
 
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if (evt == null || evt.getPropertyName() == null || evt.getPropertyName().equals(SQECodedefectProperties.getPropertyNameAnnotateActive(qualityProvider))) {
                 setSelected(SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualityProvider));
@@ -128,6 +132,7 @@ public abstract class AbstractShowAnnotationsAction extends AbstractAction imple
             stateChanged(null);
         }
 
+        @Override
         public void stateChanged(ChangeEvent evt) {
             boolean selected = isSelected();
             super.setContentAreaFilled(selected);

@@ -117,6 +117,7 @@ public class ConfigureRulesPanel extends javax.swing.JPanel {
 
     private class RulesListListener implements ListSelectionListener {
 
+        @Override
         public void valueChanged(ListSelectionEvent e) {
 
             if (e.getValueIsAdjusting()) {

@@ -20,7 +20,7 @@ package org.nbheaven.sqe.tools.pmd.codedefects.core.ui.result;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 import java.awt.Color;
 import java.awt.Component;

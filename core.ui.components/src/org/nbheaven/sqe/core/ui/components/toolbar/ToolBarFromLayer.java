@@ -54,8 +54,10 @@ public class ToolBarFromLayer {
     public static void connect(final JToolBar toolBar, String path, final Lookup context, final boolean largeIcons) {
         final Lookup.Result<Object> actions = Lookups.forPath(path).lookupResult(Object.class);
         LookupListener listener = new LookupListener() {
+            @Override
             public void resultChanged(LookupEvent ev) {
                 Mutex.EVENT.readAccess(new Runnable() {
+                    @Override
                     public void run() {
                         toolBar.removeAll();
                         for (Object item : actions.allInstances()) {

@@ -47,7 +47,7 @@ import org.openide.filesystems.FileUtil;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class Projects extends JPanel {
 
@@ -129,6 +129,7 @@ public class Projects extends JPanel {
         Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
         Set<Project> sorted = new TreeSet<Project>(new Comparator<Project>() {
 
+            @Override
             public int compare(Project o1, Project o2) {
                 String s1 = ProjectUtils.getInformation(o1).getDisplayName();
                 String s2 = ProjectUtils.getInformation(o2).getDisplayName();
@@ -147,6 +148,7 @@ public class Projects extends JPanel {
             this.comboBox = comboBox;
         }
 
+        @Override
         public void itemStateChanged(ItemEvent e) {
             if (ItemEvent.SELECTED == e.getStateChange()) {
                 Project project = (Project) e.getItem();
@@ -155,6 +157,7 @@ public class Projects extends JPanel {
             }
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Project project = (Project) comboBox.getSelectedItem();
             SQEManager.getDefault().setActiveProject(project);
@@ -169,6 +172,7 @@ public class Projects extends JPanel {
             this.projects = projects;
         }
 
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             projects.updateSelectedProject();
         }
@@ -182,10 +186,12 @@ public class Projects extends JPanel {
             this.projects = projects;
         }
 
+        @Override
         public void propertyChange(final PropertyChangeEvent evt) {
             if (!EventQueue.isDispatchThread()) {
                 EventQueue.invokeLater(new Runnable() {
 
+                    @Override
                     public void run() {
                         propertyChange(evt);
                     }

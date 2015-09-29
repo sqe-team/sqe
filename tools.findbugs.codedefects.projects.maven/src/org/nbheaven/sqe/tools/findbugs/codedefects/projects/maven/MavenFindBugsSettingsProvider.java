@@ -31,7 +31,7 @@ import org.netbeans.spi.project.ProjectServiceProvider;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 @ProjectServiceProvider(service = FindBugsSettingsProvider.class, projectType = "org-netbeans-modules-maven")
 public class MavenFindBugsSettingsProvider extends FindBugsSettingsProvider {

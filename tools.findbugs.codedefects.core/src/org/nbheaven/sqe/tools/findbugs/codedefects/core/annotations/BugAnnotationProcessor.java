@@ -93,6 +93,7 @@ public final class BugAnnotationProcessor implements SQEAnnotationProcessor {
         annotate(bugInstance, line, project);
         EventQueue.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 line.show(Line.ShowOpenType.OPEN, Line.ShowVisibilityType.FOCUS);
             }

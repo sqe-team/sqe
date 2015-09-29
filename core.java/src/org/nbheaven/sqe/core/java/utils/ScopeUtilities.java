@@ -31,7 +31,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 public class ScopeUtilities {
 

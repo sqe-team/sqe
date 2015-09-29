@@ -36,6 +36,7 @@ class ShowHideDescriptionAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, "Show Description");
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         resultPanel.updateDescription();
     }

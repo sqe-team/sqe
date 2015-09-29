@@ -112,6 +112,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
         }
     }
 
+    @Override
     public void annotateSourceFile(JavaSource javaSource,
             final Project project, QualityResult qualityResult) {
         if (null == qualityResult) {
@@ -122,7 +123,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
         final CheckstyleResult result = (CheckstyleResult) qualityResult;
 
         for (FileObject fo : javaSource.getFileObjects()) {
-            Map<Object, Collection<AuditEvent>> instanceMap = result.getInstanceByClass();
+            Map<? extends Object, Collection<AuditEvent>> instanceMap = result.getInstanceByClass();
             ClassKey classKey = new ClassKey(fo);
             Collection<AuditEvent> auditEvents = instanceMap.get(classKey);
 
@@ -140,6 +141,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
         }
     }
 
+    @Override
     public void clearAllAnnotations(Project project) {
         CheckstyleAnnotation.clearAll(project);
     }

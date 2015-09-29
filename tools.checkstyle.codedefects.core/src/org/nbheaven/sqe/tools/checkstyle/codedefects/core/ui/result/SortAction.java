@@ -39,6 +39,7 @@ class SortAction extends AbstractAction {
         this.mode = mode;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
         bugTreePanel.setActiveMode(mode);
     }

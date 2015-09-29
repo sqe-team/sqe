@@ -37,7 +37,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 
 /**
  *
- * @author florian
+ * @author Florian Vogler
  */
 public class ActionUtils {
 

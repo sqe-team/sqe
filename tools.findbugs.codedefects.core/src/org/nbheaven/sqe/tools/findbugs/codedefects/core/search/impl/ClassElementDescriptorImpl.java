@@ -38,6 +38,7 @@ public final class ClassElementDescriptorImpl implements ClassElementDescriptor{
         javaSourceProvider = TypeUtilities.getJavaTypeElement(classAnnotation.getClassName(), project);                
     }
 
+    @Override
     public String getFQNClassName() {
         if (0 == classAnnotation.getPackageName().length()) {
             return classAnnotation.getClassName();
@@ -47,6 +48,7 @@ public final class ClassElementDescriptorImpl implements ClassElementDescriptor{
         }
     }
 
+    @Override
     public JavaSourceProvider getSourceProvider() {
         return javaSourceProvider;
     }

@@ -19,7 +19,7 @@ package org.nbheaven.sqe.core.java.utils;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 public enum Scope {
 

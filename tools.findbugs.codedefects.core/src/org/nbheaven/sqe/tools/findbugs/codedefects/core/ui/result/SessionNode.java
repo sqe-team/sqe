@@ -22,7 +22,7 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 class SessionNode extends DefaultMutableTreeNode {
 

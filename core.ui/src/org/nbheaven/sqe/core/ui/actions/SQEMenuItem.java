@@ -28,7 +28,7 @@ import javax.swing.JMenuItem;
 
 /**
  *
- * @author florian
+ * @author Florian Vogler
  */
 public abstract class SQEMenuItem extends NodeAction implements Presenter.Popup {
 

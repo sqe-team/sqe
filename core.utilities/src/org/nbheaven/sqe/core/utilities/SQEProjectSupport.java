@@ -27,7 +27,7 @@ import org.openide.nodes.Node;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 public class SQEProjectSupport {
 

@@ -39,7 +39,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class PMDResult implements QualityResult, Lookup.Provider, QualityResultStatistic {
 
@@ -47,18 +47,21 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/class.gif") {
 
+            @Override
             public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByClass();
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/package.gif") {
 
+            @Override
             public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByPackage();
             }
         },
         TYPE("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png") {
 
+            @Override
             public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByType();
             }
@@ -97,6 +100,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         lookup = Lookups.fixed(new Object[]{this});
     }
 
+    @Override
     public Lookup getLookup() {
         return lookup;
     }
@@ -198,10 +202,12 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return report.size();
     }
 
+    @Override
     public long getCodeDefectCountSum() {
         return getBugCount();
     }
 
+    @Override
     public long getCodeDefectCount(CodeDefectSeverity severity) {
         if (CodeDefectSeverity.INFO == severity) {
             return getBugCount();
@@ -233,6 +239,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             return this.getDisplayName().hashCode();
         }
 
+        @Override
         public final int compareTo(DisplayableKey object) {
             return this.getDisplayName().compareTo(object.getDisplayName());
         }
@@ -255,6 +262,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             this.fileObject = RuleViolationAnnotationProcessor.findFileObjectForAnnotatedClass(className);
         }
 
+        @Override
         public String getDisplayName() {
             return this.className;
         }
@@ -276,6 +284,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             this.packageName = 0 == ruleViolation.getPackageName().length() ? "<Default Package>" : ruleViolation.getPackageName();
         }
 
+        @Override
         public String getDisplayName() {
             return this.packageName;
         }
@@ -289,6 +298,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             this.bugPattern = bugPattern;
         }
 
+        @Override
         public String getDisplayName() {
             return this.bugPattern.getRule().getName();
         }

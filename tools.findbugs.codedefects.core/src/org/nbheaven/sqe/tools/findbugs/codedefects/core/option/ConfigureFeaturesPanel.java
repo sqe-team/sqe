@@ -19,7 +19,7 @@ package org.nbheaven.sqe.tools.findbugs.codedefects.core.option;
 
 /**
  *
- * @author  reimers-sven
+ * @author Sven Reimers
  */
 public class ConfigureFeaturesPanel extends javax.swing.JPanel {
     

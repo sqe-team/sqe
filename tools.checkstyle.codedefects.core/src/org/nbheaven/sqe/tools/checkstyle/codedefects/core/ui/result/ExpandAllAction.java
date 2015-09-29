@@ -27,7 +27,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class ExpandAllAction extends AbstractAction {
 
@@ -40,6 +40,7 @@ class ExpandAllAction extends AbstractAction {
         this.bugTreePanel = bugTreePanel;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         bugTreePanel.expandAll();
     }

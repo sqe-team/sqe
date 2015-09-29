@@ -32,7 +32,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 /* SQE-28: disable until contains something useful
 @NodeFactory.Registration(projectType={
@@ -48,6 +48,7 @@ public class SQENodeFactory implements NodeFactory {
     public SQENodeFactory() {
     }
 
+    @Override
     public NodeList<?> createNodes(Project project) {
         return NodeFactorySupport.fixedNodeList(new SQENode(Lookups.singleton(project)));
     }

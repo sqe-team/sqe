@@ -25,7 +25,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 final class CheckstyleFileScannerJob extends CheckstyleScannerJob {
 
@@ -36,6 +36,7 @@ final class CheckstyleFileScannerJob extends CheckstyleScannerJob {
         this.fileObjects = new ArrayList<FileObject>(Arrays.asList(fileObjects));
     }
 
+    @Override
     protected void executeCheckstyle() {
         executeCheckstyle(fileObjects);
     }

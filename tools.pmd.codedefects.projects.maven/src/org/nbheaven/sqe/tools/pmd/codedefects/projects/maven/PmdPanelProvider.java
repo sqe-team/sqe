@@ -27,17 +27,19 @@ import org.openide.util.Lookup;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 @CompositeCategoryProvider.Registration(projectType="org-netbeans-modules-maven", category=Constants.CUSTOMIZER_CATEGORY_ID)
 public class PmdPanelProvider implements CompositeCategoryProvider {
 
+    @Override
     public Category createCategory(Lookup lkp) {
         ModelHandleProxy proxy = ModelHandleProxy.create(lkp);
         assert proxy != null;
         return Category.create("PMD", "PMD", null);
     }
 
+    @Override
     public JComponent createComponent(Category ctgr, Lookup lkp) {
         ModelHandleProxy proxy = ModelHandleProxy.create(lkp);
         return new PmdPanel(proxy);

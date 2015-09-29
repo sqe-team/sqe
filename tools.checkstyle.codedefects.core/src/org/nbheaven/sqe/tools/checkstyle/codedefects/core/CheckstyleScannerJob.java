@@ -59,6 +59,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
         this.project = project;
     }
 
+    @Override
     protected final String getDisplayName() {
         return "Checkstyle scanning " + ProjectUtils.getInformation(getProject()).getName();
     }

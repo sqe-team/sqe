@@ -75,6 +75,7 @@ public final class History implements Iterable<History.Entry> {
         fireHistoryChanged();
     }
 
+    @Override
     public Iterator<Entry> iterator() {
         return entries.iterator();
     }
@@ -227,10 +228,12 @@ public final class History implements Iterable<History.Entry> {
                 this.sum = infos + warnings + errors;
             }
 
+            @Override
             public long getCodeDefectCountSum() {
                 return sum;
             }
 
+            @Override
             public long getCodeDefectCount(CodeDefectSeverity severity) {
                 switch(severity) {
                     case ERROR : return errors;

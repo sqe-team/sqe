@@ -87,6 +87,7 @@ public class ConfigureDetectorsPanel extends JPanel {
         pluginSelector = new DefaultComboBoxModel<Plugin>(plugins);
 
         pluginRenderer = new DefaultListCellRenderer() {
+            @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Object o = value;
                 if (null != value) {
@@ -340,10 +341,12 @@ public class ConfigureDetectorsPanel extends JPanel {
                 false, false, true
             };
 
+            @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
@@ -392,6 +395,7 @@ public class ConfigureDetectorsPanel extends JPanel {
 
     private class DetectorListListener implements ListSelectionListener {
 
+        @Override
         public void valueChanged(final ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 return;

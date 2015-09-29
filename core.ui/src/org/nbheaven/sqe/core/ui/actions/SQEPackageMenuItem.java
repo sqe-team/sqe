@@ -21,7 +21,7 @@ import org.openide.nodes.Node;
 
 /**
  *
- * @author florian
+ * @author Florian Vogler
  */
 public final class SQEPackageMenuItem extends SQEMenuItem {
 

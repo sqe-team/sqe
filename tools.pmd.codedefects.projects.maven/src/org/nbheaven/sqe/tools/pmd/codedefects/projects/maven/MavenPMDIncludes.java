@@ -30,7 +30,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 class MavenPMDIncludes implements PMDIncludes {
     private final Project project;
@@ -42,6 +42,7 @@ class MavenPMDIncludes implements PMDIncludes {
         project = p;
     }
 
+    @Override
     public Collection<FileObject> getProjectIncludes() {
         MavenPluginConfiguration mpc = MavenUtilities.getReportPluginConfiguration(project, "org.apache.maven.plugins", "maven-pmd-plugin");
         String val = mpc.getValue("includeTests");

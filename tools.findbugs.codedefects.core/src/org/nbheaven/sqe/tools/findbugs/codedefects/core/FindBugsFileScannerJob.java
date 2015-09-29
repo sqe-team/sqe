@@ -42,6 +42,7 @@ class FindBugsFileScannerJob extends FindBugsScannerJob {
         this.sourceFile = sourceFile;
     }
 
+    @Override
     protected edu.umd.cs.findbugs.Project createFindBugsProject() {
         edu.umd.cs.findbugs.Project fibuProject = new edu.umd.cs.findbugs.Project();
 

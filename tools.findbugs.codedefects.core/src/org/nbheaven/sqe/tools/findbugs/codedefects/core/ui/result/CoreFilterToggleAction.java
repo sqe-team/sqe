@@ -28,7 +28,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class CoreFilterToggleAction extends AbstractAction implements PropertyChangeListener {
 
@@ -42,10 +42,12 @@ class CoreFilterToggleAction extends AbstractAction implements PropertyChangeLis
 
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         bugTreePanel.setCoreFilterEnabled(!bugTreePanel.isCoreFilterEnabled());
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         updateState();
     }

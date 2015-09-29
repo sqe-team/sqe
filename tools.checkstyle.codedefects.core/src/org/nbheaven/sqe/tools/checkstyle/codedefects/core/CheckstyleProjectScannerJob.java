@@ -25,7 +25,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 final class CheckstyleProjectScannerJob extends CheckstyleScannerJob {
 
@@ -36,6 +36,7 @@ final class CheckstyleProjectScannerJob extends CheckstyleScannerJob {
         this.session = session;
     }
 
+    @Override
     protected void executeCheckstyle() {
         SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(getProject());
         for (SourceGroup g : groups) {

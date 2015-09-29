@@ -44,6 +44,7 @@ class SQEInformationComponentImpl implements SQEInformationComponent {
         this.project = project;
     }
 
+    @Override
     public Component getComponent() {
         panel.removeAll();
         JScrollPane pane = new JScrollPane(new InfoPanel(project));
@@ -54,6 +55,7 @@ class SQEInformationComponentImpl implements SQEInformationComponent {
         return panel;
     }
 
+    @Override
     public void refresh() {        
         panel.removeAll();
         JScrollPane pane = new JScrollPane(new InfoPanel(project));

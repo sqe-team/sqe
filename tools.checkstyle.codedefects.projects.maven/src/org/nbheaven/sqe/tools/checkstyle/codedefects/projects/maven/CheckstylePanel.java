@@ -23,7 +23,7 @@ import org.nbheaven.sqe.core.maven.utils.ModelHandleProxy;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 public class CheckstylePanel extends javax.swing.JPanel {
     private final ModelHandleProxy handle;

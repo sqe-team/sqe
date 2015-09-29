@@ -22,7 +22,7 @@ import org.openide.util.Lookup;
 
 /**
  *
- * @author sreimers
+ * @author Sven Reimers
  */
 public interface QualityResult extends Lookup.Provider {
 

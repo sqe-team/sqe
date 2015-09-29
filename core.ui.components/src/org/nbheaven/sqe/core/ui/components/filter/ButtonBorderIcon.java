@@ -31,14 +31,17 @@ final class ButtonBorderIcon implements Icon {
         this.icon = icon;
     }
 
+    @Override
     public int getIconHeight() {
         return icon.getIconHeight();
     }
 
+    @Override
     public int getIconWidth() {
         return icon.getIconWidth();
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         icon.paintIcon(c, g, x, y);
         g.setColor(BUTTON_BORDER_DARK);

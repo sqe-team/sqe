@@ -23,7 +23,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 public interface PMDIncludes {
 

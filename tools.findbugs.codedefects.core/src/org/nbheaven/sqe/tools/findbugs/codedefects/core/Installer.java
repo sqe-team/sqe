@@ -69,26 +69,32 @@ class Installer {
             this.fo = fo;
         }
 
+        @Override
         public void fileAttributeChanged(FileAttributeEvent fileAttributeEvent) {
             updatePluginList(fo);
         }
 
+        @Override
         public void fileChanged(FileEvent fileEvent) {
             updatePluginList(fo);
         }
 
+        @Override
         public void fileDataCreated(FileEvent fileEvent) {
             updatePluginList(fo);
         }
 
+        @Override
         public void fileDeleted(FileEvent fileEvent) {
             updatePluginList(fo);
         }
 
+        @Override
         public void fileFolderCreated(FileEvent fileEvent) {
             updatePluginList(fo);
         }
 
+        @Override
         public void fileRenamed(FileRenameEvent fileRenameEvent) {
             updatePluginList(fo);
         }

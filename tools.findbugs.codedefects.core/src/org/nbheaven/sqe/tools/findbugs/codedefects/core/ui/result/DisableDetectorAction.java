@@ -46,6 +46,7 @@ class DisableDetectorAction extends AbstractAction {
         putValue(Action.NAME, "Disable Detector");
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         FindBugsSettingsProvider settingsProvider = project.getLookup().lookup(FindBugsSettingsProvider.class);
         if (null != settingsProvider) {

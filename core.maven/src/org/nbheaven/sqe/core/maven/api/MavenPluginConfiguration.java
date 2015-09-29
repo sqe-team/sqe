@@ -19,7 +19,7 @@ package org.nbheaven.sqe.core.maven.api;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public interface MavenPluginConfiguration {
 

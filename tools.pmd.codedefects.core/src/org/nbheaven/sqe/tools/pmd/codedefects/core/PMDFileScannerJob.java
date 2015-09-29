@@ -25,7 +25,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 final class PMDFileScannerJob extends PMDScannerJob {
 
@@ -36,6 +36,7 @@ final class PMDFileScannerJob extends PMDScannerJob {
         this.fileObjects = new ArrayList<FileObject>(Arrays.asList(fileObjects));
     }
 
+    @Override
     protected void executePMD() {
         executePMD(fileObjects);
     }

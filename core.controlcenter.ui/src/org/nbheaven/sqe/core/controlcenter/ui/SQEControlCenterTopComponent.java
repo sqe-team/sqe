@@ -229,6 +229,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
         super.componentClosed();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         setActiveProject((Project) evt.getNewValue());
     }
@@ -237,6 +238,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     setActiveProject(project);
                 }
@@ -279,9 +281,11 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
 
     public static final class VerticalLayout implements LayoutManager {
 
+        @Override
         public void addLayoutComponent(final String name, final Component comp) {
         }
 
+        @Override
         public void layoutContainer(final Container parent) {
             final Insets insets = parent.getInsets();
             final int posX = insets.left;
@@ -309,6 +313,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
             }
         }
 
+        @Override
         public Dimension minimumLayoutSize(final Container parent) {
             final Dimension d = new Dimension(parent.getInsets().left + parent.getInsets().right,
                     parent.getInsets().top + parent.getInsets().bottom);
@@ -332,6 +337,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
             return d;
         }
 
+        @Override
         public Dimension preferredLayoutSize(final Container parent) {
             final Dimension d = new Dimension(parent.getInsets().left + parent.getInsets().right,
                     parent.getInsets().top + parent.getInsets().bottom);
@@ -355,6 +361,7 @@ final class SQEControlCenterTopComponent extends TopComponent implements Propert
             return d;
         }
 
+        @Override
         public void removeLayoutComponent(final Component comp) {
         }
     }

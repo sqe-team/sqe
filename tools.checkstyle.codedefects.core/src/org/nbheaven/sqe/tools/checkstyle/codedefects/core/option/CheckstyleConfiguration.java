@@ -21,7 +21,7 @@ import javax.swing.JFileChooser;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class CheckstyleConfiguration extends javax.swing.JPanel {
 

@@ -33,14 +33,17 @@ final class ArrowSignIcon implements Icon {
         this.icon = icon;
     }
 
+    @Override
     public int getIconHeight() {
         return icon.getIconHeight();
     }
 
+    @Override
     public int getIconWidth() {
         return icon.getIconWidth();
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         icon.paintIcon(c, g, x, y);
         popupArrowIcon.paintIcon(c, g, (x + icon.getIconWidth()) - popupArrowIcon.getIconWidth(),

@@ -29,7 +29,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author mkleint
+ * @author Martin Klähn
  */
 public class DefaultPMDIncludes implements PMDIncludes {
     private final Project project;
@@ -38,6 +38,7 @@ public class DefaultPMDIncludes implements PMDIncludes {
         project = prj;
     }
 
+    @Override
     public Collection<FileObject> getProjectIncludes() {
         SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(project);
         Collection<FileObject> toRet = new HashSet<FileObject>();

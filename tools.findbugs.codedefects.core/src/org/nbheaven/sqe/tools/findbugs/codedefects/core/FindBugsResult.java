@@ -55,24 +55,28 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/class.gif") {
 
+            @Override
             public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByClass(coreBugsOnly);
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/package.gif") {
 
+            @Override
             public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByPackage(coreBugsOnly);
             }
         },
         CATEGORY("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug.png") {
 
+            @Override
             public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByCategory(coreBugsOnly);
             }
         },
         TYPE("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/bug2.png") {
 
+            @Override
             public Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly) {
                 return result.getInstanceByType(coreBugsOnly);
             }
@@ -117,6 +121,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         this.session = project.getLookup().lookup(FindBugsSession.class);
     }
 
+    @Override
     public Lookup getLookup() {
         return lookup;
     }
@@ -282,10 +287,12 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         return bugCount;
     }
 
+    @Override
     public long getCodeDefectCountSum() {
         return getBugCount();
     }
 
+    @Override
     public long getCodeDefectCount(CodeDefectSeverity severity) {
         reallyUpdateMaps();
         if (CodeDefectSeverity.INFO == severity) {
@@ -317,6 +324,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             return getDisplayName().hashCode();
         }
 
+        @Override
         public final int compareTo(T object) {
             return getDisplayName().compareTo(object.getDisplayName());
         }
@@ -330,6 +338,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             this.displayName = displayName;
         }
 
+        @Override
         public String getDisplayName() {
             return this.displayName;
         }
@@ -345,6 +354,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             this.fileObject = BugAnnotationProcessor.findFileObjectForAnnotatedClass(classAnnotation.getClassName(), project);
         }
 
+        @Override
         public String getDisplayName() {
             return this.classAnnotation.getClassName();
         }
@@ -362,6 +372,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             this.classAnnotation = classAnnotation;
         }
 
+        @Override
         public String getDisplayName() {
             return this.classAnnotation.getPackageName();
         }
@@ -375,6 +386,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             this.bugPattern = bugPattern;
         }
 
+        @Override
         public String getDisplayName() {
             return this.bugPattern.getCategory();
         }
@@ -389,6 +401,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         }
 
         @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+        @Override
         public int size() {
             int i = 0;
             for (BugInstance instance : this) {
@@ -397,6 +410,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             return i;
         }
 
+        @Override
         public Iterator<T> iterator() {
             final Iterator<T> origIterator = originalCollection.iterator();
             return new Iterator<T>() {
@@ -404,6 +418,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
                 private T nextObject;
                 private boolean hasNext;
 
+                @Override
                 public T next() {
                     if (hasNext) {
                         return nextObject;
@@ -411,10 +426,12 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
                     throw new NoSuchElementException();
                 }
 
+                @Override
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
 
+                @Override
                 public boolean hasNext() {
                     while (origIterator.hasNext()) {
                         nextObject = origIterator.next();

@@ -36,7 +36,7 @@ import org.openide.filesystems.FileUtil;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 @ProjectServiceProvider(service=CheckstyleSettingsProvider.class, projectType="org-netbeans-modules-maven")
 public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvider {
@@ -47,6 +47,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
         this.p = p;
     }
 
+    @Override
     public CheckstyleSettings getCheckstyleSettings() {
         MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-checkstyle-plugin");
         if (pluginConfiguration.isDefinedInProject()) {
@@ -120,18 +121,22 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
             this.checkstyleConfigurationFile = null;
         }
 
+        @Override
         public FileObject getCheckstyleConfigurationFile() {
             return checkstyleConfigurationFile;
         }
 
+        @Override
         public URL getCheckstyleConfigurationURL() {
             return url;
         }
 
+        @Override
         public Properties getProperties() {
             return properties;
         }
 
+        @Override
         public FileObject getPropertiesFile() {
             return null;
         }

@@ -25,7 +25,7 @@ import org.netbeans.api.project.SourceGroup;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public abstract class AbstractQualityProvider implements QualityProvider {
 
@@ -33,6 +33,7 @@ public abstract class AbstractQualityProvider implements QualityProvider {
     protected AbstractQualityProvider() {
     }
 
+    @Override
     public boolean isValidFor(Project project) {
         if (null == project) {
             return false;

@@ -21,7 +21,7 @@ import javax.swing.Action;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public interface QualityUIDescriptor {
     public QualityResultComponent getResultDisplayComponent(

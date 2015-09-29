@@ -94,9 +94,11 @@ class BugTree extends JTree {
 
     public void refresh() {
         requestProcessor.post(new Runnable() {
+            @Override
             public void run() {
                 final TreeNode rootNode = createRootTreeNode(session, coreFilterEnabled, resultMode);
                 EventQueue.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         setModel(new DefaultTreeModel(rootNode));
                         if (isCollapsed) {
@@ -185,6 +187,7 @@ class BugTree extends JTree {
         if (EventQueue.isDispatchThread()) {
             RequestProcessor.getDefault().post(new Runnable() {
 
+                @Override
                 public void run() {
                     jumpToSource(treePath);
                 }
@@ -222,6 +225,7 @@ class BugTree extends JTree {
             this.bugTreePanel = bugTreePanel;
         }
 
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             bugTreePanel.refresh();
         }

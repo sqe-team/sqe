@@ -50,7 +50,7 @@ import javax.swing.text.JTextComponent;
  * A universal filtering component heavily inspired by NetBeans
  * profiler UI
  *
- * @author  Sven Reimers
+ * @author Sven Reimers
  */
 public class JFilter extends JPanel {
     // -----
@@ -631,6 +631,7 @@ public class JFilter extends JPanel {
 
     private class FilterStringComboActionListener implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (internalChange) {
                 return;
@@ -654,6 +655,7 @@ public class JFilter extends JPanel {
 
     private class FilterTextFieldDocumentListener implements DocumentListener {
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
             if (filterStringCombo.comboPopupActionFlag) {
                 return;
@@ -663,6 +665,7 @@ public class JFilter extends JPanel {
             updateSetClearButtons();
         }
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
             if (filterStringCombo.comboPopupActionFlag) {
                 return;
@@ -672,6 +675,7 @@ public class JFilter extends JPanel {
             updateSetClearButtons();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
             if (filterStringCombo.comboPopupActionFlag) {
                 return;
@@ -684,10 +688,12 @@ public class JFilter extends JPanel {
 
     private class FilterTextFieldFocusListener implements FocusListener {
 
+        @Override
         public void focusGained(FocusEvent e) {
             doFocusGained();
         }
 
+        @Override
         public void focusLost(FocusEvent e) {
             doFocusLost();
         }
@@ -695,6 +701,7 @@ public class JFilter extends JPanel {
 
     private class FilterTextFieldKeyListener extends KeyAdapter {
 
+        @Override
         public void keyPressed(KeyEvent e) {
             filterStringCombo.comboPopupKeyFlag = true;
 
@@ -722,6 +729,7 @@ public class JFilter extends JPanel {
             }
         }
 
+        @Override
         public void keyReleased(KeyEvent e) {
             filterStringCombo.comboPopupKeyFlag = false;
         }
@@ -729,6 +737,7 @@ public class JFilter extends JPanel {
 
     private class FilterTypeButtonMouseListener extends MouseAdapter {
 
+        @Override
         public void mousePressed(MouseEvent e) {
             filterTypePopup.show(JFilter.this, 0 + 1, JFilter.this.getHeight() - 2);
         }
@@ -736,6 +745,7 @@ public class JFilter extends JPanel {
 
     private class PopupItemsListener implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             setFilterTypePopupItemActive((JMenuItem) e.getSource(), false);
             filterStringCombo.requestFocus();
@@ -744,6 +754,7 @@ public class JFilter extends JPanel {
 
     private class SetClearButtonsActionListener implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == setFilterButton) {
                 performSetFilterButtonAction();

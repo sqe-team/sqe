@@ -24,7 +24,7 @@ import java.beans.PropertyChangeListener;
 
 /**
  *
- * @author sreimers
+ * @author Sven Reimers
  */
 public interface QualitySession {
     public static final String RESULT = "Result";

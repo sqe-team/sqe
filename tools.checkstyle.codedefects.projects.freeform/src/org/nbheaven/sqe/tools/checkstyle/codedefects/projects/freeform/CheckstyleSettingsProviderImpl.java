@@ -54,6 +54,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
         this.project = project;
     }
 
+    @Override
     public CheckstyleSettings getCheckstyleSettings() {
         return new Settings(project);
     }
@@ -66,6 +67,7 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
             this.project = project;
         }
 
+        @Override
         public FileObject getCheckstyleConfigurationFile() {
             String settingsFile = AntUtilities.evaluate(prefs().get(CHECKSTYLE_CONFIGURATION_FILE, DEFAULT_CHECKSTYLE_CONFIGURATION_FILE), project);
             // XXX this will just return null if not already defined... what will then happen?
@@ -73,15 +75,18 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
             return FileUtil.toFileObject(AntUtilities.resolveFile(settingsFile, project));
         }
 
+        @Override
         public URL getCheckstyleConfigurationURL() {
             return null;
         }
 
+        @Override
         public FileObject getPropertiesFile() {
             String propertiesFile = AntUtilities.evaluate(prefs().get(CHECKSTYLE_PROPERTIES_FILE, DEFAULT_CHECKSTYLE_PROPERTIES_FILE), project);
             return FileUtil.toFileObject(AntUtilities.resolveFile(propertiesFile, project));
         }
 
+        @Override
         public Properties getProperties() {
             return System.getProperties();
         }

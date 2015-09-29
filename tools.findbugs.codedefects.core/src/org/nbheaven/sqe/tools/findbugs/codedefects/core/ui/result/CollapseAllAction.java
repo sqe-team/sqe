@@ -26,7 +26,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 class CollapseAllAction extends AbstractAction {
 
@@ -39,6 +39,7 @@ class CollapseAllAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(RefreshAction.class, "HINT_COLLAPSE_ALL"));
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         bugTreePanel.collapseAll();
     }

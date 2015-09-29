@@ -25,7 +25,7 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 final class PMDProjectScannerJob extends PMDScannerJob {
 
@@ -36,6 +36,7 @@ final class PMDProjectScannerJob extends PMDScannerJob {
         this.session = session;
     }
 
+    @Override
     protected void executePMD() {
         PMDSettingsProvider prv = getProject().getLookup().lookup(PMDSettingsProvider.class);
         Collection<FileObject> includes = null;

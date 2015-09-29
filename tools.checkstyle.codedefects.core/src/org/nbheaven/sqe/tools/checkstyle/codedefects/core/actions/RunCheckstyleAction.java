@@ -105,6 +105,7 @@ public class RunCheckstyleAction extends AbstractAction implements LookupListene
         if (!EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     updateEnableState();
                 }

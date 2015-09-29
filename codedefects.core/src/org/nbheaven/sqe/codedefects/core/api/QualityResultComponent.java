@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public abstract class QualityResultComponent extends JPanel implements Lookup.Provider {
 }

@@ -23,7 +23,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 class RuleViolationNode extends DefaultMutableTreeNode {
 

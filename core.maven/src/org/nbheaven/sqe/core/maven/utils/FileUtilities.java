@@ -22,7 +22,7 @@ import java.io.File;
 
 /**
  * proxy to maven's FileUtilities class
- * @author mkleint
+ * @author Martin Klähn
  */
 public class FileUtilities {
 

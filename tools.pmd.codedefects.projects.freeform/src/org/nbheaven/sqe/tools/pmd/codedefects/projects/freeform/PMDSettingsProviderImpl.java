@@ -54,6 +54,7 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
         return AntUtilities.resolveFile(settingsFile, project);
     }
 
+    @Override
     public PMDSettings getPMDSettings() {
         File pmdSettingsFile = getPMDSettingsFile();
         return new PMDSettingsImpl(pmdSettingsFile);
@@ -63,6 +64,7 @@ public class PMDSettingsProviderImpl implements PMDSettingsProvider {
         return ProjectUtils.getPreferences(project, PMDSettingsProviderImpl.class, true);
     }
 
+    @Override
     public PMDIncludes getPMDIncludes() {
         //default behaviour
         return null;

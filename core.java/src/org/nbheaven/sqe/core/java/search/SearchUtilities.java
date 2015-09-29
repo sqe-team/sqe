@@ -54,6 +54,7 @@ public final class SearchUtilities {
 
     public static JavaElement findClassElement(final ClassElementDescriptor descriptor) {
         return new Searcher() {
+            @Override
             protected TreePathScanner<TreePathHandle, Void> makeVisitor(CompilationController controller) {
                 return new SearchClassVisitor(controller, descriptor);
             }
@@ -62,6 +63,7 @@ public final class SearchUtilities {
 
     public static JavaElement findMethodElement(final MethodElementDescriptor descriptor) {
         return new Searcher() {
+            @Override
             protected TreePathScanner<TreePathHandle, Void> makeVisitor(CompilationController controller) {
                 return new SearchMethodVisitor(controller, descriptor);
             }
@@ -70,6 +72,7 @@ public final class SearchUtilities {
 
     public static JavaElement findVariableElement(final VariableElementDescriptor descriptor) {
         return new Searcher() {
+            @Override
             protected TreePathScanner<TreePathHandle, Void> makeVisitor(CompilationController controller) {
                 return new SearchVariableVisitor(controller, descriptor);
             }
@@ -105,6 +108,7 @@ public final class SearchUtilities {
             }
             return null;
         }
+        @Override
         public final void run(CompilationController controller) throws Exception {
             controller.toPhase(Phase.ELEMENTS_RESOLVED);
             TreePathHandle handle = makeVisitor(controller).scan(controller.getCompilationUnit(), null);
@@ -115,6 +119,7 @@ public final class SearchUtilities {
                 }
             }
         }
+        @Override
         public final void cancel() {}
     }
 
@@ -130,6 +135,7 @@ public final class SearchUtilities {
             final Collection<String> result = new ArrayList<String>();
             js.runUserActionTask(new CancellableTask<CompilationController>() {
 
+                @Override
                 public void run(final CompilationController control) throws Exception {
                     if (control.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED).compareTo(JavaSource.Phase.ELEMENTS_RESOLVED) >= 0) {
                         ClassVisitor visitor = new ClassVisitor(control);
@@ -138,6 +144,7 @@ public final class SearchUtilities {
                     }
                 }
 
+                @Override
                 public void cancel() {
                 }
             }, true);

@@ -36,27 +36,33 @@ class NbFindBugsProgress implements FindBugsProgress {
         this.progressHandle = progressHandle;
     }
 
+    @Override
     public void reportNumberOfArchives(final int numArchives) {
         setProgressHandleDisplayName("Scanning Archives");
     }
 
+    @Override
     public void startArchive(String archiveName) {
         setProgressHandleDisplayName("Scanning Archive:" + archiveName);;
     }
 
+    @Override
     public void finishArchive() {
     }
 
+    @Override
     public void startAnalysis(int numClasses) {
         analyzed = 0;
         setProgressHandleDisplayName("Analyzing Classes - Pass " + analyzePass);
         getProgressHandle().switchToDeterminate(numClasses);
     }
 
+    @Override
     public void finishClass() {
         getProgressHandle().progress(++analyzed);
     }
 
+    @Override
     public void finishPerClassAnalysis() {
         getProgressHandle().switchToIndeterminate();
         ++analyzePass;
@@ -66,6 +72,7 @@ class NbFindBugsProgress implements FindBugsProgress {
         return progressHandle;
     }
 
+    @Override
     public void predictPassCount(int[] classesPerPass) {
         this.classesPerPass = classesPerPass;
     }
@@ -82,6 +89,7 @@ class NbFindBugsProgress implements FindBugsProgress {
         public CancelCallback() {
         }
 
+        @Override
         public boolean cancel() {
             cancelled = true;
             return true;

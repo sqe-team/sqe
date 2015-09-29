@@ -38,7 +38,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Provider, QualityResultStatistic {
 
@@ -46,19 +46,22 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/class.gif") {
 
-            public Map<Object, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
+            @Override
+            public Map<ClassKey, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
                 return result.getInstanceByClass();
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/package.gif") {
 
-            public Map<Object, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
+            @Override
+            public Map<PackageKey, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
                 return result.getInstanceByPackage();
             }
         },
         TYPE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png") {
 
-            public Map<Object, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
+            @Override
+            public Map<CategoryKey, Collection<AuditEvent>> getInstanceList(CheckstyleResult result) {
                 return result.getInstanceByType();
             }
         };
@@ -78,13 +81,13 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             return icon;
         }
 
-        public abstract Map<Object, Collection<AuditEvent>> getInstanceList(final CheckstyleResult result);
+        public abstract Map<? extends Object, Collection<AuditEvent>> getInstanceList(final CheckstyleResult result);
     }
     private Collection<AuditEvent> auditEvents = new LinkedList<AuditEvent>();
-    private Map<Object, Collection<AuditEvent>> instanceBySource;
-    private Map<Object, Collection<AuditEvent>> instanceByClass;
-    private Map<Object, Collection<AuditEvent>> instanceByType;
-    private Map<Object, Collection<AuditEvent>> instanceByPackage;
+    private Map<String, Collection<AuditEvent>> instanceBySource;
+    private Map<ClassKey, Collection<AuditEvent>> instanceByClass;
+    private Map<CategoryKey, Collection<AuditEvent>> instanceByType;
+    private Map<PackageKey, Collection<AuditEvent>> instanceByPackage;
 //    private Map<Object, List<RuleViolation>> instanceByType = null;
     private long bugCount = 0;
 //    private Report report;
@@ -99,13 +102,14 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         this.project = project;
     }
 
+    @Override
     public Lookup getLookup() {
         return lookup;
     }
 
-    public Map<Object, Collection<AuditEvent>> getInstanceBySource() {
+    public Map<String, Collection<AuditEvent>> getInstanceBySource() {
         if (null == instanceBySource) {
-            instanceBySource = new TreeMap<Object, Collection<AuditEvent>>();
+            instanceBySource = new TreeMap<String, Collection<AuditEvent>>();
             for (AuditEvent auditEvent : auditEvents) {
                 Collection<AuditEvent> events = instanceBySource.get(auditEvent.getSourceName());
                 if (null == events) {
@@ -118,9 +122,9 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         return instanceBySource;
     }
 
-    public Map<Object, Collection<AuditEvent>> getInstanceByClass() {
+    public Map<ClassKey, Collection<AuditEvent>> getInstanceByClass() {
         if (null == instanceByClass) {
-            instanceByClass = new TreeMap<Object, Collection<AuditEvent>>();
+            instanceByClass = new TreeMap<>();
             for (AuditEvent auditEvent : auditEvents) {
                 if (auditEvent.getFileName().endsWith(".java")) {
                     FileObject file = AuditEventAnnotationProcessor.getFileObjectForAuditEvent(auditEvent, project);
@@ -139,9 +143,9 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         return instanceByClass;
     }
 
-    public Map<Object, Collection<AuditEvent>> getInstanceByPackage() {
+    public Map<PackageKey, Collection<AuditEvent>> getInstanceByPackage() {
         if (null == instanceByPackage) {
-            instanceByPackage = new TreeMap<Object, Collection<AuditEvent>>();
+            instanceByPackage = new TreeMap<>();
             for (AuditEvent auditEvent : auditEvents) {
                 if (auditEvent.getFileName().endsWith(".java")) {
                     PackageKey key = new PackageKey(auditEvent);
@@ -157,15 +161,15 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         return instanceByPackage;
     }
 
-    public Map<Object, Collection<AuditEvent>> getInstanceByType() {
+    public Map<CategoryKey, Collection<AuditEvent>> getInstanceByType() {
         if (null == instanceByType) {
-            instanceByType = new TreeMap<Object, Collection<AuditEvent>>();
+            instanceByType = new TreeMap<>();
             for (AuditEvent auditEvent : auditEvents) {
                 if (auditEvent.getFileName().endsWith(".java")) {
                     CategoryKey key = new CategoryKey(auditEvent);
                     Collection<AuditEvent> events = instanceByType.get(key);
                     if (null == events) {
-                        events = new ArrayList<AuditEvent>();
+                        events = new ArrayList<>();
                         instanceByType.put(key, events);
                     }
                     events.add(auditEvent);
@@ -179,37 +183,45 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
         return bugCount;
     }
 
+    @Override
     public void addError(AuditEvent aEvt) {
 //        System.out.println("error" + aEvt.getFileName() + ":" + aEvt.getLine() + "@" + aEvt.getColumn() + " Msg: " + aEvt.getMessage() + " Source: " + aEvt.getSourceName());
         auditEvents.add(aEvt);
         bugCount++;
     }
 
+    @Override
     public void addException(AuditEvent aEvt, Throwable aThrowable) {
 //        System.out.println("exception" + aEvt);
 //        aThrowable.printStackTrace();
     }
 
+    @Override
     public void auditFinished(AuditEvent aEvt) {
 //        System.out.println("audit finished" + aEvt);
     }
 
+    @Override
     public void auditStarted(AuditEvent aEvt) {
 //        System.out.println("audit started" + aEvt);
     }
 
+    @Override
     public void fileFinished(AuditEvent aEvt) {
 //        System.out.println("file finished" + aEvt);
     }
 
+    @Override
     public void fileStarted(AuditEvent aEvt) {
 //        System.out.println("file started" + aEvt);
     }
 
+    @Override
     public long getCodeDefectCountSum() {
         return getBugCount();
     }
 
+    @Override
     public long getCodeDefectCount(CodeDefectSeverity severity) {
         if (CodeDefectSeverity.INFO == severity) {
             return getBugCount();
@@ -241,6 +253,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             return this.getDisplayName().hashCode();
         }
 
+        @Override
         public final int compareTo(DisplayableKey object) {
             return this.getDisplayName().compareTo(object.getDisplayName());
         }
@@ -254,6 +267,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             this.auditEvent = auditEvent;
         }
 
+        @Override
         public String getDisplayName() {
             return this.auditEvent.getFileName();
         }
@@ -270,6 +284,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             className = fileObject.getPath();
         }
 
+        @Override
         public String getDisplayName() {
             return className;
         }
@@ -289,6 +304,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
             this.displayName = this.auditEvent.getSourceName().substring(this.auditEvent.getSourceName().lastIndexOf('.') + 1);
         }
 
+        @Override
         public String getDisplayName() {
             return this.displayName;
         }

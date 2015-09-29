@@ -59,6 +59,7 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
         return AntUtilities.resolveFile(settingsFile, project);
     }
 
+    @Override
     public UserPreferences getFindBugsSettings() {
         File findBugsSettingsFile = getFindBugsSettingsFile();
         if (findBugsSettingsFile.isFile()) {
@@ -76,6 +77,7 @@ public class FindBugsSettingsProviderImpl extends FindBugsSettingsProvider {
         }
     }
 
+    @Override
     public void setFindBugsSettings(UserPreferences userPreferences) {
         File findBugsSettingsFile = getFindBugsSettingsFile();
         findBugsSettingsFile.getParentFile().mkdirs();

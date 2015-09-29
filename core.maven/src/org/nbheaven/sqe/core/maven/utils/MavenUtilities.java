@@ -45,7 +45,7 @@ import org.openide.util.Exceptions;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 public final class MavenUtilities {
 
@@ -58,16 +58,19 @@ public final class MavenUtilities {
 
     static MavenPluginConfiguration getReportPluginConfigurationImpl(final MavenProject project, final String groupId, final String artifactId) {
         return new MavenPluginConfiguration() {
+            @Override
             public String getValue(String path) {
                 String v = PluginPropertyUtils.getReportPluginProperty(project, groupId, artifactId, path, null);
                 return v != null ? v : PluginPropertyUtils.getPluginProperty(project, groupId, artifactId, path, null);
             }
 
+            @Override
             public String[] getStringListValue(String listParent, String listChild) {
                 String[] v = PluginPropertyUtils.getReportPluginPropertyList(project, groupId, artifactId, listParent, listChild, null);
                 return v != null ? v : PluginPropertyUtils.getPluginPropertyList(project, groupId, artifactId, listParent, listChild, null);
             }
 
+            @Override
             public boolean isDefinedInProject() {
                 return definesReportPlugin(project, groupId, artifactId);
             }

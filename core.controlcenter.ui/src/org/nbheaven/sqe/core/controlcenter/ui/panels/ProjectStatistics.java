@@ -25,7 +25,7 @@ import org.netbeans.api.project.ProjectUtils;
 
 /**
  *
- * @author  sven
+ * @author Sven Reimers
  */
 public class ProjectStatistics extends javax.swing.JPanel implements PropertyChangeListener {
     
@@ -110,6 +110,7 @@ public class ProjectStatistics extends javax.swing.JPanel implements PropertyCha
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         activeProject = (Project) evt.getNewValue();
         updateData();

@@ -45,7 +45,7 @@ import org.openide.util.actions.Presenter;
 
 /**
  *
- * @author fvo
+ * @author Florian Vogler
  */
 public class QualityProvidersToolbarDropdownAction implements Action, Presenter.Toolbar, ContextAwareAction {
 
@@ -63,6 +63,7 @@ public class QualityProvidersToolbarDropdownAction implements Action, Presenter.
         defaultAction = providerActions.iterator().next();
     }
 
+    @Override
     public Action createContextAwareInstance(Lookup actionContext) {
         return new QualityProvidersToolbarDropdownAction(actionContext);
     }
@@ -94,34 +95,42 @@ public class QualityProvidersToolbarDropdownAction implements Action, Presenter.
         return actions.isEmpty() ? Collections.<Action>emptyList() : actions;
     }
 
+    @Override
     public void setEnabled(boolean b) {
         defaultAction.setEnabled(b);
     }
 
+    @Override
     public boolean isEnabled() {
         return defaultAction.isEnabled();
     }
 
+    @Override
     public Object getValue(String key) {
         return defaultAction.getValue(key);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         defaultAction.actionPerformed(e);
     }
 
+    @Override
     public void putValue(String key, Object value) {
         defaultAction.putValue(key, value);
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         defaultAction.addPropertyChangeListener(listener);
     }
 
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         defaultAction.removePropertyChangeListener(listener);
     }
 
+    @Override
     public Component getToolbarPresenter() {
         if (toolbarPresenter == null) {
 

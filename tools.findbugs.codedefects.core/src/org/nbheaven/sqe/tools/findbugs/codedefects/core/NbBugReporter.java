@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author sven
+ * @author Sven Reimers
  */
 final class NbBugReporter extends TextUIBugReporter {
 
