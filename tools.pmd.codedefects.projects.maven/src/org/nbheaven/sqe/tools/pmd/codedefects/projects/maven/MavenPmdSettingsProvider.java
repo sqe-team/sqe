@@ -96,7 +96,7 @@ public class MavenPmdSettingsProvider implements PMDSettingsProvider {
                 }
                 if (fo != null) {
                     try {
-                        RuleSetReferenceId id = new RuleSetReferenceId(fo.toURL().toString());
+                        RuleSetReferenceId id = new RuleSetReferenceId(fo.getPath());
                         toRet.addRuleSet(rsf.createRuleSet(id));
                     } catch (RuleSetNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
