@@ -64,6 +64,7 @@ class BugTree extends JTree {
         setCellRenderer(BugCellRenderer.instance());
         addMouseListener(new JumpToSourceMouseListener());
         addKeyListener(new JumpToSourceKeyListener());
+        setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No result available")));
     }
 
     public FindBugsSession getSession() {
