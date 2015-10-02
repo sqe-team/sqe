@@ -18,6 +18,7 @@
 package org.nbheaven.sqe.codedefects.core.spi;
 
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.project.Project;
@@ -29,28 +30,16 @@ import org.netbeans.api.project.SourceGroup;
  */
 public abstract class AbstractQualityProvider implements QualityProvider {
 
-    /** Creates a new instance of AbstractQualityProvider */
+    /**
+     * Creates a new instance of AbstractQualityProvider
+     */
     protected AbstractQualityProvider() {
     }
 
     @Override
     public boolean isValidFor(Project project) {
-        if (null == project) {
-            return false;
-        }
-
-        // disable quality provider if the project has no registered Session
-        if (null == project.getLookup().lookup(this.getQualitySessionClass())) {
-            return false;
-        }
-
-        SourceGroup[] sourceGroups = ProjectUtilities.getJavaSourceGroups(project);
-
-        if (sourceGroups.length == 0) {
-            return false;
-        }
-
-        return true;
+        return SQECodedefectSupport.isQualityAwareProject(project, this)
+                && ProjectUtilities.getJavaSourceGroups(project).length != 0;
     }
 
     @Override

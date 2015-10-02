@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.netbeans.api.java.source.CancellableTask;
@@ -62,55 +63,56 @@ final class CheckstyleHintTask implements CancellableTask<CompilationInfo> {
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
         final FileObject fileObject = compilationInfo.getFileObject();
         if (null != fileObject) {
-            if (null == errors) {
-                System.out.println("CheckstyleHintTask: (calc) " + System.identityHashCode(fileObject));
-                final Document document = compilationInfo.getDocument();
-                if (null != document) {
-                    HINT_PROCESSOR.post(() -> {
-                        try {
-                            errors = computeErrors(fileObject, document);
-                            CheckstyleHintTaskFactory.rescheduleFile(fileObject);
-                        } catch (Exception ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
-                    });
+            if (SQECodedefectSupport.isQualityProviderActive(fileObject, CheckstyleSession.class)) {
+                if (null == errors) {
+                    System.out.println("CheckstyleHintTask: (calc) " + System.identityHashCode(fileObject));
+                    final Document document = compilationInfo.getDocument();
+                    if (null != document) {
+                        HINT_PROCESSOR.post(() -> {
+                            try {
+                                errors = computeErrors(fileObject, document);
+                                CheckstyleHintTaskFactory.rescheduleFile(fileObject);
+                            } catch (Exception ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        });
+                    } else {
+                        errors = Collections.emptyList();
+                    }
                 } else {
-                    errors = Collections.emptyList();
+                    System.out.println("CheckstyleHintTask: (show) " + System.identityHashCode(fileObject));
+                    HintsController.setErrors(fileObject, getClass().getName(), errors);
+                    errors = null;
                 }
             } else {
-                System.out.println("CheckstyleHintTask: (show) " + System.identityHashCode(fileObject));
-                HintsController.setErrors(fileObject, getClass().getName(), errors);
                 errors = null;
+                HintsController.setErrors(fileObject, getClass().getName(), Collections.emptyList());
             }
         }
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        Project project = FileOwnerQuery.getOwner(fileObject);
-        if (null != project) {
-            CheckstyleSession session = project.getLookup().lookup(CheckstyleSession.class);
-            if (null != session) {
-                if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
-                    List<ErrorDescription> computedErrors = new LinkedList<>();
-                    CheckstyleResult result = session.computeResultAndWait(fileObject);
-                    if (result != null) {
-                        // XXX see comment in ClassKey constructor
-                        Map<CheckstyleResult.ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
-                        instanceByClass.keySet().stream()
-                                .filter((classKey) -> (classKey.getDisplayName().equals(fileObject.getPath())))
-                                .map((classKey) -> instanceByClass.get(classKey))
-                                .forEach((bugs) -> {
-                                    computedErrors.addAll(getErrors(project, bugs, fileObject, document));
-                                });
-                    }
-                    return computedErrors;
-                }
-            }
+        CheckstyleSession session = SQECodedefectSupport.retrieveSession(fileObject, CheckstyleSession.class);
+        CheckstyleResult result = session.computeResultAndWait(fileObject);
+        if (result != null) {
+            List<ErrorDescription> computedErrors = new LinkedList<>();
+            Project project = FileOwnerQuery.getOwner(fileObject);
+
+            // XXX see comment in ClassKey constructor
+            Map<CheckstyleResult.ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
+            instanceByClass.keySet().stream()
+                    .filter((classKey) -> (classKey.getDisplayName().equals(fileObject.getPath())))
+                    .map((classKey) -> instanceByClass.get(classKey))
+                    .forEach((bugs) -> {
+                        computedErrors.addAll(createErrorDescription(project, fileObject, document, bugs));
+                    });
+
+            return computedErrors;
         }
         return Collections.emptyList();
     }
 
-    private static List<ErrorDescription> getErrors(final Project project, Collection<AuditEvent> auditEvents, final FileObject file, final Document document) {
+    private static List<ErrorDescription> createErrorDescription(Project project, FileObject fileObject, Document document, Collection<AuditEvent> auditEvents) {
         List<ErrorDescription> errorDescriptions = new LinkedList<>();
         auditEvents.stream().forEach((auditEvent) -> {
             //                Fix fix = new Fix() {

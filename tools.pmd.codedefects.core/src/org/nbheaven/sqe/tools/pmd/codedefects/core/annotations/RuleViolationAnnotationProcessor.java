@@ -139,7 +139,7 @@ public final class RuleViolationAnnotationProcessor
     }
 
     private void annotateClass(String className, FileObject fileObject, Project project, PMDResult result) {
-        Map<Object, Collection<RuleViolation>> instanceMap = result.getInstanceByClass();
+        Map<ClassKey, Collection<RuleViolation>> instanceMap = result.getInstanceByClass();
         ClassKey classKey = new ClassKey(className);
         Collection<RuleViolation> ruleViolations = instanceMap.get(classKey);
         if (null != ruleViolations) {

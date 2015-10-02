@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
+import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider.Registration.ProjectType;
 import org.netbeans.spi.project.ProjectServiceProvider;
@@ -78,8 +79,9 @@ public class CheckstyleSession extends AbstractQualitySession {
      * @param sourceFile The file to analyze
      * @return the result of the analyzation
      */
-    public CheckstyleResult computeResultAndWait(FileObject sourceFile) {
-        CheckstyleScannerJob job = new CheckstyleFileScannerJob(getProject(), sourceFile);
+    public static CheckstyleResult computeResultAndWait(FileObject sourceFile) {
+        Project project = SQEProjectSupport.findProject(sourceFile);
+        CheckstyleScannerJob job = new CheckstyleFileScannerJob(project, sourceFile);
         SQECodedefectScanner.postAndWait(job);
         return job.getCheckstyleResult();
     }

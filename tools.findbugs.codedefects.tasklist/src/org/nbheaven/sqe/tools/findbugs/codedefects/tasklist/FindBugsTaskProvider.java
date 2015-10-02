@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.core.java.search.SearchUtilities;
@@ -48,13 +49,13 @@ public class FindBugsTaskProvider extends PushTaskScanner {
         super("FindBugs", "FindBugs found Bugs", null);
     }
 
-    private final Map<QualitySession,PropertyChangeListener> listeners = new WeakHashMap<QualitySession,PropertyChangeListener>();
+    private final Map<QualitySession, PropertyChangeListener> listeners = new WeakHashMap<QualitySession, PropertyChangeListener>();
 
     @Override
     public synchronized void setScope(TaskScanningScope taskScanningScope, final Callback callback) {
         if (taskScanningScope == null) {
             synchronized (listeners) {
-                for (Map.Entry<QualitySession,PropertyChangeListener> entry : listeners.entrySet()) {
+                for (Map.Entry<QualitySession, PropertyChangeListener> entry : listeners.entrySet()) {
                     entry.getKey().removePropertyChangeListener(QualitySession.RESULT, entry.getValue());
                 }
             }
@@ -69,7 +70,7 @@ public class FindBugsTaskProvider extends PushTaskScanner {
             if (project == null) {
                 continue;
             }
-            FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
+            FindBugsSession qualitySession = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
             if (qualitySession == null) {
                 continue;
             }
@@ -89,7 +90,7 @@ public class FindBugsTaskProvider extends PushTaskScanner {
         }
 
         for (final Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
-            FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
+            FindBugsSession qualitySession = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
             if (qualitySession == null) {
                 continue;
             }

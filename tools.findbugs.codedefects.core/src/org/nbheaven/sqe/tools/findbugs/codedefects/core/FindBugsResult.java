@@ -37,6 +37,7 @@ import javax.swing.ImageIcon;
 import org.nbheaven.sqe.codedefects.core.api.CodeDefectSeverity;
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.annotations.BugAnnotationProcessor;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
@@ -49,7 +50,7 @@ import org.openide.util.lookup.Lookups;
  * @author Sven Reimers
  */
 @SuppressFBWarnings("IS2_INCONSISTENT_SYNC")
-public class FindBugsResult implements QualityResult, QualityResultStatistic {
+public final class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     public enum Mode {
 
@@ -99,10 +100,10 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
         public abstract Map<?, Collection<BugInstance>> getInstanceList(final FindBugsResult result, boolean coreBugsOnly);
     }
-    private Map<ClassKey, Collection<BugInstance>> instanceByClass = new TreeMap<ClassKey, Collection<BugInstance>>();
-    private Map<PackageKey, Collection<BugInstance>> instanceByPackage = new TreeMap<PackageKey, Collection<BugInstance>>();
-    private Map<CategoryKey, Collection<BugInstance>> instanceByCategory = new TreeMap<CategoryKey, Collection<BugInstance>>();
-    private Map<BugPattern, Collection<BugInstance>> instanceByType = new TreeMap<BugPattern, Collection<BugInstance>>();
+    private final Map<ClassKey, Collection<BugInstance>> instanceByClass = new TreeMap<>();
+    private final Map<PackageKey, Collection<BugInstance>> instanceByPackage = new TreeMap<>();
+    private final Map<CategoryKey, Collection<BugInstance>> instanceByCategory = new TreeMap<>();
+    private final Map<BugPattern, Collection<BugInstance>> instanceByType = new TreeMap<>();
     private Map<ClassKey, Collection<BugInstance>> filteredInstanceByClass;
     private Map<PackageKey, Collection<BugInstance>> filteredInstanceByPackage;
     private Map<CategoryKey, Collection<BugInstance>> filteredInstanceByCategory;
@@ -115,10 +116,12 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
     private Lookup lookup;
     private final FindBugsSession session;
 
-    /** Creates a new instance of FindBugsResult */
+    /**
+     * Creates a new instance of FindBugsResult
+     */
     FindBugsResult(Project project) {
         lookup = Lookups.singleton(this);
-        this.session = project.getLookup().lookup(FindBugsSession.class);
+        this.session = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
     }
 
     @Override
@@ -127,8 +130,8 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
     }
 
     private <T> void removeAllBugInstancesForBugPattern(BugPattern bugPattern, Map<T, Collection<BugInstance>> mapToClear) {
-        for (Map.Entry<T, Collection<BugInstance>> entry : new HashMap<T, Collection<BugInstance>>(mapToClear).entrySet()) {
-            for (BugInstance bugInstance : new ArrayList<BugInstance>(entry.getValue())) {
+        for (Map.Entry<T, Collection<BugInstance>> entry : new HashMap<>(mapToClear).entrySet()) {
+            for (BugInstance bugInstance : new ArrayList<>(entry.getValue())) {
                 if (bugInstance.getBugPattern().equals(bugPattern)) {
                     entry.getValue().remove(bugInstance);
                 }
@@ -153,13 +156,11 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
             removeAllBugInstancesForBugPattern(bugPattern, instanceByPackage);
         }
 
-
-
         session.resultChanged(null, this);
     }
 
-    private Collection<BugInstance> storageOnly = new ArrayList<BugInstance>();
-    private AtomicBoolean initialized = new AtomicBoolean(Boolean.FALSE);
+    private final Collection<BugInstance> storageOnly = new ArrayList<>();
+    private final AtomicBoolean initialized = new AtomicBoolean(Boolean.FALSE);
 
     protected void add(final BugInstance bugInstance) {
         storageOnly.add(bugInstance);
@@ -167,7 +168,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     private synchronized void reallyUpdateMaps() {
         if (initialized.compareAndSet(false, true)) {
-            for (BugInstance bugInstance: storageOnly) {
+            for (BugInstance bugInstance : storageOnly) {
                 bugCount++;
                 if (FiBuUtil.isBugPatternIssuedFromCore(bugInstance.getBugPattern())) {
                     coreBugCount++;
@@ -202,17 +203,21 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
                 // register by category
                 Collection<BugInstance> listByType = instanceByType.get(bugInstance.getBugPattern());
                 if (null == listByType) {
-                    listByType = new ArrayList<BugInstance>();
+                    listByType = new ArrayList<>();
                     instanceByType.put(bugInstance.getBugPattern(), listByType);
                 }
                 listByType.add(bugInstance);
 
-                if (Priorities.HIGH_PRIORITY == bugInstance.getPriority()) {
-                    errorBugCount++;
-                } else if (Priorities.NORMAL_PRIORITY == bugInstance.getPriority()) {
-                    warningBugCount++;
-                } else {
-                    infoBugCount++;
+                switch (bugInstance.getPriority()) {
+                    case Priorities.HIGH_PRIORITY:
+                        errorBugCount++;
+                        break;
+                    case Priorities.NORMAL_PRIORITY:
+                        warningBugCount++;
+                        break;
+                    default:
+                        infoBugCount++;
+                        break;
                 }
             }
         }
@@ -267,10 +272,8 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
     }
 
     private <T> Map<T, Collection<BugInstance>> createFilteredMap(Map<T, Collection<BugInstance>> originalMap) {
-        Map<T, Collection<BugInstance>> filteredMap = new TreeMap<T, Collection<BugInstance>>();
-        for (Map.Entry<T, Collection<BugInstance>> entry : originalMap.entrySet()) {
-            filteredMap.put(entry.getKey(), new FilteredCollection<BugInstance>(entry.getValue()));
-        }
+        Map<T, Collection<BugInstance>> filteredMap = new TreeMap<>();
+        originalMap.entrySet().stream().forEach((entry) -> filteredMap.put(entry.getKey(), new FilteredCollection<>(entry.getValue())));
         return filteredMap;
     }
 
@@ -313,14 +316,15 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
         public abstract String getDisplayName();
 
         @Override
-        public  final boolean equals(Object object) {
+        public final boolean equals(Object object) {
             if (object instanceof DisplayableKey) {
                 return ((DisplayableKey) object).getDisplayName().equals(getDisplayName());
             }
             return false;
         }
 
-        public @Override final int hashCode() {
+        public @Override
+        final int hashCode() {
             return getDisplayName().hashCode();
         }
 
@@ -332,7 +336,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     public static class StringKey extends DisplayableKey<StringKey> {
 
-        private String displayName;
+        private final String displayName;
 
         public StringKey(String displayName) {
             this.displayName = displayName;
@@ -366,7 +370,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     public static class PackageKey extends DisplayableKey<PackageKey> {
 
-        private ClassAnnotation classAnnotation;
+        private final ClassAnnotation classAnnotation;
 
         public PackageKey(ClassAnnotation classAnnotation) {
             this.classAnnotation = classAnnotation;
@@ -380,7 +384,7 @@ public class FindBugsResult implements QualityResult, QualityResultStatistic {
 
     public static class CategoryKey extends DisplayableKey<CategoryKey> {
 
-        private BugPattern bugPattern;
+        private final BugPattern bugPattern;
 
         public CategoryKey(BugPattern bugPattern) {
             this.bugPattern = bugPattern;

@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
@@ -60,7 +61,7 @@ class DisableDetectorAction extends AbstractAction {
             settingsProvider.setFindBugsSettings(findBugsSettings);
         }
 
-        FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
+        FindBugsSession qualitySession = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
         FindBugsResult result = qualitySession.getResult();
         result.removeAllBugInstancesForBugPattern(bugInstance.getBugPattern());
     }

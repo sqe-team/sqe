@@ -23,6 +23,7 @@ import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.codedefects.history.util.CodeDefectHistoryPersistence;
 import org.netbeans.api.project.Project;
 import org.openide.util.ContextAwareAction;
@@ -49,7 +50,7 @@ public class SnapshotAction extends AbstractAction implements LookupListener, Co
     public SnapshotAction(Lookup context) {
         putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.SHORT_DESCRIPTION,
-            NbBundle.getMessage(SnapshotAction.class, "HINT_Action"));
+                NbBundle.getMessage(SnapshotAction.class, "HINT_Action"));
         putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/codedefects/history/resources/camera.png")));
         this.context = context;
         //The thing we want to listen for the presence or absence of
@@ -74,7 +75,6 @@ public class SnapshotAction extends AbstractAction implements LookupListener, Co
         return NbBundle.getMessage(SnapshotAction.class, "LBL_Action");
     }
 
-
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         if (null != getActiveProject()) {
@@ -85,18 +85,11 @@ public class SnapshotAction extends AbstractAction implements LookupListener, Co
 
     private void updateEnableState() {
         if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    updateEnableState();
-                }
-            });
+            EventQueue.invokeLater(() -> updateEnableState());
             return;
         }
-        Project project = getActiveProject();
 
-        setEnabled (null != project && null != project.getLookup().lookup(QualitySession.class));
+        setEnabled(SQECodedefectSupport.isQualityAwareProject(getActiveProject()));
     }
 
     private Project getActiveProject() {

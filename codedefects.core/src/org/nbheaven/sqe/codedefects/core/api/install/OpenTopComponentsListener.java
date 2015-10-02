@@ -23,6 +23,7 @@ import java.util.Set;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
@@ -69,7 +70,7 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                                     if (sg.contains(dao.getPrimaryFile())) {
                                         final JavaSource javaSource = JavaSource.forFileObject(dao.getPrimaryFile());
                                         if (null != javaSource) {
-                                            for (final QualitySession qualitySession : project.getLookup().lookupAll(QualitySession.class)) {
+                                            for (final QualitySession qualitySession : SQECodedefectSupport.retrieveSessions(project)) {
                                                 assert qualitySession != null : "Illegal null QualitySession in QualitySessionManager-Storage for Project " +
                                                         project;
 

@@ -29,6 +29,7 @@ import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.codedefects.ui.UIHandle;
 import org.nbheaven.sqe.codedefects.ui.utils.UiUtils;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
@@ -136,7 +137,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
         if (null != project) {
             SQEUtilities.getProviders().stream()
                     .filter((provider) -> (provider.isValidFor(project)
-                            && SQECodedefectProperties.isQualityProviderActive(project, provider)))
+                            && SQECodedefectSupport.isQualityProviderActive(project, provider)))
                     .map((provider) -> new ComputeResultTask(project, provider))
                     .forEach((computeResultTask) -> REQUEST_PROCESSOR.post(computeResultTask));
         }
@@ -149,7 +150,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
 
         private ComputeResultTask(Project project, QualityProvider provider) {
             this.qualityProvider = provider;
-            this.qualitySession = project.getLookup().lookup(provider.getQualitySessionClass());
+            this.qualitySession = SQECodedefectSupport.retrieveSession(project, provider);
         }
 
         @Override

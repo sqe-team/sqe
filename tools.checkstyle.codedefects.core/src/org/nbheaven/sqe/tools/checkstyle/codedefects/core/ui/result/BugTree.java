@@ -91,15 +91,12 @@ class BugTree extends JTree {
             @Override
             public void run() {
                 final TreeNode rootNode = createRootTreeNode(session, coreFilterEnabled, resultMode);
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setModel(new DefaultTreeModel(rootNode));
-                        if (isCollapsed) {
-                            collapseAll();
-                        } else {
-                            expandAll();
-                        }
+                EventQueue.invokeLater(() -> {
+                    setModel(new DefaultTreeModel(rootNode));
+                    if (isCollapsed) {
+                        collapseAll();
+                    } else {
+                        expandAll();
                     }
                 });
             }

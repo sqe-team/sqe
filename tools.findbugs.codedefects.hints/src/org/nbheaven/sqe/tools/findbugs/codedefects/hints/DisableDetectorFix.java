@@ -21,6 +21,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.DetectorFactory;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.config.UserPreferences;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
@@ -58,7 +59,7 @@ final class DisableDetectorFix implements Fix {
                 }
             }
             settingsProvider.setFindBugsSettings(findBugsSettings);
-            FindBugsSession qualitySession = project.getLookup().lookup(FindBugsSession.class);
+            FindBugsSession qualitySession = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
             FindBugsResult result = qualitySession.getResult();
             if (result != null) {
                 result.removeAllBugInstancesForBugPattern(bugInstance.getBugPattern());

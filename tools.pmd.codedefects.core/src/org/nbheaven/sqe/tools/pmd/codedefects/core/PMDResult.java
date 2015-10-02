@@ -41,31 +41,32 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Sven Reimers
  */
-public class PMDResult implements QualityResult, Lookup.Provider, QualityResultStatistic {
+public final class PMDResult implements QualityResult, Lookup.Provider, QualityResultStatistic {
 
     public enum Mode {
 
         CLASS("HINT_VIEW_BY_CLASS", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/class.gif") {
 
             @Override
-            public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
+            public Map<ClassKey, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByClass();
             }
         },
         PACKAGE("HINT_VIEW_BY_PACKAGE", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/package.gif") {
 
             @Override
-            public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
+            public Map<PackageKey, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByPackage();
             }
         },
         TYPE("HINT_VIEW_BY_CATEGORY", "org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png") {
 
             @Override
-            public Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
+            public Map<CategoryKey, Collection<RuleViolation>> getInstanceList(final PMDResult result) {
                 return result.getInstanceByType();
             }
         };
+
         private final String hint;
         private final Icon icon;
 
@@ -82,22 +83,21 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
             return icon;
         }
 
-        public abstract Map<Object, Collection<RuleViolation>> getInstanceList(final PMDResult result);
+        public abstract Map<?, Collection<RuleViolation>> getInstanceList(final PMDResult result);
     }
-    private Map<Object, Collection<RuleViolation>> instanceByClass;
-    private Map<Object, Collection<RuleViolation>> instanceByPackage;
-    private Map<Object, Collection<RuleViolation>> instanceByType;
+
+    private Map<ClassKey, Collection<RuleViolation>> instanceByClass;
+    private Map<PackageKey, Collection<RuleViolation>> instanceByPackage;
+    private Map<CategoryKey, Collection<RuleViolation>> instanceByType;
     private Report report;
-//    private PMDSession session;
     private Lookup lookup;
 
     /**
      * Creates a new instance of PMDResult
      */
-    public PMDResult(Report report /*, PMDSession session*/) {
+    PMDResult(Report report) {
         this.report = report;
-//        this.session = session;
-        lookup = Lookups.fixed(new Object[]{this});
+        this.lookup = Lookups.singleton(this);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
     }
 
     private void removeAllRuleViolationsForRule(Rule rule, Map<? extends Object, Collection<RuleViolation>> mapToClear) {
-        for (Map.Entry<Object, Collection<RuleViolation>> entry : new HashMap<Object, Collection<RuleViolation>>(mapToClear).entrySet()) {
-            for (RuleViolation ruleViolation : new ArrayList<RuleViolation>(entry.getValue())) {
+        for (Map.Entry<Object, Collection<RuleViolation>> entry : new HashMap<>(mapToClear).entrySet()) {
+            for (RuleViolation ruleViolation : new ArrayList<>(entry.getValue())) {
                 if (ruleViolation.getRule().equals(rule)) {
                     entry.getValue().remove(ruleViolation);
                 }
@@ -125,12 +125,15 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         if (null != instanceByClass) {
             removeAllRuleViolationsForRule(rule, instanceByClass);
         }
+        if (null != instanceByPackage) {
+            removeAllRuleViolationsForRule(rule, instanceByPackage);
+        }
 //        session.resultChanged(null, this);
     }
 
-    public synchronized Map<Object, Collection<RuleViolation>> getInstanceByType() {
+    public synchronized Map<CategoryKey, Collection<RuleViolation>> getInstanceByType() {
         if (null == instanceByType) {
-            Map<Object, Collection<RuleViolation>> tempInstanceByType = new TreeMap<Object, Collection<RuleViolation>>();
+            Map<CategoryKey, Collection<RuleViolation>> tempInstanceByType = new TreeMap<>();
 
             Iterator<RuleViolation> ruleViolationIterator = report.iterator();
 
@@ -140,7 +143,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
                 Collection<RuleViolation> ruleViolations = tempInstanceByType.get(categoryKey);
 
                 if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<RuleViolation>();
+                    ruleViolations = new ArrayList<>();
                     tempInstanceByType.put(categoryKey, ruleViolations);
                 }
 
@@ -152,9 +155,10 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return instanceByType;
     }
 
-    public synchronized Map<Object, Collection<RuleViolation>> getInstanceByClass() {
+    public synchronized Map<ClassKey, Collection<RuleViolation>> getInstanceByClass() {
+
         if (null == instanceByClass) {
-            instanceByClass = new TreeMap<Object, Collection<RuleViolation>>();
+            instanceByClass = new TreeMap<>();
 
             Iterator<RuleViolation> ruleViolationIterator = report.iterator();
 
@@ -164,7 +168,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
                 Collection<RuleViolation> ruleViolations = instanceByClass.get(classKey);
 
                 if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<RuleViolation>();
+                    ruleViolations = new ArrayList<>();
                     instanceByClass.put(classKey, ruleViolations);
                 }
 
@@ -175,9 +179,9 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         return instanceByClass;
     }
 
-    public synchronized Map<Object, Collection<RuleViolation>> getInstanceByPackage() {
+    public synchronized Map<PackageKey, Collection<RuleViolation>> getInstanceByPackage() {
         if (null == instanceByPackage) {
-            instanceByPackage = new TreeMap<Object, Collection<RuleViolation>>();
+            instanceByPackage = new TreeMap<>();
 
             Iterator<RuleViolation> ruleViolationIterator = report.iterator();
 
@@ -187,7 +191,7 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
                 Collection<RuleViolation> ruleViolations = instanceByPackage.get(packageKey);
 
                 if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<RuleViolation>();
+                    ruleViolations = new ArrayList<>();
                     instanceByPackage.put(packageKey, ruleViolations);
                 }
 
@@ -251,9 +255,9 @@ public class PMDResult implements QualityResult, Lookup.Provider, QualityResultS
         private final FileObject fileObject;
 
         public ClassKey(final RuleViolation ruleViolation) {
-            this.className = (0 == ruleViolation.getPackageName().length() ? "" : (ruleViolation.getPackageName() + ".")) +
-                    ((null == ruleViolation.getClassName() || ruleViolation.getClassName().length() == 0)
-                    ? ruleViolation.getFilename() : ruleViolation.getClassName());
+            this.className = (0 == ruleViolation.getPackageName().length() ? "" : (ruleViolation.getPackageName() + "."))
+                    + ((null == ruleViolation.getClassName() || ruleViolation.getClassName().length() == 0)
+                            ? ruleViolation.getFilename() : ruleViolation.getClassName());
             this.fileObject = RuleViolationAnnotationProcessor.findFileObjectForAnnotatedClass(className);
         }
 
