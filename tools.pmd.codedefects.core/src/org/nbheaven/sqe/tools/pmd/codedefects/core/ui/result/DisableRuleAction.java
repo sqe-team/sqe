@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import net.sourceforge.pmd.Rule;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
@@ -50,7 +51,7 @@ class DisableRuleAction extends AbstractAction {
             pmdSettings.deactivateRule(rule);
         }
 
-        PMDSession qualitySession = project.getLookup().lookup(PMDSession.class);
+        PMDSession qualitySession = SQECodedefectSupport.retrieveSession(project, PMDSession.class);
         PMDResult result = qualitySession.getResult();
         result.removeAllRuleViolationsForRule(rule);
     }

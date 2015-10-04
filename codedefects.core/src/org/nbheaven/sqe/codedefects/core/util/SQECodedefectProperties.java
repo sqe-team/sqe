@@ -29,16 +29,18 @@ import org.netbeans.api.project.ProjectUtils;
  */
 public final class SQECodedefectProperties {
 
-    private SQECodedefectProperties() {}
-    
+    private SQECodedefectProperties() {
+    }
+
     private static final String QUALITY_PROVIDER_PREFIX_ACTIVE = "run-provider-";
     private static final String QUALITY_PROVIDER_PREFIX_ANNOTATION_ACTIVE = "annotation-provider-";
 
-    private static PropertyChangeSupport changeSupport = new PropertyChangeSupport(SQECodedefectProperties.class);
-    
+    private static final PropertyChangeSupport changeSupport = new PropertyChangeSupport(SQECodedefectProperties.class);
+
     public static void addPropertyChangeListener(PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
     }
+
     public static void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(propertyName, listener);
     }
@@ -46,14 +48,15 @@ public final class SQECodedefectProperties {
     public static void removePropertyChangeListener(PropertyChangeListener listener) {
         changeSupport.removePropertyChangeListener(listener);
     }
+
     public static void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         changeSupport.removePropertyChangeListener(propertyName, listener);
     }
-    
+
     private static void firePropertyChange(String property, Object oldValule, Object newValue) {
         changeSupport.firePropertyChange(property, oldValule, newValue);
     }
-    
+
     public static String getPropertyNameActive(QualityProvider qualityProvider) {
         return QUALITY_PROVIDER_PREFIX_ACTIVE + qualityProvider.getId().toLowerCase();
     }
@@ -61,31 +64,27 @@ public final class SQECodedefectProperties {
     public static String getPropertyNameAnnotateActive(QualityProvider qualityProvider) {
         return QUALITY_PROVIDER_PREFIX_ANNOTATION_ACTIVE + qualityProvider.getId().toLowerCase();
     }
-    
+
     public static boolean isQualityProviderActive(Project project, QualityProvider qualityProvider) {
-        // disable quality provider if the project has no registered Session
-        if (null == project.getLookup().lookup(qualityProvider.getQualitySessionClass())) {
-            return false;
-        }
-        return ProjectUtils.getPreferences(project, QualityProvider.class, false).getBoolean(getPropertyNameActive(qualityProvider), true);
+        return SQECodedefectSupport.isQualityAwareProject(project, qualityProvider)
+                && ProjectUtils.getPreferences(project, QualityProvider.class, false).getBoolean(getPropertyNameActive(qualityProvider), true);
     }
 
     public static void setQualityProviderActive(Project project, QualityProvider qualityProvider, boolean active) {
+        boolean oldValue = isQualityProviderActive(project, qualityProvider);
         ProjectUtils.getPreferences(project, QualityProvider.class, false).putBoolean(getPropertyNameActive(qualityProvider), active);
-        firePropertyChange(getPropertyNameActive(qualityProvider), null, active);
+        firePropertyChange(getPropertyNameActive(qualityProvider), oldValue, active);
     }
 
     public static boolean isQualityProviderAnnotateActive(Project project, QualityProvider qualityProvider) {
-        // disable quality provider if the project has no registered Session
-        if (null == project.getLookup().lookup(qualityProvider.getQualitySessionClass())) {
-            return false;
-        }
-        return ProjectUtils.getPreferences(project, QualityProvider.class, false).getBoolean(getPropertyNameAnnotateActive(qualityProvider), false);
+        return SQECodedefectSupport.isQualityAwareProject(project, qualityProvider)
+                && ProjectUtils.getPreferences(project, QualityProvider.class, false).getBoolean(getPropertyNameAnnotateActive(qualityProvider), false);
     }
 
     public static void setQualityProviderAnnotateActive(Project project, QualityProvider qualityProvider, boolean active) {
+        boolean oldValue = isQualityProviderAnnotateActive(project, qualityProvider);
         ProjectUtils.getPreferences(project, QualityProvider.class, false).putBoolean(getPropertyNameAnnotateActive(qualityProvider), active);
-        firePropertyChange(getPropertyNameAnnotateActive(qualityProvider), null, active);
+        firePropertyChange(getPropertyNameAnnotateActive(qualityProvider), oldValue, active);
     }
-    
+
 }

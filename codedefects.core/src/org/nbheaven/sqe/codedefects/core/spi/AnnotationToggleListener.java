@@ -25,6 +25,7 @@ import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
 import org.openide.loaders.DataObject;
@@ -36,6 +37,8 @@ import org.openide.windows.TopComponent;
  * @author Sven Reimers
  */
 class AnnotationToggleListener implements PropertyChangeListener {
+
+    private static final RequestProcessor ANNOTATOR_QUEUE = new RequestProcessor("SQECodedefectFileAnnotator", 3);
 
     private final QualityProvider qualityProvider;
     private final Project project;
@@ -69,7 +72,7 @@ class AnnotationToggleListener implements PropertyChangeListener {
     }
 
     private void annotateAllSourceFiles() {
-        final QualitySession session = project.getLookup().lookup(qualityProvider.getQualitySessionClass());
+        final QualitySession session = SQECodedefectSupport.retrieveSession(project, qualityProvider);
         final SQEAnnotationProcessor processor = qualityProvider.getLookup().lookup(SQEAnnotationProcessor.class);
 
         Set<JavaSource> javaSources = TopComponent.getRegistry().getOpened().stream()
@@ -80,8 +83,8 @@ class AnnotationToggleListener implements PropertyChangeListener {
                 .collect(Collectors.toSet());
 
         javaSources.forEach((javaSource) -> {
-            RequestProcessor.getDefault().execute(() -> {
-                System.out.println("annotateSourceFile - processor: " + processor.getClass().getName() + " - " + javaSource);
+            ANNOTATOR_QUEUE.execute(() -> {
+                System.out.println("annotateSourceFile - processor: " + processor.getClass().getName() + " - " + javaSource + "#" + javaSource.getFileObjects().toArray());
                 processor.annotateSourceFile(javaSource, project, session.getResult());
             });
         });

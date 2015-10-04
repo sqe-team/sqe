@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.java.utils.CompileOnSaveHelper;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -47,9 +48,8 @@ class FindBugsProjectScannerJob extends FindBugsScannerJob {
 
     FindBugsProjectScannerJob(Project project) {
         super(project);
-        findBugsSession = project.getLookup().lookup(FindBugsSession.class);
+        findBugsSession = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
     }
-
 
     @Override
     protected void postScan() {
@@ -76,43 +76,43 @@ class FindBugsProjectScannerJob extends FindBugsScannerJob {
             final Callable<Void> r = new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                URL url = CompileOnSaveHelper.forSourceRoot(fo).binaryRoot(false);
-                if (url != null) {
-                    File checkFile = FileUtil.archiveOrDirForURL(url);
-                    if (checkFile == null) {
-                        LOG.warning("Skipping inconvertible binary entry " + url);
-                        return null;
+                    URL url = CompileOnSaveHelper.forSourceRoot(fo).binaryRoot(false);
+                    if (url != null) {
+                        File checkFile = FileUtil.archiveOrDirForURL(url);
+                        if (checkFile == null) {
+                            LOG.warning("Skipping inconvertible binary entry " + url);
+                            return null;
+                        }
+                        if (!checkFile.exists()) {
+                            LOG.warning("Skipping nonexistent binary entry " + checkFile);
+                            return null;
+                        }
+                        LOG.log(Level.FINE, "addFile: {0}", checkFile);
+                        fibuProject.addFile(checkFile.getAbsolutePath());
                     }
-                    if (!checkFile.exists()) {
-                        LOG.warning("Skipping nonexistent binary entry " + checkFile);
-                        return null;
-                    }
-                    LOG.log(Level.FINE, "addFile: {0}", checkFile);
-                    fibuProject.addFile(checkFile.getAbsolutePath());
-                }
 
-            if (null != cp) {
-                for (ClassPath.Entry entry : cp.entries()) {
-                    url = entry.getURL();
-                    try {
-                        url = CompileOnSaveHelper.forClassPathEntry(url).binaryRoot(false);
-                    } catch (IOException x) {
-                        LOG.log(Level.INFO, null, x);
+                    if (null != cp) {
+                        for (ClassPath.Entry entry : cp.entries()) {
+                            url = entry.getURL();
+                            try {
+                                url = CompileOnSaveHelper.forClassPathEntry(url).binaryRoot(false);
+                            } catch (IOException x) {
+                                LOG.log(Level.INFO, null, x);
+                            }
+                            File checkFile = FileUtil.archiveOrDirForURL(url);
+                            if (checkFile == null) {
+                                LOG.warning("Skipping inconvertible classpath entry " + url);
+                                continue;
+                            }
+                            if (!checkFile.exists()) {
+                                LOG.warning("Skipping nonexistent classpath entry " + checkFile);
+                                continue;
+                            }
+                            LOG.log(Level.FINER, "addAuxClasspathEntry: {0}", checkFile);
+                            fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
+                        }
                     }
-                    File checkFile = FileUtil.archiveOrDirForURL(url);
-                    if (checkFile == null) {
-                        LOG.warning("Skipping inconvertible classpath entry " + url);
-                        continue;
-                    }
-                    if (!checkFile.exists()) {
-                        LOG.warning("Skipping nonexistent classpath entry " + checkFile);
-                        continue;
-                    }
-                    LOG.log(Level.FINER, "addAuxClasspathEntry: {0}", checkFile);
-                    fibuProject.addAuxClasspathEntry(checkFile.getAbsolutePath());
-                }
-            }
-            return null;
+                    return null;
                 }
             };
             ClassPath bcp = ClassPath.getClassPath(fo, ClassPath.BOOT);

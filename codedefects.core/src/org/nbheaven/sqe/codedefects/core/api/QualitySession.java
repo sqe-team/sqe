@@ -21,12 +21,12 @@ import org.netbeans.api.project.Project;
 
 import java.beans.PropertyChangeListener;
 
-
 /**
  *
  * @author Sven Reimers
  */
 public interface QualitySession {
+
     public static final String RESULT = "Result";
 
     public QualityProvider getProvider();
@@ -44,11 +44,10 @@ public interface QualitySession {
     // PropertyChange
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
-    public void addPropertyChangeListener(String propertyName,
-        PropertyChangeListener listener);
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
-    public void removePropertyChangeListener(String propertyName,
-        PropertyChangeListener listener);
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
 }

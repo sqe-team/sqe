@@ -29,6 +29,7 @@ import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDQualityProvider;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.ui.PMDTopComponent;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
@@ -123,7 +124,7 @@ public class RunPMDAction extends AbstractAction implements LookupListener, Cont
         Project project = getActiveProject();
         if (null != project) {
             if (isEnabled(project)) {
-                PMDSession session = getPMDSession(project);
+                PMDSession session = SQECodedefectSupport.retrieveSession(project, PMDSession.class);
                 session.computeResult();
 
                 SQEManager.getDefault().setActiveProject(project);
@@ -133,19 +134,8 @@ public class RunPMDAction extends AbstractAction implements LookupListener, Cont
         }
     }
 
-    private PMDSession getPMDSession(Project project) {
-        return project.getLookup().lookup(PMDSession.class);
-    }
-
-    private boolean isQualityProviderActive(Project project) {
-        return SQECodedefectProperties.isQualityProviderActive(project, PMDQualityProvider.getDefault());
-    }
-
-    private boolean isValidForProject(Project project) {
-        return PMDQualityProvider.getDefault().isValidFor(project);
-    }
-
     private boolean isEnabled(Project project) {
-        return null != project && isValidForProject(project) && isQualityProviderActive(project) && null != getPMDSession(project);
+        return SQECodedefectSupport.isQualityProviderActive(project, PMDSession.class)
+                && PMDQualityProvider.getDefault().isValidFor(project);
     }
 }

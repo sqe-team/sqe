@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.text.Document;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.java.search.ClassElementDescriptor;
 import org.nbheaven.sqe.core.java.search.JavaElement;
 import org.nbheaven.sqe.core.java.search.MethodElementDescriptor;
@@ -76,61 +77,58 @@ final class FindBugsHintTask implements CancellableTask<CompilationInfo> {
 
     @Override
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
-        final FileObject fo = compilationInfo.getFileObject();
-        if (null != fo) {
-            if (null == errors) {
-                System.out.println("FindBugsHintTask: (calc) " + System.identityHashCode(fo));
-                final Document document = compilationInfo.getDocument();
-                if (null != document) {
-                    HINT_PROCESSOR.post(() -> {
-                        try {
-                            errors = computeErrors(fo, document);
-                            FindBugsHintTaskFactory.rescheduleFile(fo);
-                        } catch (Exception ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
-                    });
+        final FileObject fileObject = compilationInfo.getFileObject();
+        if (null != fileObject) {
+            if (SQECodedefectSupport.isQualityProviderActive(fileObject, FindBugsSession.class)) {
+                if (null == errors) {
+                    System.out.println("FindBugsHintTask: (calc) " + System.identityHashCode(fileObject));
+                    final Document document = compilationInfo.getDocument();
+                    if (null != document) {
+                        HINT_PROCESSOR.post(() -> {
+                            try {
+                                errors = computeErrors(fileObject, document);
+                                FindBugsHintTaskFactory.rescheduleFile(fileObject);
+                            } catch (Exception ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        });
+                    } else {
+                        errors = Collections.emptyList();
+                    }
                 } else {
-                    errors = Collections.emptyList();
+                    System.out.println("FindBugsHintTask: (show) " + System.identityHashCode(fileObject));
+                    HintsController.setErrors(fileObject, getClass().getName(), errors);
+                    errors = null;
                 }
             } else {
-                System.out.println("FindBugsHintTask: (show) " + System.identityHashCode(fo));
-                HintsController.setErrors(fo, getClass().getName(), errors);
-                errors = null;
+                HintsController.setErrors(fileObject, getClass().getName(), Collections.emptyList());
             }
         }
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        Project project = FileOwnerQuery.getOwner(fileObject);
-        if (null != project) {
-            FindBugsSession session = project.getLookup().lookup(FindBugsSession.class);
-            if (null != session) {
-                if (SQECodedefectProperties.isQualityProviderActive(project, session.getProvider())) {
+        FindBugsSession session = SQECodedefectSupport.retrieveSession(fileObject, FindBugsSession.class);
+        FindBugsResult result = session.computeResultAndWait(fileObject);
 
-                    List<ErrorDescription> computedErrors = new LinkedList<>();
-                    FindBugsResult result = session.computeResultAndWait(fileObject);
+        if (result != null) {
+            List<ErrorDescription> computedErrors = new LinkedList<>();
+            Project project = FileOwnerQuery.getOwner(fileObject);
 
-                    Map<FindBugsResult.ClassKey, Collection<BugInstance>> instanceByClass = result.getInstanceByClass(true);
-                    Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
-
-                    classes.stream().forEach((className) -> {
-                        instanceByClass.keySet().stream()
-                                .filter((classKey) -> (classKey.getDisplayName().equals(className)))
-                                .map((classKey) -> instanceByClass.get(classKey))
-                                .map((bugs) -> getErrors(project, bugs, fileObject, document))
-                                .flatMap(list -> list.stream())
-                                .collect(Collectors.toList());
-
+            // XXX see comment in ClassKey constructor
+            Map<FindBugsResult.ClassKey, Collection<BugInstance>> instanceByClass = result.getInstanceByClass(true);
+            instanceByClass.keySet().stream()
+                    .filter((classKey) -> (classKey.getDisplayName().equals(fileObject.getPath())))
+                    .map((classKey) -> instanceByClass.get(classKey))
+                    .forEach((bugs) -> {
+                        computedErrors.addAll(createErrorDescription(project, fileObject, document, bugs));
                     });
-                    return computedErrors;
-                }
-            }
+
+            return computedErrors;
         }
         return Collections.emptyList();
     }
 
-    private static List<ErrorDescription> getErrors(final Project project, Collection<BugInstance> bugs, final FileObject file, final Document document) {
+    private static List<ErrorDescription> createErrorDescription(Project project, FileObject file, Document document, Collection<BugInstance> bugs) {
         List<ErrorDescription> errorDescriptions = new LinkedList<>();
         for (final BugInstance bugInstance : bugs) {
             try {

@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.ClassKey;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
@@ -49,117 +50,116 @@ import org.openide.util.Exceptions;
  * @author Sven Reimers
  */
 public final class CheckstyleTaskProvider extends PushTaskScanner {
-        
+
     public CheckstyleTaskProvider() {
-        super( "Checkstyle", "Checkstyle found Errors", null);
-    }    
-    
+        super("Checkstyle", "Checkstyle found Errors", null);
+    }
+
     @Override
-    public synchronized void setScope(TaskScanningScope taskScanningScope, Callback callback) {        
-        if (taskScanningScope == null || callback == null)
-            return ;
-        
-        for (FileObject file : taskScanningScope.getLookup().lookupAll(FileObject.class)) {
-            Project project = FileOwnerQuery.getOwner(file);
-            if (null != project && null != project.getLookup().lookup(CheckstyleSession.class) && null!=JavaSource.forFileObject(file)) {
-                CheckstyleResult result = getResult(file);
+    public synchronized void setScope(TaskScanningScope taskScanningScope, Callback callback) {
+        if (taskScanningScope == null || callback == null) {
+            return;
+        }
+
+        for (FileObject fileObject : taskScanningScope.getLookup().lookupAll(FileObject.class)) {
+            if (SQECodedefectSupport.isQualityProviderActive(fileObject, CheckstyleSession.class) && JavaSource.forFileObject(fileObject) != null) {
+                CheckstyleResult result = getResult(fileObject);
                 if (result == null) {
                     continue;
                 }
                 Map<ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
-                CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(file);
+                CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(fileObject);
                 Collection<AuditEvent> auditEvents = instanceByClass.get(key);
                 if (auditEvents != null) { // SQE-57
-                    callback.setTasks(file, new LinkedList<Task>(getTasks(auditEvents, file)));
+                    callback.setTasks(fileObject, new LinkedList<>(getTasks(auditEvents, fileObject)));
                 }
             }
         }
-        
+
         for (Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
-            if(null != project.getLookup().lookup(CheckstyleSession.class)) {
-                CheckstyleResult result = getResult(project);
-                if (result == null) {
-                    continue;
+            CheckstyleResult result = getResult(project);
+            if (result != null) {
+                List<Task> tasks = new LinkedList<>();
+                for (Map.Entry<ClassKey, Collection<AuditEvent>> classEntry : result.getInstanceByClass().entrySet()) {
+                    tasks.addAll(getTasks(classEntry.getValue(), classEntry.getKey().getFileObject()));
                 }
-                List<Task> tasks = new LinkedList<Task>();
-                for (Map.Entry<ClassKey, Collection<AuditEvent>> classEntry: result.getInstanceByClass().entrySet()) {
-                    CheckstyleResult.ClassKey key = classEntry.getKey();
-                    tasks.addAll(getTasks(classEntry.getValue(), key.getFileObject()));
-                }            
                 callback.setTasks(project.getProjectDirectory(), tasks);
             }
-        }    
-        
+        }
     }
 
     private List<Task> getTasks(Collection<AuditEvent> auditevents, FileObject file) {
-        List<Task> tasks = new LinkedList<Task>();
-        for(AuditEvent auditEvent: auditevents) {
-            tasks.add(Task.create(file, "sqe-tasklist-checkstyle", auditEvent.getMessage(), auditEvent.getLine()));                                
+        List<Task> tasks = new LinkedList<>();
+        for (AuditEvent auditEvent : auditevents) {
+            tasks.add(Task.create(file, "sqe-tasklist-checkstyle", auditEvent.getMessage(), auditEvent.getLine()));
         }
         return tasks;
-    } 
-    
-    private CheckstyleResult getResult(FileObject fileObject) {
-        return getResult(FileOwnerQuery.getOwner(fileObject));        
     }
-    
+
+    private CheckstyleResult getResult(FileObject fileObject) {
+        return getResult(FileOwnerQuery.getOwner(fileObject));
+    }
+
     private CheckstyleResult getResult(Project project) {
-        CheckstyleSession qualitySession = project.getLookup().lookup(CheckstyleSession.class);
-        if (qualitySession == null) {
-            return null;
+        CheckstyleSession qualitySession = SQECodedefectSupport.retrieveSession(project, CheckstyleSession.class);
+
+        CheckstyleResult result = null;
+        if (qualitySession != null) {
+            result = qualitySession.getResult();
+            if (null == result) {
+                result = qualitySession.computeResultAndWait();
+            }
+
         }
-        CheckstyleResult result = qualitySession.getResult();
-        if (null == result) {
-            result = qualitySession.computeResultAndWait();
-        }            
         return result;
     }
-    
-    private Collection<String> getClasses (final FileObject fo) {
-        if (fo == null || !fo.isValid() || fo.isVirtual()) {
-            throw new IllegalArgumentException();
-        }
-        final JavaSource js = JavaSource.forFileObject(fo);
-        if (js == null) {
-            throw new IllegalArgumentException();
-        }
-        try {
-            final Collection<String> result = new ArrayList<String>();
-            js.runUserActionTask(new CancellableTask<CompilationController>() {
-                @Override
-                public void run(final CompilationController control) throws Exception {
-                    if (control.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED).compareTo(JavaSource.Phase.ELEMENTS_RESOLVED) >= 0) {                        
-                        new TreePathScanner<Void, Void>() {
 
-                            private void recurseType(TypeElement te, String prefix) {
-                                for (TypeElement type : ElementFilter.typesIn(te.getEnclosedElements())) {
-                                    result.add(prefix + type.getSimpleName().toString());
-                                    recurseType(type, prefix + type.getSimpleName() + "$");
-                                }                                
-                            }
-                            
-                            @Override
-                            public Void visitClass(ClassTree t, Void v) {
-                                Element el = control.getTrees().getElement(getCurrentPath());
-
-                                TypeElement te = (TypeElement) el;
-                                String outerFQN = te.getQualifiedName().toString();
-                                result.add(outerFQN);
-                                recurseType(te, outerFQN + "$");
-                                return null;
-                            }
-                        }.scan(control.getCompilationUnit(), null);
-                    }
-                }
-                                
-                @Override
-                public void cancel() {}
-                
-            }, true);
-            return result;
-        } catch (IOException ioe) {
-            Exceptions.printStackTrace(ioe);
-            return Collections.<String>emptyList();
-        }
-    }}
+//    private Collection<String> getClasses(final FileObject fo) {
+//        if (fo == null || !fo.isValid() || fo.isVirtual()) {
+//            throw new IllegalArgumentException();
+//        }
+//        final JavaSource js = JavaSource.forFileObject(fo);
+//        if (js == null) {
+//            throw new IllegalArgumentException();
+//        }
+//        try {
+//            final Collection<String> result = new ArrayList<String>();
+//            js.runUserActionTask(new CancellableTask<CompilationController>() {
+//                @Override
+//                public void run(final CompilationController control) throws Exception {
+//                    if (control.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED).compareTo(JavaSource.Phase.ELEMENTS_RESOLVED) >= 0) {
+//                        new TreePathScanner<Void, Void>() {
+//
+//                            private void recurseType(TypeElement te, String prefix) {
+//                                for (TypeElement type : ElementFilter.typesIn(te.getEnclosedElements())) {
+//                                    result.add(prefix + type.getSimpleName().toString());
+//                                    recurseType(type, prefix + type.getSimpleName() + "$");
+//                                }
+//                            }
+//
+//                            @Override
+//                            public Void visitClass(ClassTree t, Void v) {
+//                                Element el = control.getTrees().getElement(getCurrentPath());
+//
+//                                TypeElement te = (TypeElement) el;
+//                                String outerFQN = te.getQualifiedName().toString();
+//                                result.add(outerFQN);
+//                                recurseType(te, outerFQN + "$");
+//                                return null;
+//                            }
+//                        }.scan(control.getCompilationUnit(), null);
+//                    }
+//                }
+//
+//                @Override
+//                public void cancel() {
+//                }
+//
+//            }, true);
+//            return result;
+//        } catch (IOException ioe) {
+//            Exceptions.printStackTrace(ioe);
+//            return Collections.<String>emptyList();
+//        }
+//    }
+}

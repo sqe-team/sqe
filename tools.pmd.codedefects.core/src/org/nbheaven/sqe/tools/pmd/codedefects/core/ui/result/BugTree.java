@@ -59,6 +59,7 @@ class BugTree extends JTree {
         setCellRenderer(RuleViolationRenderer.instance());
         addMouseListener(new JumpToSourceMouseListener());
         addKeyListener(new JumpToSourceKeyListener());
+        setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No result available")));
     }
 
     public PMDSession getSession() {
@@ -131,10 +132,10 @@ class BugTree extends JTree {
         MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount());
         rootNode.setUserObject(session);
 
-        Map<Object, Collection<RuleViolation>> instances = resultMode.getInstanceList(session.getResult());
+        Map<?, Collection<RuleViolation>> instances = resultMode.getInstanceList(session.getResult());
         int typeIndex = 0;
 
-        for (Map.Entry<Object, Collection<RuleViolation>> entry : instances.entrySet()) {
+        for (Map.Entry<?, Collection<RuleViolation>> entry : instances.entrySet()) {
             MutableTreeNode typeNode = new BugGroupNode(entry.getKey(), entry.getValue().size());
             int index = 0;
 

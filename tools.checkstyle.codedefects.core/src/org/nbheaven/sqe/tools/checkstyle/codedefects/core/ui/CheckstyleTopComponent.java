@@ -25,6 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.result.ResultPanel;
 import org.nbheaven.sqe.core.api.SQEManager;
@@ -149,7 +150,7 @@ public final class CheckstyleTopComponent extends TopComponent {
         }
 
         if (null != project) {
-            setActiveSession(project.getLookup().lookup(CheckstyleSession.class));
+            setActiveSession(SQECodedefectSupport.retrieveSession(project, CheckstyleSession.class));
             AbstractNode node = new AbstractNode(Children.LEAF, Lookups.singleton(project));
             setActivatedNodes(new Node[]{node});
         } else {

@@ -25,6 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.ui.result.ResultPanel;
 import org.nbheaven.sqe.core.api.SQEManager;
@@ -149,7 +150,7 @@ public final class PMDTopComponent extends TopComponent {
         }
 
         if (null != project) {
-            setActiveSession(project.getLookup().lookup(PMDSession.class));
+            setActiveSession(SQECodedefectSupport.retrieveSession(project, PMDSession.class));
             AbstractNode node = new AbstractNode(Children.LEAF, Lookups.singleton(project));
             setActivatedNodes(new Node[]{node});
         } else {

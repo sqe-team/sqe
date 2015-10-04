@@ -40,7 +40,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Sven Reimers
  */
-public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Provider, QualityResultStatistic {
+public final class CheckstyleResult implements QualityResult, AuditListener, Lookup.Provider, QualityResultStatistic {
 
     public enum Mode {
 
@@ -83,7 +83,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 
         public abstract Map<? extends Object, Collection<AuditEvent>> getInstanceList(final CheckstyleResult result);
     }
-    private Collection<AuditEvent> auditEvents = new LinkedList<AuditEvent>();
+    private final Collection<AuditEvent> auditEvents = new LinkedList<>();
     private Map<String, Collection<AuditEvent>> instanceBySource;
     private Map<ClassKey, Collection<AuditEvent>> instanceByClass;
     private Map<CategoryKey, Collection<AuditEvent>> instanceByType;
@@ -91,7 +91,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 //    private Map<Object, List<RuleViolation>> instanceByType = null;
     private long bugCount = 0;
 //    private Report report;
-    private Lookup lookup;
+    private final Lookup lookup;
     private final Project project;
 
     /**
@@ -109,11 +109,11 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 
     public Map<String, Collection<AuditEvent>> getInstanceBySource() {
         if (null == instanceBySource) {
-            instanceBySource = new TreeMap<String, Collection<AuditEvent>>();
+            instanceBySource = new TreeMap<>();
             for (AuditEvent auditEvent : auditEvents) {
                 Collection<AuditEvent> events = instanceBySource.get(auditEvent.getSourceName());
                 if (null == events) {
-                    events = new ArrayList<AuditEvent>();
+                    events = new ArrayList<>();
                     instanceBySource.put(auditEvent.getSourceName(), events);
                 }
                 events.add(auditEvent);
@@ -132,7 +132,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
                         ClassKey key = new ClassKey(file);
                         Collection<AuditEvent> events = instanceByClass.get(key);
                         if (null == events) {
-                            events = new ArrayList<AuditEvent>();
+                            events = new ArrayList<>();
                             instanceByClass.put(key, events);
                         }
                         events.add(auditEvent);
@@ -151,7 +151,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
                     PackageKey key = new PackageKey(auditEvent);
                     Collection<AuditEvent> events = instanceByPackage.get(key);
                     if (null == events) {
-                        events = new ArrayList<AuditEvent>();
+                        events = new ArrayList<>();
                         instanceByPackage.put(key, events);
                     }
                     events.add(auditEvent);
@@ -261,7 +261,7 @@ public class CheckstyleResult implements QualityResult, AuditListener, Lookup.Pr
 
     public static class PackageKey extends DisplayableKey {
 
-        private AuditEvent auditEvent;
+        private final AuditEvent auditEvent;
 
         public PackageKey(AuditEvent auditEvent) {
             this.auditEvent = auditEvent;

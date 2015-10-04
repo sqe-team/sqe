@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.sourceforge.pmd.RuleViolation;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.ClassKey;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
@@ -40,73 +41,78 @@ import org.openide.filesystems.FileObject;
  * @author Sven Reimers
  */
 public final class PMDTaskProvider extends PushTaskScanner {
-        
+
     public PMDTaskProvider() {
-        super( "PMD", "PMD found Errors", null);
-    }    
-    
+        super("PMD", "PMD found Errors", null);
+    }
+
     @Override
     public synchronized void setScope(TaskScanningScope taskScanningScope, Callback callback) {
-        if (taskScanningScope == null || callback == null)
-            return ;
-        
-        for (FileObject file : taskScanningScope.getLookup().lookupAll(FileObject.class)) {
-            Project project = FileOwnerQuery.getOwner(file);
-            if(null != project && null != project.getLookup().lookup(PMDSession.class) && null != JavaSource.forFileObject(file)) {
-                PMDResult result = getResult(file);
-                Map<Object, Collection<RuleViolation>> instanceByClass = result.getInstanceByClass();
-                Collection<String> classes = SearchUtilities.getFQNClassNames(file);
-                List<Task> tasks = new LinkedList<Task>();
-                for(String className: classes) {
-                    for (Object key: instanceByClass.keySet()) {
-                        ClassKey classKey = (ClassKey) key;
+        if (taskScanningScope == null || callback == null) {
+            return;
+        }
+
+        for (FileObject fileObject : taskScanningScope.getLookup().lookupAll(FileObject.class)) {
+
+            if (SQECodedefectSupport.isQualityProviderActive(fileObject, PMDSession.class) && null != JavaSource.forFileObject(fileObject)) {
+                PMDResult result = getResult(fileObject);
+                if (result == null) {
+                    continue;
+                }
+
+                Map<ClassKey, Collection<RuleViolation>> instanceByClass = result.getInstanceByClass();
+                Collection<String> classes = SearchUtilities.getFQNClassNames(fileObject);
+                List<Task> tasks = new LinkedList<>();
+                for (String className : classes) {
+                    for (ClassKey classKey : instanceByClass.keySet()) {
                         if (classKey.getClassName().equals(className)) {
                             Collection<RuleViolation> bugs = instanceByClass.get(classKey);
-                            tasks.addAll(getTasks(bugs, file));
+                            tasks.addAll(getTasks(bugs, fileObject));
                         }
                     }
                 }
-                callback.setTasks(file, tasks);
+                callback.setTasks(fileObject, tasks);
             }
         }
-        
+
         for (Project project : taskScanningScope.getLookup().lookupAll(Project.class)) {
-            if (null != project.getLookup().lookup(PMDSession.class)) {
-                PMDResult result = getResult(project);
-                if (result != null) {
-                    List<Task> tasks = new LinkedList<Task>();
-                    for (Map.Entry<Object, Collection<RuleViolation>> classKey: result.getInstanceByClass().entrySet()) {
-                        tasks.addAll(getTasks(classKey.getValue(), ((PMDResult.ClassKey) classKey.getKey()).getFileObject()));
-                    }
-                    callback.setTasks(project.getProjectDirectory(), tasks);
+            PMDResult result = getResult(project);
+            if (result != null) {
+                List<Task> tasks = new LinkedList<>();
+                for (Map.Entry<ClassKey, Collection<RuleViolation>> classKey : result.getInstanceByClass().entrySet()) {
+                    tasks.addAll(getTasks(classKey.getValue(), classKey.getKey().getFileObject()));
                 }
+                callback.setTasks(project.getProjectDirectory(), tasks);
             }
-        }    
-        
+        }
     }
 
     private List<Task> getTasks(Collection<RuleViolation> bugs, FileObject file) {
         if (file == null) {
             return Collections.emptyList();
         }
-        List<Task> tasks = new LinkedList<Task>();
-        for(RuleViolation ruleViolation: bugs) {
-            tasks.add(Task.create(file, "sqe-tasklist-pmd", ruleViolation.getDescription(), ruleViolation.getBeginLine()));                                
+        List<Task> tasks = new LinkedList<>();
+        for (RuleViolation ruleViolation : bugs) {
+            tasks.add(Task.create(file, "sqe-tasklist-pmd", ruleViolation.getDescription(), ruleViolation.getBeginLine()));
         }
         return tasks;
-    } 
-    
-    private PMDResult getResult(FileObject fileObject) {
-        return getResult(FileOwnerQuery.getOwner(fileObject));        
     }
-    
+
+    private PMDResult getResult(FileObject fileObject) {
+        return getResult(FileOwnerQuery.getOwner(fileObject));
+    }
+
     private PMDResult getResult(Project project) {
-        PMDSession qualitySession = project.getLookup().lookup(PMDSession.class);
-        PMDResult result = qualitySession.getResult();
-        if (null == result) {
-            result = qualitySession.computeResultAndWait();
-        }            
+        PMDSession qualitySession = SQECodedefectSupport.retrieveSession(project, PMDSession.class);
+
+        PMDResult result = null;
+        if (qualitySession != null) {
+            result = qualitySession.getResult();
+            if (null == result) {
+                result = qualitySession.computeResultAndWait();
+            }
+
+        }
         return result;
     }
-    
-}    
+}

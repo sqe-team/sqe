@@ -41,7 +41,7 @@ import org.openide.filesystems.FileObject;
             @ProjectType(position = 10, id = "org-netbeans-modules-java-j2seproject"),
             @ProjectType(position = 10, id = "org-netbeans-modules-web-project"),
             @ProjectType(position = 10, id = "org-netbeans-modules-maven"),
-			@ProjectType(position = 10, id = "org.netbeans.gradle.project")
+            @ProjectType(position = 10, id = "org.netbeans.gradle.project")
         }
 )
 public class FindBugsSession extends AbstractQualitySession {

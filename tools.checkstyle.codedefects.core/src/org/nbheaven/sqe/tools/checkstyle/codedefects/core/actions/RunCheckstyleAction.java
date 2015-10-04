@@ -29,6 +29,7 @@ import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleQualityProvi
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.CheckstyleTopComponent;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
@@ -43,6 +44,7 @@ import org.openide.util.Utilities;
 
 /**
  * Action to trigger checkstyle run on actual project
+ *
  * @author Florian Vogler
  */
 public class RunCheckstyleAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
@@ -80,7 +82,6 @@ public class RunCheckstyleAction extends AbstractAction implements LookupListene
         }
         SQECodedefectProperties.addPropertyChangeListener(SQECodedefectProperties.getPropertyNameActive(CheckstyleQualityProvider.getDefault()), this);//TODO Make weak !!!
 
-
         //The thing we want to listen for the presence or absence of
         //on the global selection
         Lookup.Template<Node> tpl = new Lookup.Template<>(Node.class);
@@ -103,13 +104,7 @@ public class RunCheckstyleAction extends AbstractAction implements LookupListene
 
     private void updateEnableState() {
         if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    updateEnableState();
-                }
-            });
+            EventQueue.invokeLater(() -> updateEnableState());
             return;
         }
         setEnabled(isEnabled(getActiveProject()));
@@ -129,7 +124,7 @@ public class RunCheckstyleAction extends AbstractAction implements LookupListene
         Project project = getActiveProject();
         if (null != project) {
             if (isEnabled(project)) {
-                CheckstyleSession session = getCheckstyleSession(project);
+                CheckstyleSession session = SQECodedefectSupport.retrieveSession(project, CheckstyleSession.class);
                 session.computeResult();
 
                 SQEManager.getDefault().setActiveProject(project);
@@ -139,19 +134,8 @@ public class RunCheckstyleAction extends AbstractAction implements LookupListene
         }
     }
 
-    private CheckstyleSession getCheckstyleSession(Project project) {
-        return project.getLookup().lookup(CheckstyleSession.class);
-    }
-
-    private boolean isQualityProviderActive(Project project) {
-        return SQECodedefectProperties.isQualityProviderActive(project, CheckstyleQualityProvider.getDefault());
-    }
-
-    private boolean isValidForProject(Project project) {
-        return CheckstyleQualityProvider.getDefault().isValidFor(project);
-    }
-
     private boolean isEnabled(Project project) {
-        return null != project && isValidForProject(project) && isQualityProviderActive(project) && null != getCheckstyleSession(project);
+        return SQECodedefectSupport.isQualityProviderActive(project, CheckstyleSession.class)
+                && CheckstyleQualityProvider.getDefault().isValidFor(project);
     }
 }

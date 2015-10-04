@@ -29,6 +29,7 @@ import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsQualityProvider;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.FindBugsTopComponent;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
@@ -123,7 +124,7 @@ public class RunFindBugsAction extends AbstractAction implements LookupListener,
         Project project = getActiveProject();
         if (null != project) {
             if (isEnabled(project)) {
-                FindBugsSession session = getFindBugsSession(project);
+                FindBugsSession session = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
                 session.computeResult();
 
                 SQEManager.getDefault().setActiveProject(project);
@@ -133,19 +134,9 @@ public class RunFindBugsAction extends AbstractAction implements LookupListener,
         }
     }
 
-    private FindBugsSession getFindBugsSession(Project project) {
-        return project.getLookup().lookup(FindBugsSession.class);
-    }
-
-    private boolean isQualityProviderActive(Project project) {
-        return SQECodedefectProperties.isQualityProviderActive(project, FindBugsQualityProvider.getDefault());
-    }
-
-    private boolean isValidForProject(Project project) {
-        return FindBugsQualityProvider.getDefault().isValidFor(project);
-    }
-
     private boolean isEnabled(Project project) {
-        return null != project && isValidForProject(project) && isQualityProviderActive(project) && null != getFindBugsSession(project);
+        return SQECodedefectSupport.isQualityProviderActive(project, FindBugsSession.class)
+                && FindBugsQualityProvider.getDefault().isValidFor(project);
     }
+
 }

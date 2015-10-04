@@ -26,7 +26,7 @@ import org.openide.util.RequestProcessor;
  */
 public final class SQECodedefectScanner {
 
-    private static RequestProcessor SCANNER_QUEUE = new RequestProcessor("SQECodefectScanner");
+    private static final RequestProcessor SCANNER_QUEUE = new RequestProcessor("SQECodedefectScanner",3);
 
 //    private static SQECodedefectScanner INSTANCE = new SQECodedefectScanner();
     private SQECodedefectScanner() {

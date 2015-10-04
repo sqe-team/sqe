@@ -18,6 +18,7 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.hints;
 
 import net.sourceforge.pmd.RuleViolation;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
@@ -31,6 +32,7 @@ import org.netbeans.spi.editor.hints.Fix;
  * @author Florian Vogler
  */
 class DisablePMDRuleFix implements Fix {
+
     private final RuleViolation ruleViolation;
     private final Project project;
 
@@ -53,12 +55,12 @@ class DisablePMDRuleFix implements Fix {
                 pmdSettings.deactivateRule(ruleViolation.getRule());
             }
         }
-        PMDSession qualitySession = project.getLookup().lookup(PMDSession.class);
+        PMDSession qualitySession = SQECodedefectSupport.retrieveSession(project, PMDSession.class);
         PMDResult result = qualitySession.getResult();
         if (null != result) {
             result.removeAllRuleViolationsForRule(ruleViolation.getRule());
         }
         return new ChangeInfo();
     }
-    
+
 }

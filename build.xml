@@ -3,6 +3,9 @@
     <import file="nbproject/build-impl.xml"/>
 
     <target name="ci-build" depends="nbms" description="Build target for drone.io ci build">
+        
+        <gzip src="${build.updates.dir}/updates.xml" destfile="${build.updates.dir}/updates.xml.gz"/>
+        
         <zip destfile="build/sqe-cluster.zip">
             <zipfileset dir="build/cluster" prefix="sqe"/>
         </zip>
