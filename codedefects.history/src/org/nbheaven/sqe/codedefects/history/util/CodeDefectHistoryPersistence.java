@@ -24,7 +24,6 @@ import org.nbheaven.sqe.codedefects.core.api.CodeDefectSeverity;
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.codedefects.history.History;
 import org.nbheaven.sqe.codedefects.history.History.QualityProviderStatisticSnapshot;
@@ -44,7 +43,7 @@ public final class CodeDefectHistoryPersistence {
     private static QualityProviderStatisticSnapshot[] createSnapshot(Project project) {
         Collection<QualityProviderStatisticSnapshot> snapshots = new ArrayList<>();
         for (QualitySession session: SQECodedefectSupport.retrieveSessions(project)) {
-            if (SQECodedefectSupport.isQualityProviderActive(project, session)) {
+            if (session.isEnabled()) {
                 QualityResult result = session.getResult();
                 if (null != result) {
                     QualityResultStatistic statistic = result.getLookup().lookup(QualityResultStatistic.class);

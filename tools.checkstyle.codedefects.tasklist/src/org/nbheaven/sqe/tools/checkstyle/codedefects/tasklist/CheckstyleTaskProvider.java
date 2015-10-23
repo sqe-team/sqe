@@ -18,24 +18,16 @@
 package org.nbheaven.sqe.tools.checkstyle.codedefects.tasklist;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-import com.sun.source.tree.ClassTree;
-import com.sun.source.util.TreePathScanner;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.ElementFilter;
+import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
+import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.ClassKey;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
-import org.netbeans.api.java.source.CancellableTask;
-import org.netbeans.api.java.source.CompilationController;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -43,7 +35,6 @@ import org.netbeans.spi.tasklist.PushTaskScanner;
 import org.netbeans.spi.tasklist.Task;
 import org.netbeans.spi.tasklist.TaskScanningScope;
 import org.openide.filesystems.FileObject;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -62,13 +53,14 @@ public final class CheckstyleTaskProvider extends PushTaskScanner {
         }
 
         for (FileObject fileObject : taskScanningScope.getLookup().lookupAll(FileObject.class)) {
-            if (SQECodedefectSupport.isQualityProviderActive(fileObject, CheckstyleSession.class) && JavaSource.forFileObject(fileObject) != null) {
+            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, CheckstyleSession.class) && JavaSource.forFileObject(fileObject) != null) {
                 CheckstyleResult result = getResult(fileObject);
                 if (result == null) {
                     continue;
                 }
+                Project project = SQEProjectSupport.findProjectByFileObject(fileObject);
                 Map<ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
-                CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(fileObject);
+                CheckstyleResult.ClassKey key = new CheckstyleResult.ClassKey(project, fileObject);
                 Collection<AuditEvent> auditEvents = instanceByClass.get(key);
                 if (auditEvents != null) { // SQE-57
                     callback.setTasks(fileObject, new LinkedList<>(getTasks(auditEvents, fileObject)));

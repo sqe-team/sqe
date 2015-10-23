@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with SQE.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.nbheaven.sqe.codedefects.core.spi;
 
 import java.lang.ref.Reference;
@@ -34,13 +33,14 @@ public class AbstractQualitySessionTest extends NbTestCase {
     public AbstractQualitySessionTest(String name) {
         super(name);
     }
-    
+
     public void testSQE49Leak() throws Exception {
         Project p = new Project() {
             @Override
             public FileObject getProjectDirectory() {
                 return null;
             }
+
             @Override
             public Lookup getLookup() {
                 return null;
@@ -51,38 +51,52 @@ public class AbstractQualitySessionTest extends NbTestCase {
             public Class<? extends QualitySession> getQualitySessionClass() {
                 return QualitySession.class;
             }
+
             @Override
             public QualitySession createQualitySession(Project project) {
                 return null;
             }
+
             @Override
             public String getDisplayName() {
                 return "Test";
             }
+
             @Override
             public String getId() {
                 return "test";
             }
+
             @Override
             public Icon getIcon() {
                 return null;
             }
+
             @Override
             public boolean isValidFor(Project project) {
                 return true;
             }
+
             @Override
             public Lookup getLookup() {
                 return Lookup.EMPTY;
             }
-        };
-        new AbstractQualitySession(qp, p) {
+
             @Override
-            public QualityResult getResult() {
-                return null;
+            public QualityProvider.SessionEventProxy getSessionEventProxy() {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
+        };
+        new AbstractQualitySession((AbstractQualityProvider) qp, p) {
             @Override
-            public void computeResult() {}
+            public void computeResult() {
+            }
+
+            @Override
+            public QualityResult computeResultAndWait() {
+                throw new UnsupportedOperationException("Not supported yet."); 
+            }
+
         };
         qp = null;
         Reference<?> ref = new WeakReference<Object>(p);

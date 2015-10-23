@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult.Mode;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
+import org.nbheaven.sqe.tools.findbugs.codedefects.core.actions.ShowFindBugsProjectResultAnnotationsAction;
 
 /**
  *
@@ -54,8 +55,8 @@ public final class ResultPanel extends JPanel {
     private int dividerLocation = 500;
     private JToggleButton showHideDescriptionButton;
 
-    public ResultPanel(FindBugsSession findBugsSession) {
-        initialize(findBugsSession);
+    public ResultPanel(FindBugsSession session) {
+        initialize(session);
         bugTree.refresh();
     }
 
@@ -87,8 +88,12 @@ public final class ResultPanel extends JPanel {
         toolBar.add(new CollapseAllAction(bugTree));
         toolBar.addSeparator();
 
+        toolBar.add(new ShowFindBugsProjectResultAnnotationsAction(findBugsSession).getToolbarPresenter());
+
         showHideDescriptionButton = new JToggleButton(new ShowHideDescriptionAction(this));
-        showHideDescriptionButton.setText(null);
+        showHideDescriptionButton.setHideActionText(true);
+        showHideDescriptionButton.setRolloverEnabled(false);
+        showHideDescriptionButton.setFocusable(false);
         showHideDescriptionButton.setSelected(true);
         toolBar.add(showHideDescriptionButton);
         toolBar.addSeparator();

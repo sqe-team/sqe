@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.findbugs.codedefects.core;
+package org.nbheaven.sqe.tools.findbugs.codedefects.core.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.java.utils.CompileOnSaveHelper;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -31,7 +30,6 @@ import org.netbeans.api.java.source.ClasspathInfo;
 import org.netbeans.api.java.source.CompilationController;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.Task;
-import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -44,16 +42,16 @@ class FindBugsProjectScannerJob extends FindBugsScannerJob {
 
     private static final Logger LOG = Logger.getLogger(FindBugsProjectScannerJob.class.getName());
 
-    private final FindBugsSession findBugsSession;
+    private final FindBugsSessionImpl findBugsSession;
 
-    FindBugsProjectScannerJob(Project project) {
-        super(project);
-        findBugsSession = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
+    FindBugsProjectScannerJob(FindBugsSessionImpl session) {
+        super(session.getProject());
+        findBugsSession = session;
     }
 
     @Override
     protected void postScan() {
-        findBugsSession.setResult(getResult());
+        findBugsSession.setResultInternal(getResult());
         super.postScan();
         findBugsSession.scanningDone();
     }

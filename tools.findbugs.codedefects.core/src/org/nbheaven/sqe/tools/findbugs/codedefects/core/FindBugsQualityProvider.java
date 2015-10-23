@@ -28,6 +28,7 @@ import javax.swing.ImageIcon;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.FindBugsTopComponent;
 import org.openide.util.ImageUtilities;
 import org.nbheaven.sqe.codedefects.ui.UIHandle;
+import org.nbheaven.sqe.tools.findbugs.codedefects.core.internal.FindBugsSessionImpl;
 
 /**
  *
@@ -55,7 +56,7 @@ public final class FindBugsQualityProvider extends AbstractQualityProvider {
 
     @Override
     public FindBugsSession createQualitySession(Project project) {
-        return new FindBugsSession(project);
+        return new FindBugsSessionImpl(project);
     }
 
     @Override

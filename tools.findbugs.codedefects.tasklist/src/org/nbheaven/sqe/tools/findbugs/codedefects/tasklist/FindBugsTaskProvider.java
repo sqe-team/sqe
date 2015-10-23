@@ -18,15 +18,14 @@
 package org.nbheaven.sqe.tools.findbugs.codedefects.tasklist;
 
 import edu.umd.cs.findbugs.BugInstance;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.nbheaven.sqe.codedefects.core.api.QualitySession;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
@@ -49,14 +48,14 @@ public class FindBugsTaskProvider extends PushTaskScanner {
         super("FindBugs", "FindBugs found Bugs", null);
     }
 
-    private final Map<QualitySession, PropertyChangeListener> listeners = new WeakHashMap<QualitySession, PropertyChangeListener>();
+    private final Map<FindBugsSession, ChangeListener<FindBugsResult>> listeners = new WeakHashMap<>();
 
     @Override
     public synchronized void setScope(TaskScanningScope taskScanningScope, final Callback callback) {
         if (taskScanningScope == null) {
             synchronized (listeners) {
-                for (Map.Entry<QualitySession, PropertyChangeListener> entry : listeners.entrySet()) {
-                    entry.getKey().removePropertyChangeListener(QualitySession.RESULT, entry.getValue());
+                for (Map.Entry<FindBugsSession, ChangeListener<FindBugsResult>> entry : listeners.entrySet()) {
+                    entry.getKey().getResultProperty().removeListener(entry.getValue());
                 }
             }
             return;
@@ -97,18 +96,18 @@ public class FindBugsTaskProvider extends PushTaskScanner {
             FindBugsResult result = getResult(qualitySession);
             pushTasks(result, callback, project);
             synchronized (listeners) {
-                PropertyChangeListener listener = listeners.get(qualitySession);
+                ChangeListener<FindBugsResult> listener = listeners.get(qualitySession);
                 if (listener != null) {
-                    qualitySession.removePropertyChangeListener(QualitySession.RESULT, listener);
+                    qualitySession.getResultProperty().removeListener(listener);
                 }
-                listener = new PropertyChangeListener() {
+                listener = new ChangeListener<FindBugsResult>() {
                     @Override
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        pushTasks((FindBugsResult) evt.getNewValue(), callback, project);
+                    public void changed(ObservableValue<? extends FindBugsResult> observable, FindBugsResult oldValue, FindBugsResult newValue) {
+                        pushTasks(newValue, callback, project);
                     }
                 };
                 listeners.put(qualitySession, listener);
-                qualitySession.addPropertyChangeListener(QualitySession.RESULT, listener);
+                qualitySession.getResultProperty().addListener(listener);
             }
         }
 

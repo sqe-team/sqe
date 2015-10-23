@@ -22,7 +22,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collection;
+import javafx.beans.value.ObservableValue;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartPanel;
@@ -38,6 +38,7 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.nbheaven.sqe.codedefects.core.api.CodeDefectSeverity;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
+import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
@@ -146,12 +147,16 @@ public class Statistics extends JPanel implements PropertyChangeListener {
 
     private void setActiveProject(Project project) {
         for (QualitySession session : SQECodedefectSupport.retrieveSessions(activeProject)) {
-            session.removePropertyChangeListener(QualitySession.RESULT, this);
+            session.getResultProperty().removeListener(this::resultChanged);
         }
         for (QualitySession session : SQECodedefectSupport.retrieveSessions(project)) {
-            session.addPropertyChangeListener(QualitySession.RESULT, this);
+            session.getResultProperty().addListener(this::resultChanged);
         }
         activeProject = project;
+    }
+
+    private void resultChanged(ObservableValue<? extends QualityResult> observable, QualityResult oldValue, QualityResult newValue) {
+        updateView();
     }
 
     @Override

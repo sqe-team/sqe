@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.pmd.codedefects.core;
+package org.nbheaven.sqe.tools.pmd.codedefects.core.internal;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettings;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.PMDSettingsImpl;
@@ -108,7 +109,7 @@ abstract class PMDScannerJob extends SQECodedefectScanner.Job {
         getProgressHandle().progress("Setting up PMD");
         init();
         executePMD();
-        this.pmdResult = new PMDResult(report);
+        this.pmdResult = new PMDResultImpl(report);
     }
 
 //    @Override

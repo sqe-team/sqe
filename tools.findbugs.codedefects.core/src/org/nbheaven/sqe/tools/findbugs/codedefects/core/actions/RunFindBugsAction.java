@@ -24,12 +24,17 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import static javax.swing.Action.SMALL_ICON;
 import javax.swing.SwingUtilities;
+import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
+import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsQualityProvider;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsSession;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.ui.FindBugsTopComponent;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
+import org.nbheaven.sqe.codedefects.ui.UIHandle;
+import org.nbheaven.sqe.codedefects.ui.actions.AbstractQualitySessionAwareAction;
+import org.nbheaven.sqe.codedefects.ui.utils.UiUtils;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
@@ -47,20 +52,21 @@ import org.openide.util.Utilities;
  *
  * @author Florian Vogler
  */
-public class RunFindBugsAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
+public class RunFindBugsAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
 
-    private Lookup context;
-    private Lookup.Result<Node> lkpInfo;
+    private final QualityProvider provider;
 
     public RunFindBugsAction() {
         this(Utilities.actionsGlobalContext());
     }
 
     private RunFindBugsAction(Lookup context) {
+        super(context, FindBugsQualityProvider.getDefault().getSessionEventProxy());
+        this.provider = FindBugsQualityProvider.getDefault();
+
         //        putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.NAME, NbBundle.getMessage(RunFindBugsAction.class, "LBL_RunFindBugsAction")); //NOI18N
         putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png")));
-        this.context = context;
     }
 
     @Override
@@ -69,74 +75,27 @@ public class RunFindBugsAction extends AbstractAction implements LookupListener,
     }
 
     @Override
-    public boolean isEnabled() {
-        init();
-        return super.isEnabled();
-    }
-
-    private void init() {
-        assert SwingUtilities.isEventDispatchThread() : "this shall be called just from AWT thread";
-
-        if (lkpInfo != null) {
-            return;
-        }
-        SQECodedefectProperties.addPropertyChangeListener(SQECodedefectProperties.getPropertyNameActive(FindBugsQualityProvider.getDefault()), this);//TODO Make weak !!!
-
-        //The thing we want to listen for the presence or absence of
-        //on the global selection
-        Lookup.Template<Node> tpl = new Lookup.Template<>(Node.class);
-        lkpInfo = context.lookup(tpl);
-        lkpInfo.addLookupListener(this);
-        resultChanged(null);
+    protected void updateActionStateImpl(Project project) {
+        QualitySession session = SQECodedefectSupport.retrieveSession(project, provider);
+        setEnabled(isEnabledForProject(project));
     }
 
     @Override
-    public void resultChanged(LookupEvent ev) {
-        updateEnableState();
+    protected boolean isEnabledForProject(Project project) {
+        return SQECodedefectSupport.isQualityProviderEnabled(project, provider)
+                && provider.isValidFor(project);
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(SQECodedefectProperties.getPropertyNameActive(FindBugsQualityProvider.getDefault()))) {
-            updateEnableState();
+    protected void actionPerformedImpl(ActionEvent e, Project project) {
+        QualitySession session = SQECodedefectSupport.retrieveSession(project, provider);
+        session.computeResult();
+
+//        SQEManager.getDefault().setActiveProject(project);
+        UIHandle uiHandle = UiUtils.getUIHandle(provider);
+        if (null != uiHandle) {
+            uiHandle.open();
         }
-    }
-
-    private void updateEnableState() {
-        if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(this::updateEnableState);
-        } else {
-            setEnabled(isEnabled(getActiveProject()));
-        }
-    }
-
-    private Project getActiveProject() {
-        Collection<? extends Node> nodes = lkpInfo.allInstances();
-        if (nodes.size() == 1) {
-            Project project = SQEProjectSupport.findProject(nodes.iterator().next());
-            return project;
-        }
-        return null;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Project project = getActiveProject();
-        if (null != project) {
-            if (isEnabled(project)) {
-                FindBugsSession session = SQECodedefectSupport.retrieveSession(project, FindBugsSession.class);
-                session.computeResult();
-
-                SQEManager.getDefault().setActiveProject(project);
-                FindBugsTopComponent tc = FindBugsTopComponent.findInstance();
-                tc.open();
-            }
-        }
-    }
-
-    private boolean isEnabled(Project project) {
-        return SQECodedefectSupport.isQualityProviderActive(project, FindBugsSession.class)
-                && FindBugsQualityProvider.getDefault().isValidFor(project);
     }
 
 }

@@ -17,31 +17,24 @@
  */
 package org.nbheaven.sqe.tools.pmd.codedefects.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import org.nbheaven.sqe.codedefects.core.api.CodeDefectSeverity;
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.annotations.RuleViolationAnnotationProcessor;
 import org.openide.filesystems.FileObject;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Sven Reimers
  */
-public final class PMDResult implements QualityResult, Lookup.Provider, QualityResultStatistic {
+public interface PMDResult extends QualityResult, Lookup.Provider, QualityResultStatistic {
 
     public enum Mode {
 
@@ -86,149 +79,20 @@ public final class PMDResult implements QualityResult, Lookup.Provider, QualityR
         public abstract Map<?, Collection<RuleViolation>> getInstanceList(final PMDResult result);
     }
 
-    private Map<ClassKey, Collection<RuleViolation>> instanceByClass;
-    private Map<PackageKey, Collection<RuleViolation>> instanceByPackage;
-    private Map<CategoryKey, Collection<RuleViolation>> instanceByType;
-    private Report report;
-    private Lookup lookup;
+    public void removeAllRuleViolationsForRule(Rule rule);
 
-    /**
-     * Creates a new instance of PMDResult
-     */
-    PMDResult(Report report) {
-        this.report = report;
-        this.lookup = Lookups.singleton(this);
-    }
+    public Map<CategoryKey, Collection<RuleViolation>> getInstanceByType();
 
-    @Override
-    public Lookup getLookup() {
-        return lookup;
-    }
+    public Map<ClassKey, Collection<RuleViolation>> getInstanceByClass();
 
-    private void removeAllRuleViolationsForRule(Rule rule, Map<? extends Object, Collection<RuleViolation>> mapToClear) {
-        for (Map.Entry<Object, Collection<RuleViolation>> entry : new HashMap<>(mapToClear).entrySet()) {
-            for (RuleViolation ruleViolation : new ArrayList<>(entry.getValue())) {
-                if (ruleViolation.getRule().equals(rule)) {
-                    entry.getValue().remove(ruleViolation);
-                }
-            }
-            if (entry.getValue().isEmpty()) {
-                mapToClear.remove(entry.getKey());
-            }
-        }
-    }
-
-    public synchronized void removeAllRuleViolationsForRule(Rule rule) {
-        if (null != instanceByType) {
-            removeAllRuleViolationsForRule(rule, instanceByType);
-        }
-        if (null != instanceByClass) {
-            removeAllRuleViolationsForRule(rule, instanceByClass);
-        }
-        if (null != instanceByPackage) {
-            removeAllRuleViolationsForRule(rule, instanceByPackage);
-        }
-//        session.resultChanged(null, this);
-    }
-
-    public synchronized Map<CategoryKey, Collection<RuleViolation>> getInstanceByType() {
-        if (null == instanceByType) {
-            Map<CategoryKey, Collection<RuleViolation>> tempInstanceByType = new TreeMap<>();
-
-            Iterator<RuleViolation> ruleViolationIterator = report.iterator();
-
-            while (ruleViolationIterator.hasNext()) {
-                RuleViolation ruleViolation = ruleViolationIterator.next();
-                CategoryKey categoryKey = new CategoryKey(ruleViolation);
-                Collection<RuleViolation> ruleViolations = tempInstanceByType.get(categoryKey);
-
-                if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<>();
-                    tempInstanceByType.put(categoryKey, ruleViolations);
-                }
-
-                ruleViolations.add(ruleViolation);
-            }
-            instanceByType = tempInstanceByType;
-        }
-
-        return instanceByType;
-    }
-
-    public synchronized Map<ClassKey, Collection<RuleViolation>> getInstanceByClass() {
-
-        if (null == instanceByClass) {
-            instanceByClass = new TreeMap<>();
-
-            Iterator<RuleViolation> ruleViolationIterator = report.iterator();
-
-            while (ruleViolationIterator.hasNext()) {
-                RuleViolation ruleViolation = ruleViolationIterator.next();
-                ClassKey classKey = new ClassKey(ruleViolation);
-                Collection<RuleViolation> ruleViolations = instanceByClass.get(classKey);
-
-                if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<>();
-                    instanceByClass.put(classKey, ruleViolations);
-                }
-
-                ruleViolations.add(ruleViolation);
-            }
-        }
-
-        return instanceByClass;
-    }
-
-    public synchronized Map<PackageKey, Collection<RuleViolation>> getInstanceByPackage() {
-        if (null == instanceByPackage) {
-            instanceByPackage = new TreeMap<>();
-
-            Iterator<RuleViolation> ruleViolationIterator = report.iterator();
-
-            while (ruleViolationIterator.hasNext()) {
-                RuleViolation ruleViolation = ruleViolationIterator.next();
-                PackageKey packageKey = new PackageKey(ruleViolation);
-                Collection<RuleViolation> ruleViolations = instanceByPackage.get(packageKey);
-
-                if (null == ruleViolations) {
-                    ruleViolations = new ArrayList<>();
-                    instanceByPackage.put(packageKey, ruleViolations);
-                }
-
-                ruleViolations.add(ruleViolation);
-            }
-        }
-
-        return instanceByPackage;
-    }
-
-    public long getBugCount() {
-        return report.size();
-    }
-
-    @Override
-    public long getCodeDefectCountSum() {
-        return getBugCount();
-    }
-
-    @Override
-    public long getCodeDefectCount(CodeDefectSeverity severity) {
-        if (CodeDefectSeverity.INFO == severity) {
-            return getBugCount();
-        }
-        if (CodeDefectSeverity.WARNING == severity) {
-            return 0;
-        }
-        if (CodeDefectSeverity.ERROR == severity) {
-            return 0;
-        }
-
-        return 0;
-    }
+    public Map<PackageKey, Collection<RuleViolation>> getInstanceByPackage();
 
     public abstract static class DisplayableKey implements Comparable<DisplayableKey> {
 
         public abstract String getDisplayName();
+
+        DisplayableKey() {
+        }
 
         @Override
         public final boolean equals(Object object) {
@@ -249,7 +113,7 @@ public final class PMDResult implements QualityResult, Lookup.Provider, QualityR
         }
     }
 
-    public static class ClassKey extends DisplayableKey {
+    public static final class ClassKey extends DisplayableKey {
 
         private final String className;
         private final FileObject fileObject;
@@ -280,7 +144,7 @@ public final class PMDResult implements QualityResult, Lookup.Provider, QualityR
         }
     }
 
-    public static class PackageKey extends DisplayableKey {
+    public static final class PackageKey extends DisplayableKey {
 
         private final String packageName;
 
@@ -294,7 +158,7 @@ public final class PMDResult implements QualityResult, Lookup.Provider, QualityR
         }
     }
 
-    public static class CategoryKey extends DisplayableKey {
+    public static final class CategoryKey extends DisplayableKey {
 
         private final RuleViolation bugPattern;
 

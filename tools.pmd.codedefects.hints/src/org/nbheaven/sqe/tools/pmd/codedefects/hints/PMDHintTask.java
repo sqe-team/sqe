@@ -27,9 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.Document;
 import net.sourceforge.pmd.RuleViolation;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
-import org.nbheaven.sqe.core.java.search.SearchUtilities;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.netbeans.api.java.source.CancellableTask;
@@ -66,7 +64,7 @@ final class PMDHintTask implements CancellableTask<CompilationInfo> {
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
         final FileObject fileObject = compilationInfo.getFileObject();
         if (null != fileObject) {
-            if (SQECodedefectSupport.isQualityProviderActive(fileObject, PMDSession.class)) {
+            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, PMDSession.class)) {
                 if (null == errors) {
                     System.out.println("PMDHintTask: (calc) " + System.identityHashCode(fileObject));
                     final Document document = compilationInfo.getDocument();
@@ -95,8 +93,8 @@ final class PMDHintTask implements CancellableTask<CompilationInfo> {
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        PMDSession session = SQECodedefectSupport.retrieveSession(fileObject, PMDSession.class);
-        PMDResult result = session.computeResultAndWait(fileObject);
+        PMDSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, PMDSession.class);
+        PMDResult result = PMDSession.computeResultAndWait(fileObject);
         if (result != null) {
             List<ErrorDescription> computedErrors = new LinkedList<>();
             Project project = FileOwnerQuery.getOwner(fileObject);

@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.Document;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
@@ -63,7 +62,7 @@ final class CheckstyleHintTask implements CancellableTask<CompilationInfo> {
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
         final FileObject fileObject = compilationInfo.getFileObject();
         if (null != fileObject) {
-            if (SQECodedefectSupport.isQualityProviderActive(fileObject, CheckstyleSession.class)) {
+            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, CheckstyleSession.class)) {
                 if (null == errors) {
                     System.out.println("CheckstyleHintTask: (calc) " + System.identityHashCode(fileObject));
                     final Document document = compilationInfo.getDocument();
@@ -92,8 +91,8 @@ final class CheckstyleHintTask implements CancellableTask<CompilationInfo> {
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        CheckstyleSession session = SQECodedefectSupport.retrieveSession(fileObject, CheckstyleSession.class);
-        CheckstyleResult result = session.computeResultAndWait(fileObject);
+        CheckstyleSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, CheckstyleSession.class);
+        CheckstyleResult result = CheckstyleSession.computeResultAndWait(fileObject);
         if (result != null) {
             List<ErrorDescription> computedErrors = new LinkedList<>();
             Project project = FileOwnerQuery.getOwner(fileObject);

@@ -18,10 +18,6 @@
 package org.nbheaven.sqe.tools.pmd.codedefects.projects.maven;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;

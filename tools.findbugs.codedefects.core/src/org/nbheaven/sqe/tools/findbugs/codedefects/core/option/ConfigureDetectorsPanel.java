@@ -138,10 +138,12 @@ public class ConfigureDetectorsPanel extends JPanel {
                 false, false, true
             };
 
+            @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
@@ -173,6 +175,7 @@ public class ConfigureDetectorsPanel extends JPanel {
             jComboBox1.setModel(pluginSelector);
             jComboBox1.setRenderer(pluginRenderer);
             jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     jComboBox1ActionPerformed(evt);
                 }
@@ -182,6 +185,7 @@ public class ConfigureDetectorsPanel extends JPanel {
             restoreDefaultsButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             restoreDefaultsButton.setText(L10N.getLocalString("dlg.restoredefaults_btn", "Restore Defaults"));
             restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     restoreDefaultsButtonActionPerformed(evt);
                 }
@@ -193,6 +197,7 @@ public class ConfigureDetectorsPanel extends JPanel {
             restoreDefaultsButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             restoreDefaultsButton.setText(L10N.getLocalString("dlg.restoredefaults_btn", "Restore Defaults"));
             restoreDefaultsButton1.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     disableAllButton1ActionPerformed(evt);
                 }

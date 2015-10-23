@@ -62,7 +62,9 @@ public class ProjectStatistics extends javax.swing.JPanel implements PropertyCha
 
         classPathList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            @Override
             public int getSize() { return strings.length; }
+            @Override
             public String getElementAt(int i) { return strings[i]; }
         });
         classPathScrollPane.setViewportView(classPathList);

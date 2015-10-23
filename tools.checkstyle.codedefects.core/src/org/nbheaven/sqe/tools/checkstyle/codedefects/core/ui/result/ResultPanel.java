@@ -34,6 +34,7 @@ import javax.swing.tree.TreePath;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.CategoryKey;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult.Mode;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.actions.ShowCheckstyleProjectResultAnnotationsAction;
 
 /**
  *
@@ -83,8 +84,12 @@ public final class ResultPanel extends JPanel {
         toolBar.add(new CollapseAllAction(bugTree));
         toolBar.addSeparator();
 
+        toolBar.add(new ShowCheckstyleProjectResultAnnotationsAction(session).getToolbarPresenter());
+
         showHideDescriptionButton = new JToggleButton(new ShowHideDescriptionAction(this));
-        showHideDescriptionButton.setText(null);
+        showHideDescriptionButton.setHideActionText(true);
+        showHideDescriptionButton.setRolloverEnabled(false);
+        showHideDescriptionButton.setFocusable(false);
         showHideDescriptionButton.setSelected(true);
         toolBar.add(showHideDescriptionButton);
         toolBar.addSeparator();
@@ -144,7 +149,7 @@ public final class ResultPanel extends JPanel {
                 description = auditEvent.getMessage();
             }
         }
-        
+
         description = null == description ? "" : description.trim();
         if (description.length() == 0 || !showHideDescriptionButton.isSelected()) {
             textPane.setText("");

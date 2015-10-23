@@ -28,6 +28,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.CheckstyleTopComponent;
 import org.nbheaven.sqe.codedefects.ui.UIHandle;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.internal.CheckstyleSessionImpl;
 
 /**
  *
@@ -55,7 +56,7 @@ public final class CheckstyleQualityProvider extends AbstractQualityProvider {
 
     @Override
     public CheckstyleSession createQualitySession(Project project) {
-        return new CheckstyleSession(project);
+        return new CheckstyleSessionImpl(project);
     }
 
     @Override

@@ -17,28 +17,19 @@
  */
 package org.nbheaven.sqe.tools.checkstyle.codedefects.core.actions;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Collection;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.SwingUtilities;
+import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
+import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleQualityProvider;
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
-import org.nbheaven.sqe.tools.checkstyle.codedefects.core.ui.CheckstyleTopComponent;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
-import org.nbheaven.sqe.core.api.SQEManager;
-import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
+import org.nbheaven.sqe.codedefects.ui.UIHandle;
+import org.nbheaven.sqe.codedefects.ui.actions.AbstractQualitySessionAwareAction;
+import org.nbheaven.sqe.codedefects.ui.utils.UiUtils;
 import org.netbeans.api.project.Project;
-import org.openide.nodes.Node;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -47,20 +38,21 @@ import org.openide.util.Utilities;
  *
  * @author Florian Vogler
  */
-public class RunCheckstyleAction extends AbstractAction implements LookupListener, ContextAwareAction, PropertyChangeListener {
+public class RunCheckstyleAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
 
-    private Lookup context;
-    private Lookup.Result<Node> lkpInfo;
+    private final QualityProvider provider;
 
     public RunCheckstyleAction() {
         this(Utilities.actionsGlobalContext());
     }
 
     private RunCheckstyleAction(Lookup context) {
+        super(context, CheckstyleQualityProvider.getDefault().getSessionEventProxy());
+        this.provider = CheckstyleQualityProvider.getDefault();
+
         //        putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.NAME, NbBundle.getMessage(RunCheckstyleAction.class, "LBL_CheckstyleAction")); //NOI18N
         putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png")));
-        this.context = context;
     }
 
     @Override
@@ -69,73 +61,27 @@ public class RunCheckstyleAction extends AbstractAction implements LookupListene
     }
 
     @Override
-    public boolean isEnabled() {
-        init();
-        return super.isEnabled();
-    }
-
-    private void init() {
-        assert SwingUtilities.isEventDispatchThread() : "this shall be called just from AWT thread";
-
-        if (lkpInfo != null) {
-            return;
-        }
-        SQECodedefectProperties.addPropertyChangeListener(SQECodedefectProperties.getPropertyNameActive(CheckstyleQualityProvider.getDefault()), this);//TODO Make weak !!!
-
-        //The thing we want to listen for the presence or absence of
-        //on the global selection
-        Lookup.Template<Node> tpl = new Lookup.Template<>(Node.class);
-        lkpInfo = context.lookup(tpl);
-        lkpInfo.addLookupListener(this);
-        resultChanged(null);
+    protected boolean isEnabledForProject(Project project) {
+        return SQECodedefectSupport.isQualityProviderEnabled(project, provider)
+                && provider.isValidFor(project);
     }
 
     @Override
-    public void resultChanged(final LookupEvent ev) {
-        updateEnableState();
+    protected void updateActionStateImpl(Project project) {
+        QualitySession session = SQECodedefectSupport.retrieveSession(project, provider);
+        setEnabled(isEnabledForProject(project));
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(SQECodedefectProperties.getPropertyNameActive(CheckstyleQualityProvider.getDefault()))) {
-            updateEnableState();
+    protected void actionPerformedImpl(ActionEvent e, Project project) {
+        QualitySession session = SQECodedefectSupport.retrieveSession(project, provider);
+        session.computeResult();
+
+//        SQEManager.getDefault().setActiveProject(project);
+        UIHandle uiHandle = UiUtils.getUIHandle(provider);
+        if (null != uiHandle) {
+            uiHandle.open();
         }
     }
 
-    private void updateEnableState() {
-        if (!EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(() -> updateEnableState());
-            return;
-        }
-        setEnabled(isEnabled(getActiveProject()));
-    }
-
-    private Project getActiveProject() {
-        Collection<? extends Node> nodes = lkpInfo.allInstances();
-        if (nodes.size() == 1) {
-            Project project = SQEProjectSupport.findProject(nodes.iterator().next());
-            return project;
-        }
-        return null;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Project project = getActiveProject();
-        if (null != project) {
-            if (isEnabled(project)) {
-                CheckstyleSession session = SQECodedefectSupport.retrieveSession(project, CheckstyleSession.class);
-                session.computeResult();
-
-                SQEManager.getDefault().setActiveProject(project);
-                CheckstyleTopComponent tc = CheckstyleTopComponent.findInstance();
-                tc.open();
-            }
-        }
-    }
-
-    private boolean isEnabled(Project project) {
-        return SQECodedefectSupport.isQualityProviderActive(project, CheckstyleSession.class)
-                && CheckstyleQualityProvider.getDefault().isValidFor(project);
-    }
 }

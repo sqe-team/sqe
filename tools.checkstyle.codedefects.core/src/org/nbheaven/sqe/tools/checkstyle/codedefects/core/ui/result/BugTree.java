@@ -23,8 +23,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,11 +51,13 @@ class BugTree extends JTree {
     BugTree(CheckstyleSession session) {
         this.session = session;
         this.requestProcessor = new RequestProcessor("BugTree-" + session.getDisplayName(), 1);
-        this.session.addPropertyChangeListener(new SessionListener(this));
         setCellRenderer(AuditEventRenderer.instance());
         addMouseListener(new JumpToSourceMouseListener());
         addKeyListener(new JumpToSourceKeyListener());
         setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No result available")));
+
+        // XX must be weak ?
+        this.session.getResultProperty().addListener((observable, oldValue, newValue) -> refresh());
     }
 
     public CheckstyleSession getSession() {
@@ -124,7 +124,7 @@ class BugTree extends JTree {
             return new DefaultMutableTreeNode("No result available");
         }
 
-        MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount()); // NOI18N
+        MutableTreeNode rootNode = new SessionNode(session, session.getResult().getCodeDefectCountSum()); // NOI18N
 
         Map<? extends Object, Collection<AuditEvent>> instances = resultMode.getInstanceList(session.getResult());
 
@@ -171,7 +171,8 @@ class BugTree extends JTree {
     }
 
     /**
-     * Dispatch the event to open the source file according to type of annotation
+     * Dispatch the event to open the source file according to type of
+     * annotation
      */
     private static void jumpToSource(final TreePath treePath) {
         if (null == treePath || treePath.getPathCount() == 0) {
@@ -195,20 +196,6 @@ class BugTree extends JTree {
         if (obj instanceof AuditEvent) {
             AuditEvent auditEvent = (AuditEvent) obj;
             AuditEventAnnotationProcessor.openSourceFile(auditEvent, session.getProject());
-        }
-    }
-
-    private static class SessionListener implements PropertyChangeListener {
-
-        private final BugTree bugTreePanel;
-
-        public SessionListener(BugTree bugTreePanel) {
-            this.bugTreePanel = bugTreePanel;
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            bugTreePanel.refresh();
         }
     }
 

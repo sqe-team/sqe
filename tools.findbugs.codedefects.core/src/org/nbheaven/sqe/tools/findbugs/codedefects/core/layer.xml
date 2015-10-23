@@ -22,28 +22,13 @@
     <folder name="Actions">
         <folder name="Quality">
             <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
-            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-annotations-FindBugsAnnotationToggleAction.instance"/>
+            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-ShowFindBugsProjectResultAnnotationsAction.instance"/>
         </folder>
     </folder>
+    
     <folder name="Editors">
         <folder name="AnnotationTypes">
             <file name="findbugs-annotation.xml" url="annotations/annotation.xml"/>
-        </folder>
-        <folder name="text">
-            <folder name="x-java">
-                <folder name="Toolbars">
-                    <folder name="Default">
-                        <file name="Separator-before-sqe.instance">
-                            <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                            <attr name="position" intvalue="25100"/>
-                        </file>
-                        <file name="FindBugsAnnotationToggleAction.shadow">
-                            <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-findbugs-codedefects-core-annotations-FindBugsAnnotationToggleAction.instance"/>
-                            <attr name="position" intvalue="25200"/>
-                        </file>
-                    </folder>
-                </folder>
-            </folder>
         </folder>
     </folder>
 

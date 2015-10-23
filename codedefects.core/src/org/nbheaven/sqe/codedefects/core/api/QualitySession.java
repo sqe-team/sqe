@@ -17,9 +17,11 @@
  */
 package org.nbheaven.sqe.codedefects.core.api;
 
+import javafx.beans.property.BooleanProperty;
 import org.netbeans.api.project.Project;
 
-import java.beans.PropertyChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableObjectValue;
 
 /**
  *
@@ -27,27 +29,46 @@ import java.beans.PropertyChangeListener;
  */
 public interface QualitySession {
 
-    public static final String RESULT = "Result";
-
-    public QualityProvider getProvider();
-
-    public Project getProject();
-
     public String getName();
 
     public String getDisplayName();
+
+    public Project getProject();
+
+    public QualityProvider getProvider();
+
+    public BooleanProperty getEnabledProperty();
+
+    public boolean isEnabled();
+
+    public void setEnabled(boolean enabled);
+
+    public BooleanProperty getAnnotateProjectResultEnabledProperty();
+
+    public boolean isAnnotateProjectResultEnabled();
+
+    public void setAnnotateProjectResultEnabled(boolean enabled);
+
+    public BooleanProperty getBackgroundScanningEnabledProperty();
+
+    public boolean isBackgroundScanningEnabled();
+
+    public void setBackgroundScanningEnabled(boolean enabled);
+
+    public ObservableBooleanValue getAnnotateProjectResultEffectiveEnabledProperty();
+
+    public boolean isAnnotateProjectResultEffectiveEnabled();
+
+    public ObservableBooleanValue getBackgroundScanningEffectiveEnabledProperty();
+
+    public boolean isBackgroundScanningEffectiveEnabled();
+
+    public ObservableObjectValue<? extends QualityResult> getResultProperty();
 
     public QualityResult getResult();
 
     public void computeResult();
 
-    // PropertyChange
-    public void addPropertyChangeListener(PropertyChangeListener listener);
-
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
-
-    public void removePropertyChangeListener(PropertyChangeListener listener);
-
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+    public QualityResult computeResultAndWait();
 
 }

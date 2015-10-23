@@ -21,7 +21,6 @@ import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.Plugin;
 
-import java.util.Iterator;
 
 /**
  *

@@ -91,11 +91,14 @@ public final class CheckstyleTopComponent extends TopComponent {
         resultPanel = new javax.swing.JPanel();
 
         addAncestorListener(new javax.swing.event.AncestorListener() {
+            @Override
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
+            @Override
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 formAncestorAdded(evt);
             }
+            @Override
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });

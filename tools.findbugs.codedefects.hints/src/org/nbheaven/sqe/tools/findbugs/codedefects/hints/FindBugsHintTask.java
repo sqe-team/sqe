@@ -31,9 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.swing.text.Document;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.java.search.ClassElementDescriptor;
 import org.nbheaven.sqe.core.java.search.JavaElement;
@@ -79,7 +77,7 @@ final class FindBugsHintTask implements CancellableTask<CompilationInfo> {
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
         final FileObject fileObject = compilationInfo.getFileObject();
         if (null != fileObject) {
-            if (SQECodedefectSupport.isQualityProviderActive(fileObject, FindBugsSession.class)) {
+            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, FindBugsSession.class)) {
                 if (null == errors) {
                     System.out.println("FindBugsHintTask: (calc) " + System.identityHashCode(fileObject));
                     final Document document = compilationInfo.getDocument();
@@ -107,8 +105,8 @@ final class FindBugsHintTask implements CancellableTask<CompilationInfo> {
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        FindBugsSession session = SQECodedefectSupport.retrieveSession(fileObject, FindBugsSession.class);
-        FindBugsResult result = session.computeResultAndWait(fileObject);
+        FindBugsSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, FindBugsSession.class);
+        FindBugsResult result = FindBugsSession.computeResultAndWait(fileObject);
 
         if (result != null) {
             List<ErrorDescription> computedErrors = new LinkedList<>();

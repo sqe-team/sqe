@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.findbugs.codedefects.core;
+package org.nbheaven.sqe.tools.findbugs.codedefects.core.internal;
 
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.FilterBugReporter;
@@ -29,6 +29,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
+import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsResult;
+//import org.nbheaven.sqe.tools.findbugs.codedefects.core.Installer;
+//import org.nbheaven.sqe.tools.findbugs.codedefects.core.NbBugReporter;
+//import org.nbheaven.sqe.tools.findbugs.codedefects.core.NbFindBugsProgress;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettings;
 import org.nbheaven.sqe.tools.findbugs.codedefects.core.settings.FindBugsSettingsProvider;
 import org.netbeans.api.project.Project;
@@ -47,7 +51,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
     }
 
     private edu.umd.cs.findbugs.Project findBugsProject;
-    private FindBugsResult findBugsResult;
+    private FindBugsResultImpl findBugsResult;
     private Project project;
 
     FindBugsScannerJob(Project project) {
@@ -68,7 +72,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
     protected void scan() {
         getProgressHandle().progress("Setting up FindBugs Engine ");
         findBugsProject = createFindBugsProject();
-        this.findBugsResult = new FindBugsResult(getProject());
+        this.findBugsResult = new FindBugsResultImpl(getProject());
         executeFindBugs();
     }
 
@@ -80,7 +84,7 @@ public abstract class FindBugsScannerJob extends SQECodedefectScanner.Job {
         return findBugsResult;
     }
 
-    abstract protected edu.umd.cs.findbugs.Project createFindBugsProject();
+    protected abstract edu.umd.cs.findbugs.Project createFindBugsProject();
 
     private void executeFindBugs() {
         if (findBugsProject == null) {

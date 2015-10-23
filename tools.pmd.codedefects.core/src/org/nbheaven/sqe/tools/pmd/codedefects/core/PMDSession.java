@@ -17,109 +17,30 @@
  */
 package org.nbheaven.sqe.tools.pmd.codedefects.core;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import javafx.beans.value.ObservableObjectValue;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
-import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
-import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
-import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.LookupProvider.Registration.ProjectType;
-import org.netbeans.spi.project.ProjectServiceProvider;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.internal.PMDSessionImpl;
 import org.openide.filesystems.FileObject;
 
 /**
  *
  * @author Sven Reimers
  */
-@ProjectServiceProvider(service = {PMDSession.class, QualitySession.class},
-        projectTypes = {
-            @ProjectType(position = 20, id = "org-netbeans-modules-ant-freeform"),
-            @ProjectType(position = 20, id = "org-netbeans-modules-autoproject"),
-            @ProjectType(position = 20, id = "org-netbeans-modules-apisupport-project"),
-            @ProjectType(position = 20, id = "org-netbeans-modules-java-j2seproject"),
-            @ProjectType(position = 20, id = "org-netbeans-modules-web-project"),
-            @ProjectType(position = 20, id = "org-netbeans-modules-maven"),
-			@ProjectType(position = 20, id = "org.netbeans.gradle.project")
-        }
-)
-public class PMDSession extends AbstractQualitySession {
-
-    private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private PMDResult pmdResult;
-
-    /**
-     * Creates a new instance of FindBugsSession
-     *
-     * @param project the project this QualitySession belongs to.
-     */
-    public PMDSession(Project project) {
-        super(PMDQualityProvider.getDefault(), project);
-    }
+public interface PMDSession extends QualitySession {
 
     @Override
-    public PMDQualityProvider getProvider() {
-        return (PMDQualityProvider) super.getProvider();
-    }
+    public PMDQualityProvider getProvider();
 
     @Override
-    public PMDResult getResult() {
-        return pmdResult;
-    }
-
-    private final Lock waitResultLock = new ReentrantLock();
-    private final Condition waitForResult = waitResultLock.newCondition();
-
-    /**
-     * Analyze a single file. Call within a Java source task at
-     * {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
-     *
-     * @param sourceFile The file to analyze
-     * @return the result of the analyzation
-     */
-    public PMDResult computeResultAndWait(FileObject sourceFile) {
-        PMDScannerJob job = new PMDFileScannerJob(getProject(), sourceFile);
-        SQECodedefectScanner.postAndWait(job);
-        return job.getPMDResult();
-    }
-
-    public PMDResult computeResultAndWait() {
-        waitResultLock.lock();
-        try {
-            computeResult();
-            while (isRunning.get()) {
-                waitForResult.awaitUninterruptibly();
-            }
-            return this.pmdResult;
-        } finally {
-            waitResultLock.unlock();
-        }
-    }
+    public ObservableObjectValue<? extends PMDResult> getResultProperty();
 
     @Override
-    public void computeResult() {
-        if (!isRunning.getAndSet(true)) {
-            PMDScannerJob job = new PMDProjectScannerJob(this);
-            SQECodedefectScanner.post(job);
-        } else {
-//            System.out.println("PMD is already running - Skip call to computeResult()");
-        }
-    }
+    public PMDResult getResult();
 
-    void scanningDone() {
-        waitResultLock.lock();
-        try {
-            isRunning.set(false);
-            waitForResult.signalAll();
-        } finally {
-            waitResultLock.unlock();
-        }
-    }
+    @Override
+    public PMDResult computeResultAndWait();
 
-    void setResult(PMDResult pmdResult) {
-        PMDResult oldResult = this.pmdResult;
-        this.pmdResult = pmdResult;
-        fireResultChanged(oldResult, this.pmdResult);
+    public static PMDResult computeResultAndWait(FileObject sourceFile) {
+        return PMDSessionImpl.computeResultAndWait(sourceFile);
     }
 }

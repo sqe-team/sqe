@@ -22,7 +22,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Set;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.api.SQEAnnotationProcessor;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
 import org.netbeans.api.java.source.JavaSource;
@@ -62,39 +61,38 @@ final class OpenTopComponentsListener implements PropertyChangeListener {
                     RP.post(new Runnable() {
                         @Override
                         public void run() {
-                    for (final Project project : OpenProjects.getDefault().getOpenProjects()) {
-                            SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);
+                            for (final Project project : OpenProjects.getDefault().getOpenProjects()) {
+                                SourceGroup[] sgs = ProjectUtilities.getJavaSourceGroups(project);
 
-                            for (SourceGroup sg : sgs) {
-                                try {
-                                    if (sg.contains(dao.getPrimaryFile())) {
-                                        final JavaSource javaSource = JavaSource.forFileObject(dao.getPrimaryFile());
-                                        if (null != javaSource) {
-                                            for (final QualitySession qualitySession : SQECodedefectSupport.retrieveSessions(project)) {
-                                                assert qualitySession != null : "Illegal null QualitySession in QualitySessionManager-Storage for Project " +
-                                                        project;
+                                for (SourceGroup sg : sgs) {
+                                    try {
+                                        if (sg.contains(dao.getPrimaryFile())) {
+                                            final JavaSource javaSource = JavaSource.forFileObject(dao.getPrimaryFile());
+                                            if (null != javaSource) {
+                                                for (final QualitySession qualitySession : SQECodedefectSupport.retrieveSessions(project)) {
+                                                    assert qualitySession != null : "Illegal null QualitySession in QualitySessionManager-Storage for Project "
+                                                            + project;
 
-                                                final SQEAnnotationProcessor sqeAnnotationProcessor =
-                                                        qualitySession.getProvider().getLookup().lookup(SQEAnnotationProcessor.class);
-                                                if (null == sqeAnnotationProcessor) {
-                                                    continue;
-                                                }
-                                                if (SQECodedefectProperties.isQualityProviderAnnotateActive(project, qualitySession.getProvider())) {
-                                                            sqeAnnotationProcessor.annotateSourceFile(javaSource,
-                                                                    project,
-                                                                    qualitySession.getResult());
+                                                    final SQEAnnotationProcessor sqeAnnotationProcessor
+                                                            = qualitySession.getProvider().getLookup().lookup(SQEAnnotationProcessor.class);
+                                                    if (null == sqeAnnotationProcessor) {
+                                                        continue;
+                                                    }
+                                                    if (qualitySession.isAnnotateProjectResultEffectiveEnabled()) {
+                                                        sqeAnnotationProcessor.annotateSourceFile(javaSource, project,
+                                                                qualitySession.getResult());
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        break;
+                                            break;
+                                        }
+                                    } catch (IllegalArgumentException iaex) {
+                                        // Hmm, not sure what to do about it right now, but seems to work
+                                        //ErrorManager.getDefault().notify(iaex);
                                     }
-                                } catch (IllegalArgumentException iaex) {
-                                    // Hmm, not sure what to do about it right now, but seems to work
-                                    //ErrorManager.getDefault().notify(iaex);
-                                    }
+                                }
                             }
-                    }
                         }
                     });
                 }

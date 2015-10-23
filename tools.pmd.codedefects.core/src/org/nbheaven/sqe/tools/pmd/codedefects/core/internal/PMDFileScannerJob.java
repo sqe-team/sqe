@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.checkstyle.codedefects.core;
+package org.nbheaven.sqe.tools.pmd.codedefects.core.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,17 +27,17 @@ import org.openide.filesystems.FileObject;
  *
  * @author Florian Vogler
  */
-final class CheckstyleFileScannerJob extends CheckstyleScannerJob {
+final class PMDFileScannerJob extends PMDScannerJob {
 
     private final List<FileObject> fileObjects;
 
-    public CheckstyleFileScannerJob(Project project, FileObject... fileObjects) {
+    public PMDFileScannerJob(Project project, FileObject... fileObjects) {
         super(project);
         this.fileObjects = new ArrayList<FileObject>(Arrays.asList(fileObjects));
     }
 
     @Override
-    protected void executeCheckstyle() {
-        executeCheckstyle(fileObjects);
+    protected void executePMD() {
+        executePMD(fileObjects);
     }
 }

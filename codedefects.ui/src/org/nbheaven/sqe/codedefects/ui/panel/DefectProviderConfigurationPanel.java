@@ -26,7 +26,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
+import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.api.SQEManager;
 import org.netbeans.api.project.Project;
 
@@ -66,7 +66,7 @@ public class DefectProviderConfigurationPanel extends JPanel {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            SQECodedefectProperties.setQualityProviderActive(project, provider, this.isSelected());
+            SQECodedefectSupport.retrieveSession(project, provider).setEnabled(this.isSelected());
         }
         
         @Override
@@ -77,7 +77,7 @@ public class DefectProviderConfigurationPanel extends JPanel {
         private void setProject(Project project) {
             this.project = project;
             if (null != project) {
-                this.setSelected(SQECodedefectProperties.isQualityProviderActive(project, provider));
+                this.setSelected(SQECodedefectSupport.isQualityProviderEnabled(project, provider));
                 this.setEnabled(true);
             } else {
                 setSelected(false);

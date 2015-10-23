@@ -79,6 +79,7 @@ public class CheckstyleConfiguration extends javax.swing.JPanel {
 
         browseConfigFileButton.setText(org.openide.util.NbBundle.getMessage(CheckstyleConfiguration.class, "CheckstyleConfiguration.browseConfigFileButton.text")); // NOI18N
         browseConfigFileButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 browseConfigFileButtonActionPerformed(evt);
             }
@@ -90,6 +91,7 @@ public class CheckstyleConfiguration extends javax.swing.JPanel {
 
         browsePropertiesFileButton.setText(org.openide.util.NbBundle.getMessage(CheckstyleConfiguration.class, "CheckstyleConfiguration.browsePropertiesFileButton.text")); // NOI18N
         browsePropertiesFileButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 browsePropertiesFileButtonActionPerformed(evt);
             }

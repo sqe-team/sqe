@@ -18,45 +18,80 @@
 package org.nbheaven.sqe.codedefects.core.spi;
 
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
-import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
-import org.openide.util.WeakListeners;
-
+import java.util.prefs.Preferences;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
+import org.nbheaven.sqe.codedefects.core.api.QualityProvider.SessionEventProxy;
+import org.nbheaven.sqe.codedefects.core.api.QualityResult;
+import org.netbeans.spi.project.ui.ProjectOpenedHook;
 
 /**
  *
  * @author Sven Reimers
  */
-public abstract class AbstractQualitySession implements QualitySession {
-    private final PropertyChangeSupport propSupport;
-    private final Project project;
-    private final QualityProvider provider;
+public abstract class AbstractQualitySession<P extends QualityProvider, R extends QualityResult> extends ProjectOpenedHook implements QualitySession {
 
-    public AbstractQualitySession(final QualityProvider provider,
-        final Project project) {
+    private final Project project;
+    private final AbstractQualityProvider provider;
+
+    private final AnnotationControler annotationControler = new AnnotationControler(this);
+
+    private final BooleanProperty enabledProperty = new SimpleBooleanProperty(this, SessionEventProxy.ENABLED_PROPERTY);
+    private final BooleanProperty annotateProjectResultEnabledProperty = new SimpleBooleanProperty(this, SessionEventProxy.ANNOTATE_PROJECT_RESULT_ENABLED_PROPERTY);
+    private final BooleanProperty backgroundScanningEnabledProperty = new SimpleBooleanProperty(this, SessionEventProxy.BACKGROUND_SCANNING_ENABLED_PROPERTY);
+
+    private final BooleanBinding annotateProjectResultEffectiveEnabledProperty = enabledProperty.and(annotateProjectResultEnabledProperty);
+    private final BooleanBinding backgroundScanningEffectiveEnabledProperty = enabledProperty.and(backgroundScanningEnabledProperty);
+
+    private final ObjectProperty<R> resultProperty = new SimpleObjectProperty<>();
+
+    public <PI extends AbstractQualityProvider & QualityProvider> AbstractQualitySession(final PI provider, final Project project) {
         this.provider = provider;
         this.project = project;
-        this.propSupport = new PropertyChangeSupport(this);
-        PropertyChangeListener listener = new AnnotationToggleListener(provider, project);
-        SQECodedefectProperties.addPropertyChangeListener(WeakListeners.propertyChange(listener, SQECodedefectProperties.class));        
-        this.addPropertyChangeListener(QualitySession.RESULT, listener);        
+
+        enabledProperty.addListener((source, oldValue, newValue)
+                -> this.provider.fireSessionPropertyChange(this, enabledProperty.getName(), oldValue, newValue));
+
+        annotateProjectResultEnabledProperty.addListener((source, oldValue, newValue)
+                -> this.provider.fireSessionPropertyChange(this, annotateProjectResultEnabledProperty.getName(), oldValue, newValue));
+
+        backgroundScanningEnabledProperty.addListener((source, oldValue, newValue)
+                -> this.provider.fireSessionPropertyChange(this, backgroundScanningEnabledProperty.getName(), oldValue, newValue));
+
+        annotateProjectResultEffectiveEnabledProperty.addListener((source, oldValue, newValue)
+                -> this.provider.fireSessionPropertyChange(this, SessionEventProxy.ANNOTATE_PROJECT_RESULT_EFFECTIVE_ENABLED_PROPERTY, oldValue, newValue));
+        
+        backgroundScanningEffectiveEnabledProperty.addListener((source, oldValue, newValue)
+                -> this.provider.fireSessionPropertyChange(this, SessionEventProxy.BACKGROUND_SCANNING_EFFECTIVE_ENABLED_PROPERTY, oldValue, newValue)
+        );
+
     }
 
     @Override
-    public QualityProvider getProvider() {
-        return provider;
+    protected final void projectOpened() {
+        Preferences preferences = ProjectUtils.getPreferences(project, provider.getClass(), false);
+        enabledProperty.set(preferences.getBoolean(enabledProperty.getName(), true));
+        annotateProjectResultEnabledProperty.set(preferences.getBoolean(annotateProjectResultEnabledProperty.getName(), true));
+        backgroundScanningEnabledProperty.set(preferences.getBoolean(backgroundScanningEnabledProperty.getName(), true));
+        annotationControler.bind();
     }
 
     @Override
-    public Project getProject() {
-        return this.project;
+    protected final void projectClosed() {
+        Preferences preferences = ProjectUtils.getPreferences(project, provider.getClass(), false);
+        preferences.putBoolean(enabledProperty.getName(), enabledProperty.get());
+        preferences.putBoolean(annotateProjectResultEnabledProperty.getName(), annotateProjectResultEnabledProperty.get());
+        preferences.putBoolean(backgroundScanningEnabledProperty.getName(), backgroundScanningEnabledProperty.get());
+        annotationControler.unbind();
     }
 
     @Override
@@ -69,38 +104,93 @@ public abstract class AbstractQualitySession implements QualitySession {
         return ProjectUtils.getInformation(project).getName();
     }
 
-    protected final PropertyChangeSupport getPropertyChangeSupport() {
-        return propSupport;
+    @Override
+    public final Project getProject() {
+        return this.project;
     }
 
     @Override
-    public final void addPropertyChangeListener(PropertyChangeListener listener) {
-        getPropertyChangeSupport().addPropertyChangeListener(listener);
+    public final P getProvider() {
+        return (P) provider;
     }
 
     @Override
-    public final void addPropertyChangeListener(String propertyName,
-        PropertyChangeListener listener) {
-        getPropertyChangeSupport()
-            .addPropertyChangeListener(propertyName, listener);
+    public final BooleanProperty getEnabledProperty() {
+        return enabledProperty;
     }
 
     @Override
-    public final void removePropertyChangeListener(
-        PropertyChangeListener listener) {
-        getPropertyChangeSupport().removePropertyChangeListener(listener);
+    public final boolean isEnabled() {
+        return getEnabledProperty().get();
     }
 
     @Override
-    public final void removePropertyChangeListener(String propertyName,
-        PropertyChangeListener listener) {
-        getPropertyChangeSupport()
-            .removePropertyChangeListener(propertyName, listener);
+    public final void setEnabled(boolean enabled) {
+        getEnabledProperty().set(enabled);
     }
 
-    protected final void fireResultChanged(QualityResult oldResult,
-        QualityResult newResult) {
-        getPropertyChangeSupport()
-            .firePropertyChange(QualitySession.RESULT, oldResult, newResult);
+    @Override
+    public final BooleanProperty getAnnotateProjectResultEnabledProperty() {
+        return annotateProjectResultEnabledProperty;
     }
+
+    @Override
+    public final boolean isAnnotateProjectResultEnabled() {
+        return getAnnotateProjectResultEnabledProperty().get();
+    }
+
+    @Override
+    public final void setAnnotateProjectResultEnabled(boolean enabled) {
+        getAnnotateProjectResultEnabledProperty().set(enabled);
+    }
+
+    @Override
+    public final BooleanProperty getBackgroundScanningEnabledProperty() {
+        return backgroundScanningEnabledProperty;
+    }
+
+    @Override
+    public final boolean isBackgroundScanningEnabled() {
+        return getBackgroundScanningEnabledProperty().get();
+    }
+
+    @Override
+    public final void setBackgroundScanningEnabled(boolean enabled) {
+        getBackgroundScanningEnabledProperty().set(enabled);
+    }
+
+    @Override
+    public final ObservableObjectValue<? extends R> getResultProperty() {
+        return resultProperty;
+    }
+
+    @Override
+    public final BooleanBinding getAnnotateProjectResultEffectiveEnabledProperty() {
+        return annotateProjectResultEffectiveEnabledProperty;
+    }
+
+    @Override
+    public final boolean isAnnotateProjectResultEffectiveEnabled() {
+        return getAnnotateProjectResultEffectiveEnabledProperty().get();
+    }
+
+    @Override
+    public final BooleanBinding getBackgroundScanningEffectiveEnabledProperty() {
+        return backgroundScanningEffectiveEnabledProperty;
+    }
+
+    @Override
+    public final boolean isBackgroundScanningEffectiveEnabled() {
+        return getBackgroundScanningEffectiveEnabledProperty().get();
+    }
+
+    @Override
+    public final R getResult() {
+        return getResultProperty().get();
+    }
+
+    protected final void setResult(R result) {
+        resultProperty.setValue(result);
+    }
+
 }
