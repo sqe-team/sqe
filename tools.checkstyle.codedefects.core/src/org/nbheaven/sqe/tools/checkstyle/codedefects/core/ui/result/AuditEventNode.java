@@ -22,7 +22,6 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.internal.AuditEventSupport;
-import org.openide.filesystems.FileUtil;
 
 /**
  *

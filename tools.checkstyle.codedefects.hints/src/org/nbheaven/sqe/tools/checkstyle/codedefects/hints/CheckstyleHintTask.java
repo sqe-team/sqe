@@ -62,7 +62,8 @@ final class CheckstyleHintTask implements CancellableTask<CompilationInfo> {
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
         final FileObject fileObject = compilationInfo.getFileObject();
         if (null != fileObject) {
-            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, CheckstyleSession.class)) {
+            CheckstyleSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, CheckstyleSession.class);
+            if (session != null && session.isBackgroundScanningEffectiveEnabled()) {
                 if (null == errors) {
                     System.out.println("CheckstyleHintTask: (calc) " + System.identityHashCode(fileObject));
                     final Document document = compilationInfo.getDocument();
@@ -91,7 +92,6 @@ final class CheckstyleHintTask implements CancellableTask<CompilationInfo> {
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        CheckstyleSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, CheckstyleSession.class);
         CheckstyleResult result = CheckstyleSession.computeResultAndWait(fileObject);
         if (result != null) {
             List<ErrorDescription> computedErrors = new LinkedList<>();
@@ -100,7 +100,7 @@ final class CheckstyleHintTask implements CancellableTask<CompilationInfo> {
             // XXX see comment in ClassKey constructor
             Map<CheckstyleResult.ClassKey, Collection<AuditEvent>> instanceByClass = result.getInstanceByClass();
             instanceByClass.keySet().stream()
-                    .filter((classKey) -> (classKey.getDisplayName().equals(fileObject.getPath())))
+                    .filter((classKey) -> (classKey.getFileObject().equals(fileObject)))
                     .map((classKey) -> instanceByClass.get(classKey))
                     .forEach((bugs) -> {
                         computedErrors.addAll(createErrorDescription(project, fileObject, document, bugs));

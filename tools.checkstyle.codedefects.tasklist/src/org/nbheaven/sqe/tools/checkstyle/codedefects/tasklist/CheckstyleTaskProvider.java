@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;

@@ -17,6 +17,7 @@
  */
 package org.nbheaven.sqe.codedefects.core.spi;
 
+import java.util.prefs.BackingStoreException;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 
@@ -33,6 +34,7 @@ import javafx.beans.value.ObservableObjectValue;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider.SessionEventProxy;
 import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -83,6 +85,10 @@ public abstract class AbstractQualitySession<P extends QualityProvider, R extend
         annotateProjectResultEnabledProperty.set(preferences.getBoolean(annotateProjectResultEnabledProperty.getName(), true));
         backgroundScanningEnabledProperty.set(preferences.getBoolean(backgroundScanningEnabledProperty.getName(), true));
         annotationControler.bind();
+        
+        System.out.println(provider.getDisplayName() + " - Read Property enabled: " + isEnabled());
+        System.out.println(provider.getDisplayName() + " - Read Property showAnno: " + isAnnotateProjectResultEnabled());
+        System.out.println(provider.getDisplayName() + " - Read Property scanning: " + isBackgroundScanningEnabled());
     }
 
     @Override
@@ -91,6 +97,11 @@ public abstract class AbstractQualitySession<P extends QualityProvider, R extend
         preferences.putBoolean(enabledProperty.getName(), enabledProperty.get());
         preferences.putBoolean(annotateProjectResultEnabledProperty.getName(), annotateProjectResultEnabledProperty.get());
         preferences.putBoolean(backgroundScanningEnabledProperty.getName(), backgroundScanningEnabledProperty.get());
+        try {
+            preferences.flush();
+        } catch (BackingStoreException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         annotationControler.unbind();
     }
 

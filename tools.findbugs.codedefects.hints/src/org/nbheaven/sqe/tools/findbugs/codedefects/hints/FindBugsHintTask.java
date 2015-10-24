@@ -77,7 +77,8 @@ final class FindBugsHintTask implements CancellableTask<CompilationInfo> {
     public synchronized void run(final CompilationInfo compilationInfo) throws Exception {
         final FileObject fileObject = compilationInfo.getFileObject();
         if (null != fileObject) {
-            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, FindBugsSession.class)) {
+            FindBugsSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, FindBugsSession.class);
+            if (session != null && session.isBackgroundScanningEffectiveEnabled()) {
                 if (null == errors) {
                     System.out.println("FindBugsHintTask: (calc) " + System.identityHashCode(fileObject));
                     final Document document = compilationInfo.getDocument();
@@ -105,7 +106,6 @@ final class FindBugsHintTask implements CancellableTask<CompilationInfo> {
     }
 
     private static List<ErrorDescription> computeErrors(FileObject fileObject, Document document) throws Exception {
-        FindBugsSession session = SQECodedefectSupport.retrieveSessionFromFileObject(fileObject, FindBugsSession.class);
         FindBugsResult result = FindBugsSession.computeResultAndWait(fileObject);
 
         if (result != null) {
@@ -115,7 +115,7 @@ final class FindBugsHintTask implements CancellableTask<CompilationInfo> {
             // XXX see comment in ClassKey constructor
             Map<FindBugsResult.ClassKey, Collection<BugInstance>> instanceByClass = result.getInstanceByClass(true);
             instanceByClass.keySet().stream()
-                    .filter((classKey) -> (classKey.getDisplayName().equals(fileObject.getPath())))
+                    .filter((classKey) -> (classKey.getFileObject().equals(fileObject)))
                     .map((classKey) -> instanceByClass.get(classKey))
                     .forEach((bugs) -> {
                         computedErrors.addAll(createErrorDescription(project, fileObject, document, bugs));

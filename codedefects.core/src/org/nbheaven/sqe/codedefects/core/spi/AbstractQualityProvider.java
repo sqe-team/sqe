@@ -52,6 +52,7 @@ public abstract class AbstractQualityProvider implements QualityProvider {
         return globalSessionEventProxy;
     }
 
+    @Override
     public SessionEventProxy getSessionEventProxy() {
         return sessionEventProxy;
     }

@@ -23,6 +23,7 @@
         <folder name="Quality">
             <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-RunFindBugsAction.instance"/>
             <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-ShowFindBugsProjectResultAnnotationsAction.instance"/>
+            <file name="org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-EnableFindBugsBackgroundScanningAction.instance"/>
         </folder>
     </folder>
     
@@ -40,6 +41,16 @@
                     <attr name="position" intvalue="200"/>
                 </file>
             </folder>
+        </folder>
+    </folder>
+
+    <folder name="Toolbars">
+        <folder name="Quality">
+            <attr name="position" intvalue="569"/>
+            <file name="EnableFindBugsBackgroundScanningAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-findbugs-codedefects-core-actions-EnableFindBugsBackgroundScanningAction.instance"/>
+                <attr name="position" intvalue="200"/>
+            </file>
         </folder>
     </folder>
 

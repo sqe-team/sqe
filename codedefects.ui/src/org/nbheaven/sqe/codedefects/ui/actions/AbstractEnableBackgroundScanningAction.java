@@ -34,11 +34,11 @@ import org.openide.util.actions.Presenter;
  *
  * @author Florian Vogler
  */
-public abstract class AbstractShowProjectResultAnnotationsAction extends AbstractQualitySessionAwareAction implements Presenter.Toolbar {
+public abstract class AbstractEnableBackgroundScanningAction extends AbstractQualitySessionAwareAction implements Presenter.Toolbar {
 
     private final QualityProvider provider;
 
-    protected AbstractShowProjectResultAnnotationsAction(Lookup context, QualityProvider provider) {
+    protected AbstractEnableBackgroundScanningAction(Lookup context, QualityProvider provider) {
         super(context, provider.getSessionEventProxy());
         this.provider = provider;
 
@@ -48,7 +48,7 @@ public abstract class AbstractShowProjectResultAnnotationsAction extends Abstrac
     protected void updateActionStateImpl(Project project) {
         QualitySession session = SQECodedefectSupport.retrieveSession(project, provider);
         setEnabled(isEnabledForProject(project));
-        putValue(SELECTED_KEY, session != null && session.isAnnotateProjectResultEnabled());
+        putValue(SELECTED_KEY, session != null && session.isBackgroundScanningEnabled());
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class AbstractShowProjectResultAnnotationsAction extends Abstrac
     protected void actionPerformedImpl(ActionEvent e, Project project) {
         QualitySession session = SQECodedefectSupport.retrieveSession(project, provider);
         Boolean value = (Boolean) getValue(SELECTED_KEY);
-        session.setAnnotateProjectResultEnabled(value != null && value);
+        session.setBackgroundScanningEnabled(value != null && value);
     }
 
     @Override
