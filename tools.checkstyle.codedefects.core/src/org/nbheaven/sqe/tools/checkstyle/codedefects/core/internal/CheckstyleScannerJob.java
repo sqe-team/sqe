@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.checkstyle.codedefects.core;
+package org.nbheaven.sqe.tools.checkstyle.codedefects.core.internal;
 
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
@@ -26,20 +26,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleResult;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileStateInvalidException;
 import org.openide.modules.Places;
 import org.openide.util.Exceptions;
 import org.openide.util.Utilities;
@@ -53,7 +52,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
 
     private final Project project;
     private Checker checker;
-    private CheckstyleResult checkstyleResult;
+    private CheckstyleResultImpl checkstyleResult;
 
     CheckstyleScannerJob(Project project) {
         this.project = project;
@@ -150,7 +149,7 @@ abstract class CheckstyleScannerJob extends SQECodedefectScanner.Job {
     protected final void scan() {
         getProgressHandle().progress("Setting up Checkstyle");
         init();
-        CheckstyleResult internalResult = new CheckstyleResult(getProject());
+        CheckstyleResultImpl internalResult = new CheckstyleResultImpl(getProject());
         checker.addListener(internalResult);
         executeCheckstyle();
         checkstyleResult = internalResult;

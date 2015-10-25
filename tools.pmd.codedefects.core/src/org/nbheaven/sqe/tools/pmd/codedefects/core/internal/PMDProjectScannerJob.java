@@ -15,40 +15,48 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.checkstyle.codedefects.core;
+package org.nbheaven.sqe.tools.pmd.codedefects.core.internal;
 
 import java.util.Collection;
-import org.nbheaven.sqe.core.java.utils.FileObjectUtilities;
-import org.nbheaven.sqe.core.java.utils.ProjectUtilities;
-import org.netbeans.api.project.SourceGroup;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDIncludes;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.PMDSettingsProvider;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.settings.impl.DefaultPMDIncludes;
 import org.openide.filesystems.FileObject;
 
 /**
  *
  * @author Florian Vogler
  */
-final class CheckstyleProjectScannerJob extends CheckstyleScannerJob {
+final class PMDProjectScannerJob extends PMDScannerJob {
 
-    private CheckstyleSession session;
+    private PMDSessionImpl session;
 
-    public CheckstyleProjectScannerJob(CheckstyleSession session) {
+    public PMDProjectScannerJob(PMDSessionImpl session) {
         super(session.getProject());
         this.session = session;
     }
 
     @Override
-    protected void executeCheckstyle() {
-        SourceGroup[] groups = ProjectUtilities.getJavaSourceGroups(getProject());
-        for (SourceGroup g : groups) {
-            FileObject rootOfSourceFolder = g.getRootFolder();
-            Collection<FileObject> fullList = FileObjectUtilities.collectAllJavaSourceFiles(rootOfSourceFolder);
-            executeCheckstyle(fullList);
+    protected void executePMD() {
+        PMDSettingsProvider prv = getProject().getLookup().lookup(PMDSettingsProvider.class);
+        Collection<FileObject> includes = null;
+        if (prv != null) {
+            PMDIncludes inc = prv.getPMDIncludes();
+            if (inc != null) {
+                includes = inc.getProjectIncludes();
+            }
         }
+        if (includes == null) {
+            //default behaviour..
+            includes = new DefaultPMDIncludes(getProject()).getProjectIncludes();
+        }
+        executePMD(includes);
+
     }
 
     @Override
     protected final void postScan() {
-        session.setResult(getCheckstyleResult());
+        session.setResultInternal(getPMDResult());
         super.postScan();
         session.scanningDone();
     }

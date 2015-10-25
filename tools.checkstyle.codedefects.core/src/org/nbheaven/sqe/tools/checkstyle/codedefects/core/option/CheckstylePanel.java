@@ -18,8 +18,6 @@
 package org.nbheaven.sqe.tools.checkstyle.codedefects.core.option;
 
 import java.awt.BorderLayout;
-import java.io.File;
-import java.net.URL;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.impl.GlobalCheckstyleSettings;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;

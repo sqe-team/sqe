@@ -17,11 +17,13 @@
  */
 package org.nbheaven.sqe.codedefects.core.api;
 
+import java.beans.PropertyChangeListener;
 import org.netbeans.api.project.Project;
 
 import org.openide.util.Lookup;
 
 import javax.swing.Icon;
+import org.nbheaven.sqe.codedefects.core.spi.AbstractQualityProvider;
 
 /**
  *
@@ -29,15 +31,44 @@ import javax.swing.Icon;
  */
 public interface QualityProvider extends Lookup.Provider {
 
-    public Class<? extends QualitySession> getQualitySessionClass();
-
-    public QualitySession createQualitySession(Project project);
+    public String getId();
 
     public String getDisplayName();
-
-    public String getId();
 
     public Icon getIcon();
 
     public boolean isValidFor(Project project);
+
+    public Class<? extends QualitySession> getQualitySessionClass();
+
+    public QualitySession createQualitySession(Project project);
+
+    public SessionEventProxy getSessionEventProxy();
+
+    public static SessionEventProxy getGlobalSessionEventProxy() {
+        return AbstractQualityProvider.getGlobalSessionEventProxy();
+    }
+
+    public static interface SessionEventProxy {
+
+        public String ENABLED_PROPERTY = "enabled";
+        public String ANNOTATE_PROJECT_RESULT_ENABLED_PROPERTY = "annotateProjectResultEnabled";
+        public String BACKGROUND_SCANNING_ENABLED_PROPERTY = "backgroundScanningEnabled";
+        public String ANNOTATE_PROJECT_RESULT_EFFECTIVE_ENABLED_PROPERTY = "annotateProjectResultEffectiveEnabled";
+        public String BACKGROUND_SCANNING_EFFECTIVE_ENABLED_PROPERTY = "backgroundScanningEffectiveEnabled";
+
+        public void addPropertyChangeListener(PropertyChangeListener listener);
+
+        public void removePropertyChangeListener(PropertyChangeListener listener);
+
+        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
+        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
+        public PropertyChangeListener addWeakPropertyChangeListener(PropertyChangeListener listener);
+
+        public PropertyChangeListener addWeakPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
+    }
+
 }

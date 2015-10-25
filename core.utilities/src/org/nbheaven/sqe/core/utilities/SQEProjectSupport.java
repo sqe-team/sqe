@@ -23,7 +23,11 @@ import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -43,20 +47,20 @@ public class SQEProjectSupport {
 
         if (null == project) {
             DataObject dataObject = node.getLookup().lookup(DataObject.class);
-            project = findProject(dataObject);
+            project = findProjectByDataObject(dataObject);
         }
         return project;
     }
 
-    public static Project findProject(DataObject dataObject) {
+    public static Project findProjectByDataObject(DataObject dataObject) {
         if (null == dataObject) {
             return null;
         }
 
-        return findProject(dataObject.getPrimaryFile());
+        return findProjectByFileObject(dataObject.getPrimaryFile());
     }
 
-    public static Project findProject(FileObject fileObject) {
+    public static Project findProjectByFileObject(FileObject fileObject) {
         if (null == fileObject) {
             return null;
         }
@@ -66,7 +70,6 @@ public class SQEProjectSupport {
 
     public static boolean isProjectPackage(final String packageName, final Project project) {
         String folderName = packageName;
-
 
         folderName = folderName.replaceAll("\\.", "/");
 
@@ -107,5 +110,9 @@ public class SQEProjectSupport {
             }
         }
         return false;
+    }
+
+    public static Lookup createContextLookup(Project project) {
+        return Lookups.singleton(new AbstractNode(Children.LEAF, Lookups.singleton(project)));
     }
 }

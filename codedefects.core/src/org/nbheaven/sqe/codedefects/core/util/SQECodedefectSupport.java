@@ -26,6 +26,7 @@ import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.filesystems.FileObject;
+import org.openide.loaders.DataObject;
 
 /**
  *
@@ -51,41 +52,69 @@ public final class SQECodedefectSupport {
         return null != retrieveSession(project, provider);
     }
 
-    public static QualitySession retrieveSession(Project project, QualityProvider provider) {
-        return provider != null ? retrieveSession(project, provider.getQualitySessionClass()) : null;
-    }
-
-    public static <T extends QualitySession> T retrieveSession(FileObject fileObject, Class<T> sessionClass) {
-        Project project = SQEProjectSupport.findProject(fileObject);
-        return project != null ? retrieveSession(project, sessionClass) : null;
-    }
-
     public static <T extends QualitySession> T retrieveSession(Project project, Class<T> sessionClass) {
         return (project != null && sessionClass != null) ? project.getLookup().lookup(sessionClass) : null;
+    }
+
+    public static QualitySession retrieveSession(Project project, QualityProvider provider) {
+        return provider != null ? retrieveSession(project, provider.getQualitySessionClass()) : null;
     }
 
     public static Collection<? extends QualitySession> retrieveSessions(Project project) {
         return project != null ? project.getLookup().lookupAll(QualitySession.class) : Collections.emptyList();
     }
 
-    public static boolean isQualityProviderActive(FileObject fileObject, QualityProvider provider) {
-        return provider != null && isQualityProviderActive(fileObject, provider.getQualitySessionClass());
+    public static QualitySession retrieveSessionFromDataObject(DataObject dataObject, QualityProvider provider) {
+        return provider != null ? retrieveSessionFromDataObject(dataObject, provider.getQualitySessionClass()) : null;
     }
 
-    public static boolean isQualityProviderActive(Project project, QualityProvider provider) {
-        return provider != null && isQualityProviderActive(project, provider.getQualitySessionClass());
+    public static <T extends QualitySession> T retrieveSessionFromDataObject(DataObject dataObject, Class<T> sessionClass) {
+        Project project = SQEProjectSupport.findProjectByDataObject(dataObject);
+        return project != null ? retrieveSession(project, sessionClass) : null;
     }
 
-    public static boolean isQualityProviderActive(FileObject fileObject, Class<? extends QualitySession> sessionClass) {
-        Project project = SQEProjectSupport.findProject(fileObject);
-        return project != null && isQualityProviderActive(project, sessionClass);
+    public static QualitySession retrieveSessionFromFileObject(FileObject fileObject, QualityProvider provider) {
+        return provider != null ? retrieveSessionFromFileObject(fileObject, provider.getQualitySessionClass()) : null;
     }
 
-    public static boolean isQualityProviderActive(Project project, Class<? extends QualitySession> sessionClass) {
-        return project != null && sessionClass != null && isQualityProviderActive(project, retrieveSession(project, sessionClass));
+    public static <T extends QualitySession> T retrieveSessionFromFileObject(FileObject fileObject, Class<T> sessionClass) {
+        Project project = SQEProjectSupport.findProjectByFileObject(fileObject);
+        return project != null ? retrieveSession(project, sessionClass) : null;
     }
 
-    public static boolean isQualityProviderActive(Project project, QualitySession session) {
-        return null != project && null != session && SQECodedefectProperties.isQualityProviderActive(project, session.getProvider());
+//    public static boolean isQualityProviderActive(FileObject fileObject, QualityProvider provider) {
+//        return provider != null && isQualityProviderEnabled(fileObject, provider.getQualitySessionClass());
+//    }
+//
+//    public static boolean isQualityProviderActive(Project project, QualityProvider provider) {
+//        return provider != null && isQualityProviderEnabled(project, provider.getQualitySessionClass());
+//    }
+    public static boolean isQualityProviderEnabledForDataObject(DataObject dataObject, Class<? extends QualitySession> sessionClass) {
+        return isQualityProviderEnabled(retrieveSessionFromDataObject(dataObject, sessionClass));
     }
+
+    public static boolean isQualityProviderEnabledForFileObject(FileObject fileObject, Class<? extends QualitySession> sessionClass) {
+        return isQualityProviderEnabled(retrieveSessionFromFileObject(fileObject, sessionClass));
+    }
+
+    public static boolean isQualityProviderEnabled(Project project, QualityProvider provider) {
+        return provider != null && isQualityProviderEnabled(retrieveSession(project, provider.getQualitySessionClass()));
+    }
+
+    public static boolean isQualityProviderEnabled(Project project, Class<? extends QualitySession> sessionClass) {
+        return isQualityProviderEnabled(retrieveSession(project, sessionClass));
+    }
+
+    private static boolean isQualityProviderEnabled(QualitySession session) {
+        return session != null && session.isEnabled();
+    }
+
+    public static boolean isAnnotateProjectResultEnabled(Project project, QualityProvider provider) {
+        return provider != null &&  isAnnotateProjectResultEnabled(retrieveSession(project, provider.getQualitySessionClass()));
+    }
+
+    private static boolean isAnnotateProjectResultEnabled(QualitySession session) {
+        return session != null && session.isAnnotateProjectResultEnabled();
+    }
+
 }

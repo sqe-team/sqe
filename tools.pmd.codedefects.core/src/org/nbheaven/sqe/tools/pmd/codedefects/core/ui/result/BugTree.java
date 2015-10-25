@@ -22,8 +22,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Map;
 import javax.swing.Action;
@@ -55,11 +53,13 @@ class BugTree extends JTree {
     BugTree(PMDSession session) {
         this.session = session;
         this.requestProcessor = new RequestProcessor("BugTree-" + session.getDisplayName(), 1);
-        this.session.addPropertyChangeListener(new SessionListener(this));
         setCellRenderer(RuleViolationRenderer.instance());
         addMouseListener(new JumpToSourceMouseListener());
         addKeyListener(new JumpToSourceKeyListener());
         setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No result available")));
+
+        // XX must be weak ?
+        this.session.getResultProperty().addListener((observable, oldValue, newValue) -> refresh());
     }
 
     public PMDSession getSession() {
@@ -129,7 +129,7 @@ class BugTree extends JTree {
             return new DefaultMutableTreeNode("No result available");
         }
 
-        MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount());
+        MutableTreeNode rootNode = new SessionNode(session, session.getResult().getCodeDefectCountSum());
         rootNode.setUserObject(session);
 
         Map<?, Collection<RuleViolation>> instances = resultMode.getInstanceList(session.getResult());
@@ -167,7 +167,8 @@ class BugTree extends JTree {
     }
 
     /**
-     * Dispatch the event to open the source file according to type of annotation
+     * Dispatch the event to open the source file according to type of
+     * annotation
      */
     private static void jumpToSource(final TreePath treePath) {
         if (null == treePath || treePath.getPathCount() == 0) {
@@ -191,20 +192,6 @@ class BugTree extends JTree {
         if (obj instanceof RuleViolation) {
             RuleViolation ruleViolation = (RuleViolation) obj;
             RuleViolationAnnotationProcessor.openSourceFile(ruleViolation, session.getProject());
-        }
-    }
-
-    private static class SessionListener implements PropertyChangeListener {
-
-        private final BugTree bugTreePanel;
-
-        public SessionListener(BugTree bugTreePanel) {
-            this.bugTreePanel = bugTreePanel;
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            bugTreePanel.refresh();
         }
     }
 

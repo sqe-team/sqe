@@ -21,7 +21,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
-import org.openide.filesystems.FileUtil;
+import org.nbheaven.sqe.tools.checkstyle.codedefects.core.internal.AuditEventSupport;
 
 /**
  *
@@ -30,7 +30,7 @@ import org.openide.filesystems.FileUtil;
 class AuditEventNode extends DefaultMutableTreeNode {
 
     private final AuditEvent auditEvent;
-    private CheckstyleSession session;
+    private final String relativePath;
 
     /**
      * Creates a new instance of AuditEventNode
@@ -38,7 +38,7 @@ class AuditEventNode extends DefaultMutableTreeNode {
     AuditEventNode(AuditEvent auditEvent, CheckstyleSession session) {
         super(auditEvent, false);
         this.auditEvent = auditEvent;
-        this.session = session;
+        relativePath = AuditEventSupport.getRelativeProjectFilePath(session.getProject(), auditEvent);
     }
 
     AuditEvent getAuditEvent() {
@@ -46,12 +46,6 @@ class AuditEventNode extends DefaultMutableTreeNode {
     }
 
     String getRelativeFileName() {
-        String path = FileUtil.toFile(session.getProject().getProjectDirectory()).getAbsolutePath();
-        String fileName = auditEvent.getFileName();
-        fileName = fileName.replaceAll("\\\\", "/");
-        if (fileName.startsWith(path)) {
-            fileName = fileName.substring(path.length() + 1);
-        }
-        return fileName;
+        return relativePath;
     }
 }

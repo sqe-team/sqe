@@ -41,7 +41,6 @@ import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualityResultStatistic;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileAlreadyLockedException;
-import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Exceptions;
 import org.openide.util.NbCollections;
 import org.openide.util.NbPreferences;

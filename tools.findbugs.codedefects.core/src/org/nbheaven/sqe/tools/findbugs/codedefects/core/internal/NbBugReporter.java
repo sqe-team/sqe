@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nbheaven.sqe.tools.findbugs.codedefects.core;
+package org.nbheaven.sqe.tools.findbugs.codedefects.core.internal;
 
 import edu.umd.cs.findbugs.AnalysisError;
 import edu.umd.cs.findbugs.BugCollection;
@@ -32,11 +32,11 @@ final class NbBugReporter extends TextUIBugReporter {
 
     private static final Logger LOG = Logger.getLogger(NbBugReporter.class.getName());
 
-    private final FindBugsResult findbugsResult;
+    private final FindBugsResultImpl findbugsResult;
     private final NbFindBugsProgress progressCallback;
     private final SortedBugCollection bugCollection = new SortedBugCollection();
 
-    NbBugReporter(FindBugsResult findbugsResult, NbFindBugsProgress progressCallback) {
+    NbBugReporter(FindBugsResultImpl findbugsResult, NbFindBugsProgress progressCallback) {
         this.progressCallback = progressCallback;
         this.findbugsResult = findbugsResult;
     }

@@ -28,6 +28,7 @@ import javax.swing.ImageIcon;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.ui.PMDTopComponent;
 import org.openide.util.ImageUtilities;
 import org.nbheaven.sqe.codedefects.ui.UIHandle;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.internal.PMDSessionImpl;
 
 /**
  *
@@ -55,7 +56,7 @@ public final class PMDQualityProvider extends AbstractQualityProvider {
 
     @Override
     public PMDSession createQualitySession(Project project) {
-        return new PMDSession(project);
+        return new PMDSessionImpl(project);
     }
 
     @Override

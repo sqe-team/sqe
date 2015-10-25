@@ -25,7 +25,7 @@ import org.openide.util.ImageUtilities;
 
 class ShowHideDescriptionAction extends AbstractAction {
 
-    private static final Icon refreshIcon = new ImageIcon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/pmd/codedefects/core/resources/refresh.png"));
+    private static final Icon refreshIcon = new ImageIcon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/pmd/codedefects/core/resources/info.png"));
     private final ResultPanel resultPanel;
 
     ShowHideDescriptionAction(ResultPanel resultPanel) {

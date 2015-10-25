@@ -17,6 +17,12 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.hints;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
+import org.nbheaven.sqe.codedefects.core.api.QualitySession;
+import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
+import org.nbheaven.sqe.tools.findbugs.codedefects.core.FindBugsQualityProvider;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.JavaSource;
@@ -31,10 +37,13 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Florian Vogler
  */
 @ServiceProvider(service = JavaSourceTaskFactory.class)
-public final class FindBugsHintTaskFactory extends EditorAwareJavaSourceTaskFactory {
+public final class FindBugsHintTaskFactory extends EditorAwareJavaSourceTaskFactory implements PropertyChangeListener {
+
+    private final PropertyChangeListener listener;
 
     public FindBugsHintTaskFactory() {
         super(JavaSource.Phase.UP_TO_DATE, JavaSource.Priority.MIN);
+        listener = FindBugsQualityProvider.getDefault().getSessionEventProxy().addWeakPropertyChangeListener(this);
     }
 
     @Override
@@ -46,6 +55,18 @@ public final class FindBugsHintTaskFactory extends EditorAwareJavaSourceTaskFact
         for (JavaSourceTaskFactory f : Lookup.getDefault().lookupAll(JavaSourceTaskFactory.class)) {
             if (f instanceof FindBugsHintTaskFactory) {
                 ((FindBugsHintTaskFactory) f).reschedule(file);
+            }
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (QualityProvider.SessionEventProxy.BACKGROUND_SCANNING_EFFECTIVE_ENABLED_PROPERTY.equals(evt.getPropertyName())) {
+            QualitySession session = (QualitySession) evt.getSource();
+            for (FileObject fileObject : getFileObjects()) {
+                if (session.getProject().equals(SQEProjectSupport.findProjectByFileObject(fileObject))) {
+                    reschedule(fileObject);
+                }
             }
         }
     }

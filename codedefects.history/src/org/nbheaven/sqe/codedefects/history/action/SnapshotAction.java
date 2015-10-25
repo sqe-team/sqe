@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.codedefects.history.util.CodeDefectHistoryPersistence;
 import org.netbeans.api.project.Project;

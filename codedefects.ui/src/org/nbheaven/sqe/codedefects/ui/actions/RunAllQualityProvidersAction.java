@@ -28,7 +28,6 @@ import javax.swing.SwingUtilities;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.spi.SQEUtilities;
-import org.nbheaven.sqe.codedefects.core.util.SQECodedefectProperties;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
 import org.nbheaven.sqe.codedefects.ui.UIHandle;
 import org.nbheaven.sqe.codedefects.ui.utils.UiUtils;
@@ -83,7 +82,8 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
         if (lkpInfo != null) {
             return;
         }
-        SQECodedefectProperties.addPropertyChangeListener(this); //TODO Make weak !!!
+        
+        QualityProvider.getGlobalSessionEventProxy().addPropertyChangeListener(this); //TODO Make weak !!!
 
         //The thing we want to listen for the presence or absence of
         //on the global selection
@@ -124,7 +124,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
         if (null != project) {
             if (SQEUtilities.getProviders().stream()
                     .anyMatch((provider) -> (provider.isValidFor(project)
-                            && SQECodedefectProperties.isQualityProviderActive(project, provider)))) {
+                            && SQECodedefectSupport.isQualityProviderEnabled(project, provider)))) {
                 return true;
             }
         }
@@ -137,7 +137,7 @@ public class RunAllQualityProvidersAction extends AbstractAction implements Look
         if (null != project) {
             SQEUtilities.getProviders().stream()
                     .filter((provider) -> (provider.isValidFor(project)
-                            && SQECodedefectSupport.isQualityProviderActive(project, provider)))
+                            && SQECodedefectSupport.isQualityProviderEnabled(project, provider)))
                     .map((provider) -> new ComputeResultTask(project, provider))
                     .forEach((computeResultTask) -> REQUEST_PROCESSOR.post(computeResultTask));
         }

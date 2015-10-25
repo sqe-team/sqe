@@ -113,8 +113,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
     }
 
     @Override
-    public void annotateSourceFile(JavaSource javaSource,
-            final Project project, QualityResult qualityResult) {
+    public void annotateSourceFile(JavaSource javaSource, final Project project, QualityResult qualityResult) {
         if (null == qualityResult) {
             return;
         }
@@ -124,7 +123,7 @@ public final class AuditEventAnnotationProcessor implements SQEAnnotationProcess
 
         for (FileObject fo : javaSource.getFileObjects()) {
             Map<? extends Object, Collection<AuditEvent>> instanceMap = result.getInstanceByClass();
-            ClassKey classKey = new ClassKey(fo);
+            ClassKey classKey = new ClassKey(project, fo);
             Collection<AuditEvent> auditEvents = instanceMap.get(classKey);
 
             if (null != auditEvents) {

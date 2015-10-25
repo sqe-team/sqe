@@ -18,7 +18,6 @@
 package org.nbheaven.sqe.core.java.search.impl;
 
 import com.sun.source.tree.MethodTree;
-import com.sun.source.tree.Tree.Kind;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -26,7 +25,6 @@ import javax.lang.model.element.VariableElement;
 import org.nbheaven.sqe.core.java.search.MethodElementDescriptor;
 import org.nbheaven.sqe.core.java.utils.TypeUtilities;
 import org.netbeans.api.java.source.CompilationInfo;
-import org.netbeans.api.java.source.ElementHandle;
 import org.netbeans.api.java.source.TreePathHandle;
 
 

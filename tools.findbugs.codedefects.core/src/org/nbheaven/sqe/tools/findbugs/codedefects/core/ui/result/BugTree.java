@@ -28,8 +28,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -60,11 +58,13 @@ class BugTree extends JTree {
     BugTree(FindBugsSession session) {
         this.session = session;
         this.requestProcessor = new RequestProcessor("BugTree-" + session.getDisplayName(), 1);
-        this.session.addPropertyChangeListener(new SessionListener(this));
         setCellRenderer(BugCellRenderer.instance());
         addMouseListener(new JumpToSourceMouseListener());
         addKeyListener(new JumpToSourceKeyListener());
         setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No result available")));
+
+        // XX must be weak ?
+        this.session.getResultProperty().addListener((observable, oldValue, newValue) -> refresh());
     }
 
     public FindBugsSession getSession() {
@@ -134,7 +134,7 @@ class BugTree extends JTree {
             return new DefaultMutableTreeNode("No result available");
         }
 
-        MutableTreeNode rootNode = new SessionNode(session, session.getResult().getBugCount(coreFilterEnabled));
+        MutableTreeNode rootNode = new SessionNode(session, session.getResult().getCodeDefectCount(coreFilterEnabled));
         rootNode.setUserObject(session);
 
         Map<?, Collection<BugInstance>> instances = resultMode.getInstanceList(session.getResult(), coreFilterEnabled);
@@ -179,7 +179,8 @@ class BugTree extends JTree {
     }
 
     /**
-     * Dispatch the event to open the source file according to type of annotation
+     * Dispatch the event to open the source file according to type of
+     * annotation
      */
     private static void jumpToSource(final TreePath treePath) {
         if (null == treePath || treePath.getPathCount() == 0) {
@@ -216,20 +217,6 @@ class BugTree extends JTree {
             BugAnnotationProcessor.openSourceFile(bugInstance, session.getProject());
         }
 
-    }
-
-    private static class SessionListener implements PropertyChangeListener {
-
-        private final BugTree bugTreePanel;
-
-        public SessionListener(BugTree bugTreePanel) {
-            this.bugTreePanel = bugTreePanel;
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            bugTreePanel.refresh();
-        }
     }
 
     private static class JumpToSourceMouseListener extends MouseAdapter {

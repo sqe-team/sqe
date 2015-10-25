@@ -17,113 +17,30 @@
  */
 package org.nbheaven.sqe.tools.findbugs.codedefects.core;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import javafx.beans.value.ObservableObjectValue;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
-import org.nbheaven.sqe.codedefects.core.spi.AbstractQualitySession;
-import org.nbheaven.sqe.codedefects.core.spi.SQECodedefectScanner;
-import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.LookupProvider.Registration.ProjectType;
-import org.netbeans.spi.project.ProjectServiceProvider;
+import org.nbheaven.sqe.tools.findbugs.codedefects.core.internal.FindBugsSessionImpl;
 import org.openide.filesystems.FileObject;
 
 /**
  *
  * @author Sven Reimers
  */
-@ProjectServiceProvider(service = {FindBugsSession.class, QualitySession.class},
-        projectTypes = {
-            @ProjectType(position = 10, id = "org-netbeans-modules-ant-freeform"),
-            @ProjectType(position = 10, id = "org-netbeans-modules-autoproject"),
-            @ProjectType(position = 10, id = "org-netbeans-modules-apisupport-project"),
-            @ProjectType(position = 10, id = "org-netbeans-modules-java-j2seproject"),
-            @ProjectType(position = 10, id = "org-netbeans-modules-web-project"),
-            @ProjectType(position = 10, id = "org-netbeans-modules-maven"),
-            @ProjectType(position = 10, id = "org.netbeans.gradle.project")
-        }
-)
-public class FindBugsSession extends AbstractQualitySession {
-
-    private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private FindBugsResult findBugsResult;
-
-    /**
-     * Creates a new instance of FindBugsSession
-     *
-     * @param project the project this QualitySession belongs to.
-     */
-    public FindBugsSession(Project project) {
-        super(FindBugsQualityProvider.getDefault(), project);
-    }
+public interface FindBugsSession extends QualitySession {
 
     @Override
-    public FindBugsQualityProvider getProvider() {
-        return (FindBugsQualityProvider) super.getProvider();
-    }
+    public FindBugsQualityProvider getProvider();
 
     @Override
-    public FindBugsResult getResult() {
-        return findBugsResult;
-    }
-
-    private final Lock waitResultLock = new ReentrantLock();
-    private final Condition waitForResult = waitResultLock.newCondition();
-
-    /**
-     * Analyze a single file. Call within a Java source task at
-     * {@link org.netbeans.api.java.source.JavaSource.Phase#UP_TO_DATE}.
-     *
-     * @param sourceFile The file to analyze
-     * @return the result of the analyzation
-     */
-    public FindBugsResult computeResultAndWait(FileObject sourceFile) {
-        FindBugsScannerJob job = new FindBugsFileScannerJob(getProject(), sourceFile);
-        SQECodedefectScanner.postAndWait(job);
-        return job.getResult();
-    }
-
-    public FindBugsResult computeResultAndWait() {
-        waitResultLock.lock();
-        try {
-            computeResult();
-            while (isRunning.get()) {
-                waitForResult.awaitUninterruptibly();
-            }
-            return this.findBugsResult;
-        } finally {
-            waitResultLock.unlock();
-        }
-    }
+    public ObservableObjectValue<? extends FindBugsResult> getResultProperty();
 
     @Override
-    public void computeResult() {
-        if (!isRunning.getAndSet(true)) {
-            FindBugsScannerJob job = new FindBugsProjectScannerJob(this.getProject());
-            SQECodedefectScanner.post(job);
-        } else {
-//            System.out.println("FindBugs is already running - Skip call to computeResult()");
-        }
-    }
+    public FindBugsResult getResult();
 
-    void scanningDone() {
-        waitResultLock.lock();
-        try {
-            isRunning.set(false);
-            waitForResult.signalAll();
-        } finally {
-            waitResultLock.unlock();
-        }
-    }
+    @Override
+    public FindBugsResult computeResultAndWait();
 
-    void setResult(FindBugsResult findBugsResult) {
-        FindBugsResult oldResult = this.findBugsResult;
-        this.findBugsResult = findBugsResult;
-        resultChanged(oldResult, this.findBugsResult);
-    }
-
-    void resultChanged(FindBugsResult oldResult, FindBugsResult newResult) {
-        fireResultChanged(oldResult, newResult);
+    public static FindBugsResult computeResultAndWait(FileObject sourceFile) {
+        return FindBugsSessionImpl.computeResultAndWait(sourceFile);
     }
 }

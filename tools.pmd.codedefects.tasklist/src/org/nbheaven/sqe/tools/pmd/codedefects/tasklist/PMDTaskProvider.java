@@ -54,7 +54,7 @@ public final class PMDTaskProvider extends PushTaskScanner {
 
         for (FileObject fileObject : taskScanningScope.getLookup().lookupAll(FileObject.class)) {
 
-            if (SQECodedefectSupport.isQualityProviderActive(fileObject, PMDSession.class) && null != JavaSource.forFileObject(fileObject)) {
+            if (SQECodedefectSupport.isQualityProviderEnabledForFileObject(fileObject, PMDSession.class) && null != JavaSource.forFileObject(fileObject)) {
                 PMDResult result = getResult(fileObject);
                 if (result == null) {
                     continue;

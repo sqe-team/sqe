@@ -34,6 +34,7 @@ import net.sourceforge.pmd.RuleViolation;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.CategoryKey;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDResult.Mode;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
+import org.nbheaven.sqe.tools.pmd.codedefects.core.actions.ShowPMDProjectResultAnnotationsAction;
 
 /**
  *
@@ -83,8 +84,12 @@ public final class ResultPanel extends JPanel {
         toolBar.add(new CollapseAllAction(bugTree));
         toolBar.addSeparator();
 
+        toolBar.add(new ShowPMDProjectResultAnnotationsAction(session).getToolbarPresenter());
+
         showHideDescriptionButton = new JToggleButton(new ShowHideDescriptionAction(this));
-        showHideDescriptionButton.setText(null);
+        showHideDescriptionButton.setHideActionText(true);
+        showHideDescriptionButton.setRolloverEnabled(false);
+        showHideDescriptionButton.setFocusable(false);
         showHideDescriptionButton.setSelected(true);
         toolBar.add(showHideDescriptionButton);
         toolBar.addSeparator();
@@ -107,7 +112,7 @@ public final class ResultPanel extends JPanel {
 
         splitPane.setDividerLocation(dividerLocation);
         updateDescription();
-        
+
         bugTree.addTreeSelectionListener(new DescriptionUpdateListener(this));
     }
 
@@ -144,7 +149,7 @@ public final class ResultPanel extends JPanel {
                 description = ruleViolation.getDescription();
             }
         }
-        
+
         description = null == description ? "" : description.trim();
         if (description.length() == 0 || !showHideDescriptionButton.isSelected()) {
             textPane.setText("");
