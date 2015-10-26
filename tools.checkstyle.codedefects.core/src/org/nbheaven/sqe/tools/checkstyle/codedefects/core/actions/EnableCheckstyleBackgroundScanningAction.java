@@ -20,11 +20,9 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.core.actions;
 import javax.swing.Action;
 import org.nbheaven.sqe.codedefects.ui.actions.AbstractEnableBackgroundScanningAction;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleQualityProvider;
-import org.nbheaven.sqe.codedefects.ui.actions.AbstractShowProjectResultAnnotationsAction;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleSession;
 import org.openide.util.ContextAwareAction;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 
@@ -46,8 +44,8 @@ public final class EnableCheckstyleBackgroundScanningAction extends AbstractEnab
     private EnableCheckstyleBackgroundScanningAction(Lookup context) {
         super(context, CheckstyleQualityProvider.getDefault());
 
-        putValue(Action.NAME, "Enable checkstyle background scanning");//NbBundle.getMessage(ShowCheckstyleProjectResultAnnotationsAction.class, "LBL_CheckstyleAction")); //NOI18N
-        putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/visible.png")));
+        putValue(Action.NAME, "Enable Checkstyle background scanning");//NbBundle.getMessage(ShowCheckstyleProjectResultAnnotationsAction.class, "LBL_CheckstyleAction")); //NOI18N
+//        putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/visible.png")));
         updateActionState();
     }
 

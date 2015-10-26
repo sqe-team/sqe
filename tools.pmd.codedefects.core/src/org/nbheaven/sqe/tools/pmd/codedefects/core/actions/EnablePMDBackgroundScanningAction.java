@@ -19,12 +19,10 @@ package org.nbheaven.sqe.tools.pmd.codedefects.core.actions;
 
 import javax.swing.Action;
 import org.nbheaven.sqe.codedefects.ui.actions.AbstractEnableBackgroundScanningAction;
-import org.nbheaven.sqe.codedefects.ui.actions.AbstractShowProjectResultAnnotationsAction;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDQualityProvider;
 import org.nbheaven.sqe.tools.pmd.codedefects.core.PMDSession;
 import org.openide.util.ContextAwareAction;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 
@@ -46,8 +44,8 @@ public final class EnablePMDBackgroundScanningAction extends AbstractEnableBackg
     private EnablePMDBackgroundScanningAction(Lookup context) {
         super(context, PMDQualityProvider.getDefault());
 
-        putValue(Action.NAME, "Enable findbugs background scanning");//NbBundle.getMessage(ShowCheckstyleProjectResultAnnotationsAction.class, "LBL_CheckstyleAction")); //NOI18N
-        putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/visible.png")));
+        putValue(Action.NAME, "Enable PMD background scanning");//NbBundle.getMessage(ShowCheckstyleProjectResultAnnotationsAction.class, "LBL_CheckstyleAction")); //NOI18N
+//        putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/visible.png")));
         updateActionState();
     }
 

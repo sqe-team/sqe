@@ -34,6 +34,14 @@
                     <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-codedefects-ui-actions-RunAllQualityProvidersAction.instance"/>
                     <attr name="position" intvalue="100"/>
                 </file>
+                <file name="org-nbheaven-sqe-codedefects-ui-actions-separatorAfter.instance">
+                    <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                    <attr name="position" intvalue="150"/>
+                </file>
+                <file name="org-nbheaven-sqe-codedefects-ui-actions-separatorBefore.instance">
+                    <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                    <attr name="position" intvalue="900"/>
+                </file>
             </folder>
         </folder>
     </folder>

@@ -39,7 +39,7 @@ import org.openide.util.Utilities;
  *
  * @author Florian Vogler
  */
-public class RunPMDAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
+public final class RunPMDAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
 
     private final QualityProvider provider;
 
@@ -54,6 +54,7 @@ public class RunPMDAction extends AbstractQualitySessionAwareAction implements C
         //        putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.NAME, NbBundle.getMessage(RunPMDAction.class, "LBL_RunPMDAction")); //NOI18N
         putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/pmd/codedefects/core/resources/pmd.png")));
+        updateActionState();
     }
 
     @Override

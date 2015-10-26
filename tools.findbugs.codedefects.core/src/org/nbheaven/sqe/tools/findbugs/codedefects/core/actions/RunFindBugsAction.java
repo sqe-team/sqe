@@ -39,7 +39,7 @@ import org.openide.util.Utilities;
  *
  * @author Florian Vogler
  */
-public class RunFindBugsAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
+public final class RunFindBugsAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
 
     private final QualityProvider provider;
 
@@ -54,6 +54,7 @@ public class RunFindBugsAction extends AbstractQualitySessionAwareAction impleme
         //        putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.NAME, NbBundle.getMessage(RunFindBugsAction.class, "LBL_RunFindBugsAction")); //NOI18N
         putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/findbugs/codedefects/core/resources/findbugs.png")));
+        updateActionState();
     }
 
     @Override
