@@ -47,6 +47,7 @@ public final class FindBugsQualityProvider extends AbstractQualityProvider {
      * Creates a new instance of FindBugsQualityProvider
      */
     private FindBugsQualityProvider() {
+        super("FindBugs");
         lookup = Lookups.fixed(new Object[]{UIHandleImpl.INSTANCE, BugAnnotationProcessor.INSTANCE});
     }
 
@@ -62,11 +63,6 @@ public final class FindBugsQualityProvider extends AbstractQualityProvider {
     @Override
     public String getDisplayName() {
         return "Find Bugs";
-    }
-
-    @Override
-    public String getId() {
-        return "FindBugs";
     }
 
     @Override

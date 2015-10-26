@@ -47,6 +47,7 @@ public final class PMDQualityProvider extends AbstractQualityProvider {
      * Creates a new instance of PMDQualityProvider
      */
     private PMDQualityProvider() {
+        super("PMD");
         lookup = Lookups.fixed(new Object[]{UIHandleImpl.INSTANCE, RuleViolationAnnotationProcessor.INSTANCE});
     }
 
@@ -57,16 +58,6 @@ public final class PMDQualityProvider extends AbstractQualityProvider {
     @Override
     public PMDSession createQualitySession(Project project) {
         return new PMDSessionImpl(project);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "PMD";
-    }
-
-    @Override
-    public String getId() {
-        return "PMD";
     }
 
     @Override

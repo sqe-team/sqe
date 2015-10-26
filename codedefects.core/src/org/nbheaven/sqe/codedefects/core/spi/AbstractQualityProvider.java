@@ -33,13 +33,26 @@ import org.openide.util.WeakListeners;
  */
 public abstract class AbstractQualityProvider implements QualityProvider {
 
-    private static final SessionEventProxyImpl globalSessionEventProxy = new SessionEventProxyImpl();
-    private final SessionEventProxyImpl sessionEventProxy = new SessionEventProxyImpl();
+    private static final SessionEventProxyImpl globalSessionEventProxy = new SessionEventProxyImpl("GLOBAL");
+    private final SessionEventProxyImpl sessionEventProxy;
+    private final String id;
 
     /**
      * Creates a new instance of AbstractQualityProvider
      */
-    protected AbstractQualityProvider() {
+    protected AbstractQualityProvider(String id) {
+        this.id = id;
+        sessionEventProxy = new SessionEventProxyImpl(id);
+    }
+
+    @Override
+    public final String getId() {
+        return id;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getId();
     }
 
     <T> void fireSessionPropertyChange(AbstractQualitySession<?, ?> session, String propertyName, T oldValue, T newValue) {
@@ -80,6 +93,11 @@ public abstract class AbstractQualityProvider implements QualityProvider {
     private static final class SessionEventProxyImpl implements SessionEventProxy {
 
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+        private final String name;
+
+        public SessionEventProxyImpl(String name) {
+            this.name = name;
+        }
 
         public void firePropertyChange(PropertyChangeEvent event) {
             propertyChangeSupport.firePropertyChange(event);
@@ -109,14 +127,14 @@ public abstract class AbstractQualityProvider implements QualityProvider {
         public PropertyChangeListener addWeakPropertyChangeListener(PropertyChangeListener listener) {
             PropertyChangeListener weakListener = WeakListeners.propertyChange(listener, this);
             addPropertyChangeListener(weakListener);
-            return weakListener;
+            return listener;
         }
 
         @Override
         public PropertyChangeListener addWeakPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             PropertyChangeListener weakListener = WeakListeners.propertyChange(listener, propertyName, this);
             addPropertyChangeListener(propertyName, weakListener);
-            return weakListener;
+            return listener;
         }
 
     }
