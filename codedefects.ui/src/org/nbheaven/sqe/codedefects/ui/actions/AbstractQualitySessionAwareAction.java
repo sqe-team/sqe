@@ -20,12 +20,14 @@ package org.nbheaven.sqe.codedefects.ui.actions;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import javax.swing.AbstractAction;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider.SessionEventProxy;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.netbeans.api.project.Project;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**

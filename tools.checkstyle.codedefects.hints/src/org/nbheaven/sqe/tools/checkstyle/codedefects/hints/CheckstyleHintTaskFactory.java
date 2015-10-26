@@ -19,9 +19,7 @@ package org.nbheaven.sqe.tools.checkstyle.codedefects.hints;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider.SessionEventProxy;
-import org.nbheaven.sqe.codedefects.core.api.QualityResult;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.core.utilities.SQEProjectSupport;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.CheckstyleQualityProvider;

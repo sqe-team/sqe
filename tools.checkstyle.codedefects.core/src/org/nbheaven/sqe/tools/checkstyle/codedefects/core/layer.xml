@@ -40,17 +40,11 @@
                     <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
                     <attr name="position" intvalue="400"/>
                 </file>
+                <file name="EnableCheckstyleBackgroundScanningAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-EnableCheckstyleBackgroundScanningAction.instance"/>
+                    <attr name="position" intvalue="1400"/>
+                </file>
             </folder>
-        </folder>
-    </folder>
-
-    <folder name="Toolbars">
-        <folder name="Quality">
-            <attr name="position" intvalue="569"/>
-            <file name="EnableCheckstyleBackgroundScanningAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-EnableCheckstyleBackgroundScanningAction.instance"/>
-                <attr name="position" intvalue="400"/>
-            </file>
         </folder>
     </folder>
 
@@ -70,6 +64,7 @@
                         <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-checkstyle-codedefects-core-actions-RunCheckstyleAction.instance"/>
                         <attr name="position" intvalue="400"/>
                     </file>
+  
                 </folder>
             </folder>
         </folder>

@@ -23,9 +23,7 @@ import javax.swing.JToggleButton;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
 import org.nbheaven.sqe.codedefects.core.util.SQECodedefectSupport;
-import org.nbheaven.sqe.codedefects.ui.actions.AbstractQualitySessionAwareAction;
 import org.netbeans.api.project.Project;
-import org.openide.awt.Actions;
 import org.openide.util.Lookup;
 import org.openide.util.actions.Presenter;
 

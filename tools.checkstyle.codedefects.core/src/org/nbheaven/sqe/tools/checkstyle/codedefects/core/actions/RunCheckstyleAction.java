@@ -38,7 +38,7 @@ import org.openide.util.Utilities;
  *
  * @author Florian Vogler
  */
-public class RunCheckstyleAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
+public final class RunCheckstyleAction extends AbstractQualitySessionAwareAction implements ContextAwareAction {
 
     private final QualityProvider provider;
 
@@ -49,10 +49,9 @@ public class RunCheckstyleAction extends AbstractQualitySessionAwareAction imple
     private RunCheckstyleAction(Lookup context) {
         super(context, CheckstyleQualityProvider.getDefault().getSessionEventProxy());
         this.provider = CheckstyleQualityProvider.getDefault();
-
-        //        putValue("noIconInMenu", Boolean.TRUE); // NOI18N
         putValue(Action.NAME, NbBundle.getMessage(RunCheckstyleAction.class, "LBL_CheckstyleAction")); //NOI18N
         putValue(SMALL_ICON, ImageUtilities.image2Icon(ImageUtilities.loadImage("org/nbheaven/sqe/tools/checkstyle/codedefects/core/resources/checkstyle.png")));
+        updateActionState();
     }
 
     @Override

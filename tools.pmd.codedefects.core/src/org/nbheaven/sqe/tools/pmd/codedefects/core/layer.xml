@@ -40,19 +40,14 @@
                     <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-pmd-codedefects-core-actions-RunPMDAction.instance"/>
                     <attr name="position" intvalue="300"/>
                 </file>
+                <file name="EnablePMDBackgroundScanningAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-pmd-codedefects-core-actions-EnablePMDBackgroundScanningAction.instance"/>
+                    <attr name="position" intvalue="1300"/>
+                </file>
             </folder>
         </folder>
     </folder>
     
-    <folder name="Toolbars">
-        <folder name="Quality">
-            <attr name="position" intvalue="569"/>
-            <file name="EnablePMDBackgroundScanningAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/Quality/org-nbheaven-sqe-tools-pmd-codedefects-core-actions-EnablePMDBackgroundScanningAction.instance"/>
-                <attr name="position" intvalue="200"/>
-            </file>
-        </folder>
-    </folder>
     
     <!-- SQE Integration -->
     <folder name="SQE">
