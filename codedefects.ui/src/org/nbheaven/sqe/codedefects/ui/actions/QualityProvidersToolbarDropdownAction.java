@@ -37,7 +37,7 @@ import org.openide.util.actions.Presenter;
  *
  * @author Florian Vogler
  */
-public class QualityProvidersToolbarDropdownAction implements Action, Presenter.Toolbar, ContextAwareAction {
+public final class QualityProvidersToolbarDropdownAction implements Action, Presenter.Toolbar, ContextAwareAction {
 
     private List<? extends Action> actions;
     private final Action defaultAction;
