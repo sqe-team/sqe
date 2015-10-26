@@ -13,6 +13,10 @@
     <suppress checks="AbbreviationAsWordInName"
               files="JavaNCSSCheck.java"
               lines="41"/>
+    <!-- test should be named as their main class -->
+    <suppress checks="AbbreviationAsWordInName"
+              files="JavaNCSSCheckTest.java"
+              lines="41"/>
 
     <!-- illegal words are part of Javadoc -->
     <suppress checks="TodoComment" files=".*TodoCommentCheck\.java"/>
@@ -28,6 +32,9 @@
     <!-- 'Abstract' pattern is used to show it is checking for abstract class name -->
     <suppress checks="AbstractClassNameCheck"
               files="AbstractClassNameCheck.java"/>
+    <!-- test should be named as their main class -->
+    <suppress checks="AbstractClassNameCheck"
+              files="AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java"/>
 
     <!-- Tone down the checking for test code -->
     <suppress checks="EmptyBlock" files=".*[\\/]src[\\/]test[\\/]"/>
@@ -43,7 +50,6 @@
     <!-- suppressions to remove over time -->
     <suppress checks="FinalLocalVariable" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="LineLength" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="Name" files=".*[\\/]src[\\/]test[\\/]"/>    
 
     <!--
       Turn off all checks for Generated and Test code. Fixes issues with using
@@ -71,7 +77,7 @@
     <suppress checks="MultipleStringLiterals" files="JavadocStyleCheck\.java|AbstractTypeAwareCheck\.java|XMLLogger\.java"/>
     <suppress checks="MultipleStringLiterals" files=".*[\\/]src[\\/]test[\\/]"/>
 
-    <!-- There are a lot of setters/getters in the Check. A small number of methods is left for Check's logics -->
+    <!-- There are a lot of setters/getters in the Check. A small number of methods is left for Check's logic -->
     <suppress checks="MethodCount" files="[\\/]JavadocMethodCheck.java$"/>
 
     <!-- getDetails() method - huge Switch, it has to be monolithic -->
@@ -81,7 +87,7 @@
 
     <!-- we need that set of converters -->
     <suppress checks="ClassDataAbstractionCoupling" files="AutomaticBean\.java"/>
-    <!-- they are agregators of logic, usage a several of classes are ok -->
+    <!-- they are aggregators of logic, usage a several of classes are ok -->
     <suppress checks="ClassDataAbstractionCoupling" files="(Checker|TreeWalker|Main|CheckstyleAntTask|AbstractJavadocCheck)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling" files="(CheckerTest|TreeWalkerTest)\.java"/>
     <!-- a lot of GUI elements is OK -->
@@ -90,13 +96,13 @@
     <!-- Should be fixed after moving https://github.com/sevntu-checkstyle/sevntu.checkstyle/blob/master/sevntu-checks/src/main/java/com/github/sevntu/checkstyle/checks/coding/ReturnCountExtendedCheck.java into the main repo -->
     <suppress checks="ReturnCount" files="(ClassResolver|ConfigurationLoader|IndentationCheckTest)\.java"/>
     
-    <!-- Just big SWITCHes. Cannot be splitted to several methods. Till https://github.com/checkstyle/checkstyle/issues/2029 -->
+    <!-- Just big switches. Cannot be split to several methods. Till https://github.com/checkstyle/checkstyle/issues/2029 -->
     <suppress checks="CyclomaticComplexity" files="(AbstractDeclarationCollector|SuppressWarningsHolder|LeftCurlyCheck|FallThroughCheck|FinalLocalVariableCheck|ModifiedControlVariableCheck)\.java"/>
     <suppress checks="CyclomaticComplexity" files="(ParameterAssignmentCheck|VariableDeclarationUsageDistanceCheck|BooleanExpressionComplexityCheck|NPathComplexityCheck|CheckUtils)\.java"/>
 
     <!-- Suppressions from PMD configuration-->
     <!-- validateCli is not reasonable to split as encapsulation of logic will be damaged -->
-    <suppress checks="CyclomaticComplexity" files="Main\.java"  lines="171"/>
+    <suppress checks="CyclomaticComplexity" files="Main\.java"  lines="179"/>
     <!-- JavadocMethodCheck, JavadocStyleCheck, JavadocUtils.getJavadocTags() - deprecated -->
     <suppress checks="CyclomaticComplexity" files="JavadocMethodCheck\.java"/>
     <suppress checks="CyclomaticComplexity" files="JavadocStyleCheck\.java"/>
@@ -106,4 +112,9 @@
     <suppress checks="CyclomaticComplexity" files="LocalizedMessage\.java" lines="211"/>
     <!-- SWITCH was transformed into IF-ELSE -->
     <suppress checks="CyclomaticComplexity" files="ImportOrderCheck\.java" lines="331"/>
+
+    <!-- LocalizedMessage class is immutable, we need that amount of arguments. -->
+    <suppress checks="ParameterNumber"
+              files="LocalizedMessage.java"
+              lines="106, 144, 175"/>
 </suppressions>

@@ -19,6 +19,8 @@ package org.nbheaven.sqe.codedefects.ui.actions;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
 import javax.swing.JToggleButton;
 import org.nbheaven.sqe.codedefects.core.api.QualityProvider;
 import org.nbheaven.sqe.codedefects.core.api.QualitySession;
@@ -32,7 +34,8 @@ import org.openide.util.actions.Presenter;
  *
  * @author Florian Vogler
  */
-public abstract class AbstractShowProjectResultAnnotationsAction extends AbstractQualitySessionAwareAction implements Presenter.Toolbar {
+public abstract class AbstractShowProjectResultAnnotationsAction extends AbstractQualitySessionAwareAction
+        implements Presenter.Toolbar, Presenter.Popup, Presenter.Menu {
 
     private final QualityProvider provider;
 
@@ -71,4 +74,15 @@ public abstract class AbstractShowProjectResultAnnotationsAction extends Abstrac
         return button;
     }
 
+    @Override
+    public JMenuItem getPopupPresenter() {
+        JCheckBoxMenuItem item = new JCheckBoxMenuItem(this);
+        return item;
+    }
+
+    @Override
+    public JMenuItem getMenuPresenter() {
+        JCheckBoxMenuItem item = new JCheckBoxMenuItem(this);
+        return item;
+    }
 }

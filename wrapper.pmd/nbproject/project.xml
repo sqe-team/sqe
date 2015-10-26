@@ -132,100 +132,100 @@
                 <package>net.sourceforge.pmd.util.viewer.util</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-core-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-core-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-core-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-core-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-cpp-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-cpp-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-cpp-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-cpp-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-cs-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-cs-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-cs-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-cs-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-fortran-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-fortran-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-fortran-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-fortran-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-go-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-go-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-go-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-go-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-java-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-java-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-java-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-java-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-javascript-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-javascript-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-javascript-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-javascript-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-jsp-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-jsp-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-jsp-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-jsp-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-matlab-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-matlab-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-matlab-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-matlab-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-objectivec-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-objectivec-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-objectivec-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-objectivec-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-php-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-php-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-php-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-php-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-plsql-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-plsql-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-plsql-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-plsql-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-python-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-python-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-python-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-python-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-ruby-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-ruby-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-ruby-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-ruby-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-scala-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-scala-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-scala-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-scala-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-vm-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-vm-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-vm-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-vm-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/pmd-xml-5.3.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/pmd-xml-5.3.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/pmd-xml-5.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/pmd-xml-5.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/asm-5.0.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/asm-5.0.3.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/asm-5.0.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/asm-5.0.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/pmd/commons-io-2.4.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/pmd/commons-io-2.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/commons-lang3-3.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/commons-lang3-3.3.2.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/commons-lang3-3.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/commons-lang3-3.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/pmd/javacc-5.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/pmd/javacc-5.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/jaxen-1.1.4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/jaxen-1.1.4.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/jaxen-1.1.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/jaxen-1.1.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/jcommander-1.35.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/jcommander-1.35.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/jcommander-1.48.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/jcommander-1.48.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd/rhino-1.7R4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pmd/rhino-1.7R4.jar</binary-origin>
+                <runtime-relative-path>ext/pmd/rhino-1.7.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pmd/rhino-1.7.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/pmd/saxon-9.1.0.8-dom.jar</runtime-relative-path>

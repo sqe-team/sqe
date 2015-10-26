@@ -47,6 +47,7 @@ public final class CheckstyleQualityProvider extends AbstractQualityProvider {
      * Creates a new instance of CheckstyleQualityProvider
      */
     private CheckstyleQualityProvider() {
+        super("Checkstyle");
         lookup = Lookups.fixed(new Object[]{UIHandleImpl.INSTANCE, AuditEventAnnotationProcessor.INSTANCE});
     }
 
@@ -57,16 +58,6 @@ public final class CheckstyleQualityProvider extends AbstractQualityProvider {
     @Override
     public CheckstyleSession createQualitySession(Project project) {
         return new CheckstyleSessionImpl(project);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "Checkstyle";
-    }
-
-    @Override
-    public String getId() {
-        return "Checkstyle";
     }
 
     @Override
